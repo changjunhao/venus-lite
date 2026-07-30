@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { HealthStatus } from '#shared/types/api'
+import type { ContactSheetFrame } from '~/components/home/HomeContactSheet.vue'
 
 const config = useRuntimeConfig()
 const { t, localeProperties } = useI18n()
@@ -9,16 +10,51 @@ useSeoMeta({
   description: () => t('home.seoDescription'),
 })
 
+// venus index.html L57-74 源三帧：caption 品牌 mono 恒英文不入 i18n，
+// alt 随 locale 切换故用 computed；width/height 为原始像素尺寸防 CLS
+const heroFrames = computed<ContactSheetFrame[]>(() => [
+  {
+    src: '/assets/editorial/landscape.jpg',
+    alt: t('home.hero.frameLandscapeAlt'),
+    caption: 'LANDSCAPE',
+    width: 1200,
+    height: 1800,
+  },
+  {
+    src: '/assets/editorial/forest.jpg',
+    alt: t('home.hero.frameForestAlt'),
+    caption: 'LIGHT',
+    width: 1000,
+    height: 666,
+  },
+  {
+    src: '/assets/editorial/water.jpg',
+    alt: t('home.hero.frameWaterAlt'),
+    caption: 'RHYTHM',
+    width: 1000,
+    height: 667,
+  },
+])
+
 // SSR 取数示例：服务端渲染时完成请求，View Source 可见数据
 const { data: health } = await useFetch<HealthStatus>('/api/health')
 </script>
 
 <template>
   <div class="home container">
-    <section class="hero">
-      <p class="eyebrow">Nuxt 4 Skeleton</p>
-      <h1 class="hero-title">{{ config.public.siteName }}</h1>
-    </section>
+    <HomeHero
+      :eyebrow="$t('home.hero.eyebrow')"
+      :title="$t('home.hero.title')"
+      :subtitle="$t('home.hero.subtitle')"
+      :tagline="$t('home.hero.tagline')"
+      :lede="$t('home.hero.lede')"
+      :primary-label="$t('home.hero.ctaPrimary')"
+      :secondary-label="$t('home.hero.ctaSecondary')"
+      :frames="heroFrames"
+      :sheet-aria-label="$t('home.hero.sheetAria')"
+      :sheet-note-label="$t('home.hero.sheetNoteLabel')"
+      :sheet-note-text="$t('home.hero.sheetNoteText')"
+    />
 
     <section class="status" :aria-label="$t('home.statusSection')">
       <h2 class="status-title">{{ $t('home.statusSection') }}</h2>
@@ -42,33 +78,6 @@ const { data: health } = await useFetch<HealthStatus>('/api/health')
 </template>
 
 <style scoped>
-.hero {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  padding-block: var(--space-8) var(--space-7);
-}
-
-.hero-title {
-  font-size: 52px;
-  line-height: 0.98;
-}
-
-@media (min-width: 768px) {
-  .hero-title {
-    font-size: 88px;
-  }
-}
-
-.hero-lead {
-  font-size: 18px;
-  line-height: 1.72;
-}
-
-.hero-actions {
-  margin-top: var(--space-2);
-}
-
 .status {
   border-top: 1px solid var(--hairline);
   padding-block: var(--space-6);

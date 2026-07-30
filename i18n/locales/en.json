@@ -13,6 +13,21 @@
   },
   "home": {
     "seoDescription": "Venus Lite — a complete Nuxt 4 web application skeleton (pages + API + SSR).",
+    "hero": {
+      "eyebrow": "PHOTOGRAPHIC AESTHETICS / REVIEWED WITH RIGOR",
+      "title": "Venus",
+      "subtitle": "Photographic Aesthetics Evaluation",
+      "tagline": "Professional photographic aesthetics evaluation powered by adversarial multi-agent review",
+      "lede": "From a single photo to a whole series, Venus proposes, challenges and arbitrates to deliver scores, critique, actionable advice and verifiable evidence.",
+      "ctaPrimary": "Start a single review",
+      "ctaSecondary": "Choose an evaluation mode",
+      "sheetAria": "Sample photographic contact sheet",
+      "sheetNoteLabel": "CONTACT / 01—03",
+      "sheetNoteText": "See the relationships between photos first, then form a judgment.",
+      "frameLandscapeAlt": "Sample landscape photograph of mountains and clouds",
+      "frameForestAlt": "Sample photograph of light and shadow in a forest",
+      "frameWaterAlt": "Sample photograph of water surface texture"
+    },
     "statusSection": "Service status",
     "statusLabel": "Status",
     "statusOk": "Operational",

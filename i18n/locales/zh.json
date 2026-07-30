@@ -13,6 +13,21 @@
   },
   "home": {
     "seoDescription": "Venus Lite — Nuxt 4 完整 Web 应用架构骨架（页面 + API + SSR）。",
+    "hero": {
+      "eyebrow": "PHOTOGRAPHIC AESTHETICS / REVIEWED WITH RIGOR",
+      "title": "Venus",
+      "subtitle": "摄影美学评估系统",
+      "tagline": "基于多智能体对抗的专业摄影美学评估",
+      "lede": "从一张照片到一个系列，Venus 通过提案、质疑与仲裁，给出评分、点评、改进建议和可核对的判断依据。",
+      "ctaPrimary": "开始单图评估",
+      "ctaSecondary": "选择评估模式",
+      "sheetAria": "摄影作品接触印样示例",
+      "sheetNoteLabel": "CONTACT / 01—03",
+      "sheetNoteText": "先看见照片之间的关系，再形成判断。",
+      "frameLandscapeAlt": "山脉与云层的风光摄影示例",
+      "frameForestAlt": "森林光影摄影示例",
+      "frameWaterAlt": "水面纹理摄影示例"
+    },
     "statusSection": "服务状态",
     "statusLabel": "状态",
     "statusOk": "运行正常",
