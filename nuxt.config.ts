@@ -1,0 +1,34 @@
+// https://nuxt.com/docs/api/configuration/nuxt-config
+export default defineNuxtConfig({
+  compatibilityDate: '2025-07-15',
+  devtools: { enabled: true },
+
+  modules: ['@nuxt/fonts', '@nuxt/a11y', '@nuxt/eslint', '@nuxt/test-utils/module'],
+
+  // 全局样式：Design Tokens 先于基础样式加载
+  css: ['~/assets/css/tokens.css', '~/assets/css/main.css'],
+
+  app: {
+    head: {
+      htmlAttrs: { lang: 'zh-CN' },
+      title: 'Venus Lite',
+      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    },
+  },
+
+  // 路由级渲染策略（骨架示例均走 SSR；后续页面可按需追加 prerender/swr 等规则）
+  routeRules: {
+    '/': { ssr: true },
+    '/notes': { ssr: true },
+  },
+
+  // 环境变量体系：运行时经 NUXT_ 前缀覆盖（见 .env.example）
+  runtimeConfig: {
+    // 服务端私有（NUXT_APP_VERSION）
+    appVersion: '',
+    // 客户端可见（NUXT_PUBLIC_SITE_NAME）
+    public: {
+      siteName: 'Venus Lite',
+    },
+  },
+})

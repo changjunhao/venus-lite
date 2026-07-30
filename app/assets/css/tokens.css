@@ -1,0 +1,90 @@
+/* Design Tokens — 唯一来源：venus DESIGN.md §16
+ * Paper（纸面，默认浅色）与 Darkroom（暗房，深色）双主题。
+ * 语义与数值不得随意漂移。 */
+
+:root {
+  color-scheme: light;
+
+  --paper: #f4f1e8;
+  --paper-raised: #fbf9f3;
+  --paper-recessed: #eae5da;
+  --ink: #191714;
+  --ink-body: #45413b;
+  --ink-muted: #6f6960;
+  --hairline: #d8d2c6;
+  --hairline-strong: #aaa297;
+  --darkroom: #171512;
+  --darkroom-raised: #211e1a;
+  --amber: #a9541e;
+  --amber-hover: #874016;
+  --oxide: #9c3f32;
+  --verdigris: #2f6b60;
+  --focus: #2367a7;
+
+  --font-display: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "Cormorant Garamond", Georgia, serif;
+  --font-ui: "Inter", "Noto Sans SC", "Source Han Sans SC", "PingFang SC", system-ui, sans-serif;
+  --font-data: "IBM Plex Mono", "JetBrains Mono", "SFMono-Regular", ui-monospace, monospace;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+
+  --radius-none: 0;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  --shadow-nav: 0 1px 0 rgba(25, 23, 20, 0.04);
+  --shadow-overlay: 0 20px 60px rgba(12, 11, 10, 0.18);
+
+  --motion-fast: 120ms;
+  --motion-standard: 180ms;
+  --motion-slow: 280ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+}
+
+html[data-theme="darkroom"] {
+  color-scheme: dark;
+
+  --paper: #171512;
+  --paper-raised: #211e1a;
+  --paper-recessed: #100f0d;
+  --ink: #f1ede3;
+  --ink-body: #cdc6b8;
+  --ink-muted: #9e9689;
+  --hairline: #3d3832;
+  --hairline-strong: #5d564d;
+  --darkroom: #0c0b0a;
+  --darkroom-raised: #211e1a;
+  --amber: #e09a57;
+  --amber-hover: #f0b276;
+  --oxide: #e18172;
+  --verdigris: #72b5a5;
+  --focus: #70b7ff;
+}
+
+/* §12.5 Reduced motion：取消位移与缩放，时长降为 1ms */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-fast: 1ms;
+    --motion-standard: 1ms;
+    --motion-slow: 1ms;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+}

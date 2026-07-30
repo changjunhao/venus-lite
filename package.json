@@ -1,0 +1,33 @@
+{
+  "name": "venus-lite",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@alicloud/sts20150401": "^1.2.0",
+    "@theogony/venus-core": "file:../venus-core",
+    "ali-oss": "^6.23.0",
+    "exifreader": "^4.41.3",
+    "markstream-vue": "^1.0.7",
+    "nuxt": "^4.5.1",
+    "openai": "^7.1.0",
+    "vue": "^3.5.40",
+    "vue-router": "^5.2.0"
+  },
+  "devDependencies": {
+    "@nuxt/a11y": "1.0.0-alpha.1",
+    "@nuxt/eslint": "1.16.0",
+    "@nuxt/fonts": "0.14.0",
+    "@nuxt/test-utils": "4.1.0",
+    "eslint": "^10.8.0",
+    "typescript": "^5.9.3"
+  }
+}

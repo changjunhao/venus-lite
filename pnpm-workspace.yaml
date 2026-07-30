@@ -1,0 +1,7 @@
+allowBuilds:
+  '@alicloud/openapi-core': false
+  '@google/genai': false
+  esbuild: true
+  exifreader: false
+  protobufjs: false
+  unrs-resolver: true

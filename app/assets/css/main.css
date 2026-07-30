@@ -1,0 +1,158 @@
+/* 基础样式 — 仅覆盖骨架页面所需，不构成组件库。
+ * 视觉规则来源：venus DESIGN.md（排版 §6、间距 §7、按钮 §9.1、焦点 §14.3）。 */
+
+/* ── Reset ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink-body);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* ── 排版 ── */
+h1,
+h2,
+h3 {
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 500;
+  text-wrap: balance;
+}
+
+p {
+  max-width: 42rem;
+}
+
+a {
+  color: var(--ink);
+  text-decoration-color: var(--hairline-strong);
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  text-decoration-color: var(--amber);
+}
+
+/* Eyebrow：11–12px Mono、0.08em 字距（§6.2） */
+.eyebrow {
+  color: var(--ink-muted);
+  font-family: var(--font-data);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ── 布局容器（§7.2） ── */
+.container {
+  margin-inline: auto;
+  max-width: 1280px;
+  padding-inline: var(--space-4);
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-inline: var(--space-6);
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    padding-inline: var(--space-7);
+  }
+}
+
+/* ── 按钮（§9.1：最小高度 44px，动词开头文案） ── */
+.btn {
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--font-ui);
+  font-size: 16px;
+  gap: var(--space-2);
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 20px;
+  text-decoration: none;
+  transition: background-color var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard);
+}
+
+.btn-primary {
+  background: var(--amber);
+  color: var(--paper-raised);
+}
+
+.btn-primary:hover {
+  background: var(--amber-hover);
+}
+
+.btn-secondary {
+  background: transparent;
+  border-color: var(--hairline-strong);
+  color: var(--ink);
+}
+
+.btn-secondary:hover {
+  background: var(--paper-recessed);
+}
+
+.btn:disabled {
+  background: var(--paper-recessed);
+  border-color: transparent;
+  color: var(--ink-muted);
+  cursor: not-allowed;
+}
+
+/* ── 表单控件（§9.2：高度 48px） ── */
+.input {
+  background: var(--paper-raised);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  height: 48px;
+  padding: 0 var(--space-3);
+  width: 100%;
+}
+
+/* ── 焦点（§14.3：2px 外环 + 2px offset，仅键盘触发） ── */
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* ── 主题切换过渡（§9.4：仅颜色 180ms，避免图片与文本闪白） ── */
+.theme-transitioning,
+.theme-transitioning *,
+.theme-transitioning *::before,
+.theme-transitioning *::after {
+  transition: background-color var(--motion-standard) var(--ease-standard),
+    border-color var(--motion-standard) var(--ease-standard),
+    color var(--motion-standard) var(--ease-standard) !important;
+}
