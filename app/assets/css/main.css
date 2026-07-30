@@ -83,50 +83,7 @@ a:hover {
   }
 }
 
-/* ── 按钮（§9.1：最小高度 44px，动词开头文案） ── */
-.btn {
-  align-items: center;
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  display: inline-flex;
-  font-family: var(--font-ui);
-  font-size: 16px;
-  gap: var(--space-2);
-  justify-content: center;
-  min-height: 44px;
-  padding: 0 20px;
-  text-decoration: none;
-  transition: background-color var(--motion-fast) var(--ease-standard),
-    border-color var(--motion-fast) var(--ease-standard),
-    color var(--motion-fast) var(--ease-standard);
-}
-
-.btn-primary {
-  background: var(--amber);
-  color: var(--paper-raised);
-}
-
-.btn-primary:hover {
-  background: var(--amber-hover);
-}
-
-.btn-secondary {
-  background: transparent;
-  border-color: var(--hairline-strong);
-  color: var(--ink);
-}
-
-.btn-secondary:hover {
-  background: var(--paper-recessed);
-}
-
-.btn:disabled {
-  background: var(--paper-recessed);
-  border-color: transparent;
-  color: var(--ink-muted);
-  cursor: not-allowed;
-}
+/* 按钮样式（§9.1）已内聚至 components/ui/BaseButton.vue，统一经组件使用 */
 
 /* ── 表单控件（§9.2：高度 48px） ── */
 .input {

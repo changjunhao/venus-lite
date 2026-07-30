@@ -19,7 +19,7 @@ function backHome() {
     <p class="eyebrow">ERROR</p>
     <h1 class="error-code">{{ error.status }}</h1>
     <p class="error-message">{{ message }}</p>
-    <button type="button" class="btn btn-primary" @click="backHome">返回首页</button>
+    <UiBaseButton @click="backHome">返回首页</UiBaseButton>
   </main>
 </template>
 
