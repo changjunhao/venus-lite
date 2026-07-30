@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
 
-  modules: ['@nuxt/fonts', '@nuxt/a11y', '@nuxt/eslint', '@nuxt/test-utils/module'],
+  modules: ['@nuxt/fonts', '@nuxt/a11y', '@nuxt/eslint', '@nuxt/test-utils/module', '@nuxtjs/i18n'],
 
   // 全局样式：Design Tokens 先于基础样式加载
   css: ['~/assets/css/tokens.css', '~/assets/css/main.css'],
@@ -21,12 +21,28 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      htmlAttrs: { lang: 'zh-CN' },
+      // html lang 由 i18n 接管（app.vue 的 useLocaleHead），不在此硬编码
       title: 'Venus Lite',
       link: [{ rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
       // 主题初始化：首绘前同步执行，仅搬运 localStorage 里的显式覆盖。
       // 置于 config 而非 composable，以覆盖 error.vue 与预渲染路径。
       script: [{ textContent: THEME_INIT_SCRIPT, tagPosition: 'head' }],
+    },
+  },
+
+  // 国际化：no_prefix 策略（URL 不变），语言偏好经 cookie 持久化，SSR 首屏即正确
+  i18n: {
+    strategy: 'no_prefix',
+    defaultLocale: 'zh',
+    locales: [
+      { code: 'zh', language: 'zh-CN', name: '中文', file: 'zh.json' },
+      { code: 'en', language: 'en-US', name: 'English', file: 'en.json' },
+    ],
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'venus-locale', // 与 venus-theme 命名风格一致，无冲突
+      redirectOn: 'root',
+      fallbackLocale: 'zh',
     },
   },
 

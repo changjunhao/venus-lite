@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@alicloud/sts20150401": "^1.2.0",
+    "@nuxtjs/i18n": "^10.5.0",
     "@theogony/venus-core": "file:../venus-core",
     "ali-oss": "^6.23.0",
     "exifreader": "^4.41.3",

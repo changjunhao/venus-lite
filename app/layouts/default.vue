@@ -2,16 +2,17 @@
   <div class="app-shell">
     <header class="site-header">
       <div class="container header-inner">
-        <NuxtLink to="/" class="brand" aria-label="Venus Lite 首页">
+        <NuxtLink to="/" class="brand" :aria-label="$t('layout.brandHomeAria')">
           <span class="brand-mark" aria-hidden="true">✦</span>
           <span class="brand-name">VENUS LITE</span>
         </NuxtLink>
 
-        <nav class="site-nav" aria-label="主导航">
-          <NuxtLink to="/" class="nav-link">首页</NuxtLink>
+        <nav class="site-nav" :aria-label="$t('layout.mainNavAria')">
+          <NuxtLink to="/" class="nav-link">{{ $t('layout.navHome') }}</NuxtLink>
         </nav>
 
         <LayoutThemeToggle />
+        <LayoutLocaleToggle />
       </div>
     </header>
 
@@ -21,7 +22,7 @@
 
     <footer class="site-footer">
       <div class="container">
-        <p class="footer-text">Venus Lite · Nuxt 4 架构骨架</p>
+        <p class="footer-text">{{ $t('layout.footer') }}</p>
       </div>
     </footer>
   </div>

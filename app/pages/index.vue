@@ -2,10 +2,11 @@
 import type { HealthStatus } from '#shared/types/api'
 
 const config = useRuntimeConfig()
+const { t, localeProperties } = useI18n()
 
 useSeoMeta({
   title: config.public.siteName,
-  description: 'Venus Lite — Nuxt 4 完整 Web 应用架构骨架（页面 + API + SSR）。',
+  description: () => t('home.seoDescription'),
 })
 
 // SSR 取数示例：服务端渲染时完成请求，View Source 可见数据
@@ -19,23 +20,23 @@ const { data: health } = await useFetch<HealthStatus>('/api/health')
       <h1 class="hero-title">{{ config.public.siteName }}</h1>
     </section>
 
-    <section class="status" aria-label="服务状态">
-      <h2 class="status-title">服务状态</h2>
+    <section class="status" :aria-label="$t('home.statusSection')">
+      <h2 class="status-title">{{ $t('home.statusSection') }}</h2>
       <dl v-if="health" class="status-grid">
         <div class="status-item">
-          <dt>状态</dt>
-          <dd class="status-ok">{{ health.status === 'ok' ? '运行正常' : health.status }}</dd>
+          <dt>{{ $t('home.statusLabel') }}</dt>
+          <dd class="status-ok">{{ health.status === 'ok' ? $t('home.statusOk') : health.status }}</dd>
         </div>
         <div class="status-item">
-          <dt>版本</dt>
+          <dt>{{ $t('home.version') }}</dt>
           <dd>{{ health.version }}</dd>
         </div>
         <div class="status-item">
-          <dt>服务器时间</dt>
-          <dd>{{ formatDateTime(health.time) }}</dd>
+          <dt>{{ $t('home.serverTime') }}</dt>
+          <dd>{{ formatDateTime(health.time, localeProperties.language) }}</dd>
         </div>
       </dl>
-      <p v-else class="status-empty">暂时无法获取服务状态，请稍后刷新。</p>
+      <p v-else class="status-empty">{{ $t('home.statusEmpty') }}</p>
     </section>
   </div>
 </template>

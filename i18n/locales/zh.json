@@ -1,0 +1,34 @@
+{
+  "layout": {
+    "brandHomeAria": "Venus Lite 首页",
+    "navHome": "首页",
+    "mainNavAria": "主导航",
+    "footer": "Venus Lite · Nuxt 4 架构骨架"
+  },
+  "home": {
+    "seoDescription": "Venus Lite — Nuxt 4 完整 Web 应用架构骨架（页面 + API + SSR）。",
+    "statusSection": "服务状态",
+    "statusLabel": "状态",
+    "statusOk": "运行正常",
+    "version": "版本",
+    "serverTime": "服务器时间",
+    "statusEmpty": "暂时无法获取服务状态，请稍后刷新。"
+  },
+  "error": {
+    "notFound": "你要找的页面不存在，可能已被移动或删除。",
+    "generic": "页面暂时无法显示，请稍后重试。",
+    "backHome": "返回首页"
+  },
+  "theme": {
+    "toPaper": "切换到纸面模式",
+    "toDarkroom": "切换到暗房模式",
+    "currentPaper": "当前为纸面模式",
+    "currentDarkroom": "当前为暗房模式",
+    "paper": "纸面",
+    "darkroom": "暗房"
+  },
+  "locale": {
+    "switchTo": "Switch to English",
+    "label": "中文"
+  }
+}

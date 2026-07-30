@@ -4,9 +4,15 @@ import type { NuxtError } from '#app'
 // 全局错误页：只解释发生了什么与如何继续，不暴露实现细节（DESIGN.md §2.5）
 const props = defineProps<{ error: NuxtError }>()
 
+const { t } = useI18n()
+
+// 错误页替代 app.vue 整棵渲染，html lang 需在此单独接管（同 app.vue）
+const localeHead = useLocaleHead()
+useHead(() => ({ htmlAttrs: { lang: localeHead.value.htmlAttrs?.lang } }))
+
 const message = computed(() => {
-  if (props.error.status === 404) return '你要找的页面不存在，可能已被移动或删除。'
-  return '页面暂时无法显示，请稍后重试。'
+  if (props.error.status === 404) return t('error.notFound')
+  return t('error.generic')
 })
 
 function backHome() {
@@ -19,7 +25,7 @@ function backHome() {
     <p class="eyebrow">ERROR</p>
     <h1 class="error-code">{{ error.status }}</h1>
     <p class="error-message">{{ message }}</p>
-    <UiBaseButton @click="backHome">返回首页</UiBaseButton>
+    <UiBaseButton @click="backHome">{{ $t('error.backHome') }}</UiBaseButton>
   </main>
 </template>
 

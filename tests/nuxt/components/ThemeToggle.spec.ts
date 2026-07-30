@@ -1,17 +1,21 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { defineComponent, h } from 'vue'
-import { clearNuxtState } from '#imports'
+import { clearNuxtState, useNuxtApp } from '#imports'
 import { THEME_STORAGE_KEY } from '#shared/theme'
 import ThemeToggle from '~/components/layout/ThemeToggle.vue'
 
 type MediaListener = (event: { matches: boolean }) => void
 
-// 组件内部经 useTheme 使用 useState，挂载前 clearNuxtState 重置，
-// 避免用例间共享同一 Nuxt 实例导致状态泄漏（同 useTheme.spec.ts）
+// 组件内部经 useTheme 使用 useState，挂载前重置主题相关 state，
+// 避免用例间共享同一 Nuxt 实例导致状态泄漏（同 useTheme.spec.ts）。
+// 注意只清主题 key：无参 clearNuxtState 会连 i18n 内部状态一并清掉。
+// happy-dom 的 navigator.language 为 en-US，浏览器语言检测会把 locale 漂到 en，
+// 断言基于中文文案，故挂载前显式固定为 zh。
 const Host = defineComponent({
-  setup() {
-    clearNuxtState()
+  async setup() {
+    clearNuxtState(['venus-theme', 'venus-theme-system', 'venus-theme-client'])
+    await useNuxtApp().$i18n.setLocale('zh')
     return () => h(ThemeToggle)
   },
 })
