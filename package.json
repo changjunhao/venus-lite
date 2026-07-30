@@ -9,6 +9,8 @@
     "preview": "nuxt preview",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
@@ -27,7 +29,10 @@
     "@nuxt/eslint": "1.16.0",
     "@nuxt/fonts": "0.14.0",
     "@nuxt/test-utils": "4.1.0",
+    "@vue/test-utils": "^2.4.11",
     "eslint": "^10.8.0",
-    "typescript": "^5.9.3"
+    "happy-dom": "^20.11.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.10"
   }
 }
