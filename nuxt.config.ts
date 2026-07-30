@@ -7,8 +7,12 @@ export default defineNuxtConfig({
 
   modules: ['@nuxt/fonts', '@nuxt/a11y', '@nuxt/eslint', '@nuxt/test-utils/module', '@nuxtjs/i18n'],
 
-  // 全局样式：Design Tokens 先于基础样式加载
-  css: ['~/assets/css/tokens.css', '~/assets/css/main.css'],
+  // 全局样式：Design Tokens 先于基础样式加载。
+  // markstream-vue 置于 main.css 之前：其 dist CSS 残留未限定作用域的 .container 规则
+  // （width:100% + 五档断点 max-width，最大 1536px），main.css 后声明的
+  // .container{max-width:1280px}（§7.2）在同特异度下获胜，中和宽屏泄漏；
+  // main.css 的通配 reset 特异度为 0，排在库 CSS 之后不会覆盖其 class 规则。
+  css: ['~/assets/css/tokens.css', 'markstream-vue/index.css', '~/assets/css/main.css'],
 
   // 字体：禁用 Google 提供源（fonts.google.com 网络不可达，启动时反复重试拖慢冷启动）
   // tokens.css 的字体栈均有本地回退（PingFang SC / Songti SC / system-ui 等），渲染不受影响
