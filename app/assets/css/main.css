@@ -12,6 +12,21 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  /* 锚点滚动补偿：导航高度 + 留白（§7.3，贴源 venus style.css L118/L1106） */
+  scroll-padding-top: 88px;
+}
+
+@media (max-width: 767px) {
+  html {
+    scroll-padding-top: 76px;
+  }
+}
+
+/* smooth 仅在无减弱动效偏好时启用（§12.5，严于 venus 的无条件声明） */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {

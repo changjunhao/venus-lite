@@ -1,9 +1,18 @@
 {
   "layout": {
-    "brandHomeAria": "Venus Lite home",
-    "navHome": "Home",
-    "mainNavAria": "Main navigation",
     "footer": "Venus Lite · Nuxt 4 architecture skeleton"
+  },
+  "nav": {
+    "homeAria": "Main navigation",
+    "modesAria": "Evaluation mode navigation",
+    "brandHomeAria": "Venus home",
+    "brandBackAria": "Back to Venus introduction",
+    "anchorModes": "Evaluation modes",
+    "anchorProcess": "How it works",
+    "anchorSample": "Sample result",
+    "modeSingle": "Single review",
+    "modeJoint": "Joint series review",
+    "modeCompare": "Comparative review"
   },
   "home": {
     "seoDescription": "Venus Lite — a complete Nuxt 4 web application skeleton (pages + API + SSR).",

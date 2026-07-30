@@ -1,9 +1,18 @@
 {
   "layout": {
-    "brandHomeAria": "Venus Lite 首页",
-    "navHome": "首页",
-    "mainNavAria": "主导航",
     "footer": "Venus Lite · Nuxt 4 架构骨架"
+  },
+  "nav": {
+    "homeAria": "主导航",
+    "modesAria": "评估模式导航",
+    "brandHomeAria": "Venus 首页",
+    "brandBackAria": "返回 Venus 产品介绍",
+    "anchorModes": "评估模式",
+    "anchorProcess": "工作方式",
+    "anchorSample": "结果示例",
+    "modeSingle": "单图评估",
+    "modeJoint": "组图联合评估",
+    "modeCompare": "组图对比评估"
   },
   "home": {
     "seoDescription": "Venus Lite — Nuxt 4 完整 Web 应用架构骨架（页面 + API + SSR）。",
