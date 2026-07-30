@@ -10,6 +10,15 @@ export default defineNuxtConfig({
   // 全局样式：Design Tokens 先于基础样式加载
   css: ['~/assets/css/tokens.css', '~/assets/css/main.css'],
 
+  // 字体：禁用 Google 提供源（fonts.google.com 网络不可达，启动时反复重试拖慢冷启动）
+  // tokens.css 的字体栈均有本地回退（PingFang SC / Songti SC / system-ui 等），渲染不受影响
+  fonts: {
+    providers: {
+      google: false,
+      googleicons: false,
+    },
+  },
+
   app: {
     head: {
       htmlAttrs: { lang: 'zh-CN' },
