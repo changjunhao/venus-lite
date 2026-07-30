@@ -23,7 +23,7 @@ export default defineNuxtConfig({
     head: {
       htmlAttrs: { lang: 'zh-CN' },
       title: 'Venus Lite',
-      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+      link: [{ rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
       // 主题初始化：首绘前同步执行，仅搬运 localStorage 里的显式覆盖。
       // 置于 config 而非 composable，以覆盖 error.vue 与预渲染路径。
       script: [{ textContent: THEME_INIT_SCRIPT, tagPosition: 'head' }],
