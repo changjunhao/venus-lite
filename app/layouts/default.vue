@@ -15,11 +15,7 @@ const navVariant = computed(() => (EVALUATION_PATHS.has(route.path) ? 'evaluatio
       <slot />
     </main>
 
-    <footer class="site-footer">
-      <div class="container">
-        <p class="footer-text">{{ $t('layout.footer') }}</p>
-      </div>
-    </footer>
+    <LayoutSiteFooter />
   </div>
 </template>
 
@@ -32,16 +28,5 @@ const navVariant = computed(() => (EVALUATION_PATHS.has(route.path) ? 'evaluatio
 
 .site-main {
   flex: 1;
-}
-
-.site-footer {
-  border-top: 1px solid var(--hairline);
-  margin-top: var(--space-9);
-  padding-block: var(--space-6);
-}
-
-.footer-text {
-  color: var(--ink-muted);
-  font-size: 14px;
 }
 </style>

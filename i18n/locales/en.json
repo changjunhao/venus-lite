@@ -1,7 +1,4 @@
 {
-  "layout": {
-    "footer": "Venus Lite · Nuxt 4 architecture skeleton"
-  },
   "nav": {
     "homeAria": "Main navigation",
     "modesAria": "Evaluation mode navigation",
@@ -39,5 +36,9 @@
   "locale": {
     "switchTo": "切换到中文",
     "label": "EN"
+  },
+  "footer": {
+    "tagline": "Photography aesthetic evaluation · Digital contact sheet",
+    "brandAria": "Venus home"
   }
 }

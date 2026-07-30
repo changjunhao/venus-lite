@@ -1,7 +1,4 @@
 {
-  "layout": {
-    "footer": "Venus Lite · Nuxt 4 架构骨架"
-  },
   "nav": {
     "homeAria": "主导航",
     "modesAria": "评估模式导航",
@@ -39,5 +36,9 @@
   "locale": {
     "switchTo": "Switch to English",
     "label": "中文"
+  },
+  "footer": {
+    "tagline": "摄影美学评估系统 · 数字接触印样",
+    "brandAria": "Venus 首页"
   }
 }
