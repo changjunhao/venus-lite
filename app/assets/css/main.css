@@ -114,8 +114,8 @@ a:hover {
     color var(--motion-standard) var(--ease-standard) !important;
 }
 
-/* ── ThemeToggle 当前态选显：与 tokens.css 的三态级联同构，
- *    故不放在组件 scoped 样式内（需命中 html 祖先）。 ── */
+/* ── ThemeToggle 当前态选显：分支条件必须与 tokens.css 的三态级联逐字同步，
+ *    故有意放在全局层集中维护，而非组件 scoped 样式。 ── */
 .theme-state {
   align-items: center;
   display: inline-flex;
