@@ -1,5 +1,7 @@
 <script setup lang="ts">
 // 主题切换：图标 + 文字表达「纸面 / 暗房」，不使用品牌名称（DESIGN.md §9.4）
+// 两组文案同时渲染、由 CSS 按 html[data-theme] 三态选显（main.css），
+// 使当前态在 hydration 之前即正确；display: none 会移出无障碍树，不会读到两份。
 const { isDarkroom, toggle } = useTheme()
 </script>
 
@@ -12,8 +14,14 @@ const { isDarkroom, toggle } = useTheme()
     :title="isDarkroom ? '当前为暗房模式' : '当前为纸面模式'"
     @click="toggle"
   >
-    <span class="theme-icon" aria-hidden="true">{{ isDarkroom ? '●' : '◐' }}</span>
-    <span class="theme-label">{{ isDarkroom ? '暗房' : '纸面' }}</span>
+    <span class="theme-state theme-state-paper">
+      <span class="theme-icon" aria-hidden="true">◐</span>
+      <span class="theme-label">纸面</span>
+    </span>
+    <span class="theme-state theme-state-darkroom">
+      <span class="theme-icon" aria-hidden="true">●</span>
+      <span class="theme-label">暗房</span>
+    </span>
   </button>
 </template>
 
@@ -28,7 +36,6 @@ const { isDarkroom, toggle } = useTheme()
   display: inline-flex;
   font-family: var(--font-ui);
   font-size: 14px;
-  gap: var(--space-2);
   min-height: 44px;
   padding: 0 var(--space-3);
   transition: background-color var(--motion-fast) var(--ease-standard);

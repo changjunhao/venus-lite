@@ -113,3 +113,33 @@ a:hover {
     border-color var(--motion-standard) var(--ease-standard),
     color var(--motion-standard) var(--ease-standard) !important;
 }
+
+/* ── ThemeToggle 当前态选显：与 tokens.css 的三态级联同构，
+ *    故不放在组件 scoped 样式内（需命中 html 祖先）。 ── */
+.theme-state {
+  align-items: center;
+  display: inline-flex;
+  gap: var(--space-2);
+}
+
+.theme-state-darkroom {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme]) .theme-state-paper {
+    display: none;
+  }
+
+  html:not([data-theme]) .theme-state-darkroom {
+    display: inline-flex;
+  }
+}
+
+html[data-theme="darkroom"] .theme-state-paper {
+  display: none;
+}
+
+html[data-theme="darkroom"] .theme-state-darkroom {
+  display: inline-flex;
+}

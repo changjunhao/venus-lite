@@ -53,6 +53,8 @@
   --ease-exit: cubic-bezier(0.4, 0, 1, 1);
 }
 
+/* 用户显式选择暗房。
+ * 注意：下方 prefers-color-scheme 兜底块的 token 必须与本块逐字同步。 */
 html[data-theme="darkroom"] {
   color-scheme: dark;
 
@@ -71,6 +73,30 @@ html[data-theme="darkroom"] {
   --oxide: #e18172;
   --verdigris: #72b5a5;
   --focus: #70b7ff;
+}
+
+/* 未显式选择时跟随系统偏好——纯 CSS 生效，禁用 JS 亦正确。
+ * 注意：token 必须与上方 html[data-theme="darkroom"] 块逐字同步（值来源 DESIGN.md §16）。 */
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme]) {
+    color-scheme: dark;
+
+    --paper: #171512;
+    --paper-raised: #211e1a;
+    --paper-recessed: #100f0d;
+    --ink: #f1ede3;
+    --ink-body: #cdc6b8;
+    --ink-muted: #9e9689;
+    --hairline: #3d3832;
+    --hairline-strong: #5d564d;
+    --darkroom: #0c0b0a;
+    --darkroom-raised: #211e1a;
+    --amber: #e09a57;
+    --amber-hover: #f0b276;
+    --oxide: #e18172;
+    --verdigris: #72b5a5;
+    --focus: #70b7ff;
+  }
 }
 
 /* §12.5 Reduced motion：取消位移与缩放，时长降为 1ms */
