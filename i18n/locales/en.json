@@ -28,6 +28,26 @@
       "frameForestAlt": "Sample photograph of light and shadow in a forest",
       "frameWaterAlt": "Sample photograph of water surface texture"
     },
+    "modes": {
+      "eyebrow": "MODES",
+      "title": "Choose an evaluation mode",
+      "description": "From the close reading of a single frame to series narrative and side-by-side comparison, pick the mode that matches the question you are working on.",
+      "single": {
+        "title": "Single review",
+        "description": "Assess composition, light, subject, technical execution and visual impact of one work, with a full verdict and actionable advice.",
+        "cta": "Review one work"
+      },
+      "joint": {
+        "title": "Joint series review",
+        "description": "Treat 2–10 photos as one series and assess overall narrative, visual consistency, rhythm and completeness.",
+        "cta": "Review a series"
+      },
+      "compare": {
+        "title": "Comparative review",
+        "description": "Compare 2–10 photos under one standard to get a ranking, scores, a difference summary and the evidence behind each judgment.",
+        "cta": "Compare a set"
+      }
+    },
     "statusSection": "Service status",
     "statusLabel": "Status",
     "statusOk": "Operational",

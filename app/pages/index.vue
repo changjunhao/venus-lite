@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { HealthStatus } from '#shared/types/api'
 import type { ContactSheetFrame } from '~/components/home/HomeContactSheet.vue'
+import type { ModeCardItem } from '~/components/home/ModeCard.vue'
 
 const config = useRuntimeConfig()
 const { t, localeProperties } = useI18n()
@@ -36,6 +37,48 @@ const heroFrames = computed<ContactSheetFrame[]>(() => [
   },
 ])
 
+// venus index.html L85-110 源三卡：label 为品牌 mono 恒英文不入 i18n（先例 heroFrames.caption），
+// 编号由 ModeCardGrid 按顺序派生；visual 为装饰图（alt=""），width/height 为原始像素尺寸防 CLS
+const modes = computed<ModeCardItem[]>(() => [
+  {
+    label: 'SINGLE FRAME',
+    title: t('home.modes.single.title'),
+    description: t('home.modes.single.description'),
+    ctaLabel: t('home.modes.single.cta'),
+    to: '/single',
+    layout: 'single',
+    featured: true,
+    visuals: [
+      { src: '/assets/editorial/forest.jpg', width: 1000, height: 666 },
+    ],
+  },
+  {
+    label: 'SERIES REVIEW',
+    title: t('home.modes.joint.title'),
+    description: t('home.modes.joint.description'),
+    ctaLabel: t('home.modes.joint.cta'),
+    to: '/group-joint',
+    layout: 'series',
+    visuals: [
+      { src: '/assets/editorial/landscape.jpg', width: 1200, height: 1800 },
+      { src: '/assets/editorial/forest.jpg', width: 1000, height: 666 },
+      { src: '/assets/editorial/water.jpg', width: 1000, height: 667 },
+    ],
+  },
+  {
+    label: 'COMPARATIVE REVIEW',
+    title: t('home.modes.compare.title'),
+    description: t('home.modes.compare.description'),
+    ctaLabel: t('home.modes.compare.cta'),
+    to: '/group-compare',
+    layout: 'compare',
+    visuals: [
+      { src: '/assets/editorial/forest.jpg', width: 1000, height: 666 },
+      { src: '/assets/editorial/water.jpg', width: 1000, height: 667 },
+    ],
+  },
+])
+
 // SSR 取数示例：服务端渲染时完成请求，View Source 可见数据
 const { data: health } = await useFetch<HealthStatus>('/api/health')
 </script>
@@ -54,6 +97,14 @@ const { data: health } = await useFetch<HealthStatus>('/api/health')
       :sheet-aria-label="$t('home.hero.sheetAria')"
       :sheet-note-label="$t('home.hero.sheetNoteLabel')"
       :sheet-note-text="$t('home.hero.sheetNoteText')"
+    />
+
+    <HomeModeCardGrid
+      id="modes"
+      :eyebrow="$t('home.modes.eyebrow')"
+      :title="$t('home.modes.title')"
+      :description="$t('home.modes.description')"
+      :modes="modes"
     />
 
     <section class="status" :aria-label="$t('home.statusSection')">

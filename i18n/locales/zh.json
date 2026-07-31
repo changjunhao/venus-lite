@@ -28,6 +28,26 @@
       "frameForestAlt": "森林光影摄影示例",
       "frameWaterAlt": "水面纹理摄影示例"
     },
+    "modes": {
+      "eyebrow": "MODES",
+      "title": "选择评估方式",
+      "description": "从单张作品的细致分析，到系列叙事与横向比较，选择与你当前创作问题相符的评估方式。",
+      "single": {
+        "title": "单图评估",
+        "description": "分析一张作品的构图、光影、主体、技术完成度与视觉影响力，给出完整裁决和可执行建议。",
+        "cta": "评估一张作品"
+      },
+      "joint": {
+        "title": "组图联合评估",
+        "description": "把 2–10 张照片作为一个系列，分析整体叙事、视觉一致性、节奏和系列完成度。",
+        "cta": "评估一个系列"
+      },
+      "compare": {
+        "title": "组图对比评估",
+        "description": "在统一标准下比较 2–10 张照片，获得排序、分数、差异摘要及每个判断的依据。",
+        "cta": "比较一组照片"
+      }
+    },
     "statusSection": "服务状态",
     "statusLabel": "状态",
     "statusOk": "运行正常",
