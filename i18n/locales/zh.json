@@ -176,7 +176,10 @@
     "bandUnformed": "尚未成形",
     "bandBasic": "基础成立",
     "bandClear": "表达清晰",
-    "bandStrong": "优势明确"
+    "bandStrong": "优势明确",
+    "chapterCritique": "专业点评",
+    "chapterSuggestions": "改进建议",
+    "chapterArbitration": "裁决说明"
   },
   "error": {
     "notFound": "你要找的页面不存在，可能已被移动或删除。",
