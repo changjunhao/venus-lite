@@ -69,6 +69,17 @@
         "description": "综合双方论证，形成最终评分、排序或系列结论。"
       }
     },
+    "sample": {
+      "eyebrow": "REVIEW SAMPLE",
+      "title": "不止给出分数，也说明判断如何形成。",
+      "scoreCaption": "示例评分",
+      "scoreBand": "优势明确",
+      "lede": "光线把观看路径引向画面深处，重复的树干建立稳定节奏；但右侧高光略早终止了视线，削弱了空间延续。",
+      "imageAlt": "森林光影摄影作品评估示例",
+      "strength": { "term": "优势", "detail": "光线方向明确，层次与节奏相互支持。" },
+      "improve": { "term": "改进", "detail": "压低边缘高光，让观看路径停留得更久。" },
+      "basis": { "term": "依据", "detail": "构图、光影、主体与视觉影响力的综合判断。" }
+    },
     "statusSection": "服务状态",
     "statusLabel": "状态",
     "statusOk": "运行正常",

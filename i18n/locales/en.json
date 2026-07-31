@@ -69,6 +69,17 @@
         "description": "Weigh both arguments into a final score, ranking or series conclusion."
       }
     },
+    "sample": {
+      "eyebrow": "REVIEW SAMPLE",
+      "title": "Not just a score — how the judgment is formed.",
+      "scoreCaption": "Sample score",
+      "scoreBand": "Distinct strength",
+      "lede": "Light leads the eye deep into the frame and the repeating trunks build a steady rhythm; yet the highlight on the right ends the gaze a beat too early, weakening spatial continuation.",
+      "imageAlt": "Sample evaluation of a forest light photograph",
+      "strength": { "term": "Strength", "detail": "Clear direction of light; layers and rhythm support each other." },
+      "improve": { "term": "Improve", "detail": "Hold back the edge highlights so the viewing path lingers longer." },
+      "basis": { "term": "Basis", "detail": "An overall judgment across composition, light, subject and visual impact." }
+    },
     "statusSection": "Service status",
     "statusLabel": "Status",
     "statusOk": "Operational",

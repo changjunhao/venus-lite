@@ -3,6 +3,7 @@ import type { HealthStatus } from '#shared/types/api'
 import type { ContactSheetFrame } from '~/components/home/HomeContactSheet.vue'
 import type { ModeCardItem } from '~/components/home/ModeCard.vue'
 import type { ProcessStepItem } from '~/components/home/ProcessSection.vue'
+import type { ResultProofItem } from '~/components/home/ResultSample.vue'
 
 const config = useRuntimeConfig()
 const { t, localeProperties } = useI18n()
@@ -101,6 +102,13 @@ const processSteps = computed<ProcessStepItem[]>(() => [
   },
 ])
 
+// venus index.html L137-141 源三组依据：评分系统的输出示例
+const sampleProofs = computed<ResultProofItem[]>(() => [
+  { term: t('home.sample.strength.term'), detail: t('home.sample.strength.detail') },
+  { term: t('home.sample.improve.term'), detail: t('home.sample.improve.detail') },
+  { term: t('home.sample.basis.term'), detail: t('home.sample.basis.detail') },
+])
+
 // SSR 取数示例：服务端渲染时完成请求，View Source 可见数据
 const { data: health } = await useFetch<HealthStatus>('/api/health')
 </script>
@@ -135,6 +143,22 @@ const { data: health } = await useFetch<HealthStatus>('/api/health')
       :title="$t('home.process.title')"
       :lede="$t('home.process.lede')"
       :steps="processSteps"
+    />
+
+    <HomeResultSample
+      id="sample"
+      :eyebrow="$t('home.sample.eyebrow')"
+      :title="$t('home.sample.title')"
+      :score="8.2"
+      :score-caption="$t('home.sample.scoreCaption')"
+      :score-band="$t('home.sample.scoreBand')"
+      :lede="$t('home.sample.lede')"
+      :proofs="sampleProofs"
+      image-src="/assets/editorial/forest.jpg"
+      :image-alt="$t('home.sample.imageAlt')"
+      :image-width="1000"
+      :image-height="666"
+      frame-label="FRAME 02 / REVIEWED"
     />
 
     <section class="status" :aria-label="$t('home.statusSection')">
