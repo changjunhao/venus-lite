@@ -115,6 +115,11 @@
     "dragTitle": "松开以添加照片",
     "formatHint": "4K 以下支持 JPEG、PNG、WebP、BMP、TIFF 和 HEIC；4K–8K 仅支持 JPEG 或 PNG",
     "previewAlt": "待评估照片预览",
+    "statusEmpty": "请选择至少 2 张照片",
+    "statusOneMore": "再选择 1 张即可评估",
+    "statusReady": "已选择 {count} 张照片，可以开始评估",
+    "orderNote": "照片编号按当前顺序排列",
+    "clearAll": "清空全部",
     "exif": {
       "cameraModel": "相机",
       "lensModel": "镜头",

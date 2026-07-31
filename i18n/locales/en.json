@@ -115,6 +115,11 @@
     "dragTitle": "Release to add photos",
     "formatHint": "JPEG, PNG, WebP, BMP, TIFF and HEIC up to 4K; JPEG or PNG only for 4K–8K",
     "previewAlt": "Preview of the photo under review",
+    "statusEmpty": "Select at least 2 photos",
+    "statusOneMore": "Select 1 more photo to start",
+    "statusReady": "{count} photos selected — ready to evaluate",
+    "orderNote": "Photos are numbered in current order",
+    "clearAll": "Clear all",
     "exif": {
       "cameraModel": "Camera",
       "lensModel": "Lens",
