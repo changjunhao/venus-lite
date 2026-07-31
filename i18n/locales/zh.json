@@ -120,6 +120,12 @@
     "statusReady": "已选择 {count} 张照片，可以开始评估",
     "orderNote": "照片编号按当前顺序排列",
     "clearAll": "清空全部",
+    "photoAlt": "第 {index} 张照片：{name}",
+    "removePhoto": "移除第 {index} 张照片",
+    "moveBack": "将第 {index} 张照片前移",
+    "moveForward": "将第 {index} 张照片后移",
+    "moveBackText": "前移",
+    "moveForwardText": "后移",
     "exif": {
       "cameraModel": "相机",
       "lensModel": "镜头",

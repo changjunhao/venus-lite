@@ -120,6 +120,12 @@
     "statusReady": "{count} photos selected — ready to evaluate",
     "orderNote": "Photos are numbered in current order",
     "clearAll": "Clear all",
+    "photoAlt": "Photo {index}: {name}",
+    "removePhoto": "Remove photo {index}",
+    "moveBack": "Move photo {index} earlier",
+    "moveForward": "Move photo {index} later",
+    "moveBackText": "Earlier",
+    "moveForwardText": "Later",
     "exif": {
       "cameraModel": "Camera",
       "lensModel": "Lens",
