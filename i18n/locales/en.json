@@ -12,7 +12,7 @@
     "modeCompare": "Comparative review"
   },
   "home": {
-    "seoDescription": "Venus Lite — a complete Nuxt 4 web application skeleton (pages + API + SSR).",
+    "seoDescription": "Venus Lite — a photographic aesthetics evaluation system powered by adversarial multi-agent review, with single-frame, joint-series and comparative evaluations.",
     "hero": {
       "eyebrow": "PHOTOGRAPHIC AESTHETICS / REVIEWED WITH RIGOR",
       "title": "Venus",

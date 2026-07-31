@@ -12,7 +12,7 @@
     "modeCompare": "组图对比评估"
   },
   "home": {
-    "seoDescription": "Venus Lite — Nuxt 4 完整 Web 应用架构骨架（页面 + API + SSR）。",
+    "seoDescription": "Venus Lite — 基于多智能体对抗的摄影美学评估系统，支持单图、组图联合与组图对比评估。",
     "hero": {
       "eyebrow": "PHOTOGRAPHIC AESTHETICS / REVIEWED WITH RIGOR",
       "title": "Venus",
