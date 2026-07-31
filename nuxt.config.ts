@@ -26,7 +26,7 @@ export default defineNuxtConfig({
   app: {
     head: {
       // html lang 由 i18n 接管（app.vue 的 useLocaleHead），不在此硬编码
-      title: 'Venus Lite',
+      title: 'Venus',
       link: [{ rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
       // 主题初始化：首绘前同步执行，仅搬运 localStorage 里的显式覆盖。
       // 置于 config 而非 composable，以覆盖 error.vue 与预渲染路径。
@@ -38,6 +38,7 @@ export default defineNuxtConfig({
   i18n: {
     strategy: 'no_prefix',
     defaultLocale: 'zh',
+    baseUrl: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000',
     locales: [
       { code: 'zh', language: 'zh-CN', name: '中文', file: 'zh.json' },
       { code: 'en', language: 'en-US', name: 'English', file: 'en.json' },
@@ -62,7 +63,7 @@ export default defineNuxtConfig({
     appVersion: '',
     // 客户端可见（NUXT_PUBLIC_SITE_NAME）
     public: {
-      siteName: 'Venus Lite',
+      siteName: 'Venus',
     },
   },
 })

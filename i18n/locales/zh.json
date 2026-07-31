@@ -12,7 +12,8 @@
     "modeCompare": "组图对比评估"
   },
   "home": {
-    "seoDescription": "Venus Lite — 基于多智能体对抗的摄影美学评估系统，支持单图、组图联合与组图对比评估。",
+    "seoTitle": "Venus — 摄影美学评估",
+    "seoDescription": "Venus — 基于多智能体对抗的摄影美学评估系统，支持单图、组图联合与组图对比评估。",
     "hero": {
       "eyebrow": "PHOTOGRAPHIC AESTHETICS / REVIEWED WITH RIGOR",
       "title": "Venus",

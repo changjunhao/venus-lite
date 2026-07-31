@@ -4,11 +4,12 @@ import type { ModeCardItem } from '~/components/home/ModeCard.vue'
 import type { ProcessStepItem } from '~/components/home/ProcessSection.vue'
 import type { ResultProofItem } from '~/components/home/ResultSample.vue'
 
-const config = useRuntimeConfig()
 const { t } = useI18n()
 
+// 首页标题走 i18n（品牌 + 定位，对齐 venus index.html L9 标题格式），
+// siteName 仅作全局 fallback 与 og:site_name
 useSeoMeta({
-  title: config.public.siteName,
+  title: () => t('home.seoTitle'),
   description: () => t('home.seoDescription'),
 })
 

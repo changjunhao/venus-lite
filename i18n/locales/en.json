@@ -12,7 +12,8 @@
     "modeCompare": "Comparative review"
   },
   "home": {
-    "seoDescription": "Venus Lite — a photographic aesthetics evaluation system powered by adversarial multi-agent review, with single-frame, joint-series and comparative evaluations.",
+    "seoTitle": "Venus — Photographic Aesthetics Evaluation",
+    "seoDescription": "Venus — a photographic aesthetics evaluation system powered by adversarial multi-agent review, with single-frame, joint-series and comparative evaluations.",
     "hero": {
       "eyebrow": "PHOTOGRAPHIC AESTHETICS / REVIEWED WITH RIGOR",
       "title": "Venus",
