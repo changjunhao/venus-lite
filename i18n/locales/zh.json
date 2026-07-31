@@ -170,6 +170,22 @@
     "failed": "评估未能完成，请重试",
     "failedHint": "请稍后重试；若问题持续，请重新选择照片"
   },
+  "process": {
+    "title": "查看评估过程",
+    "scoreBadge": "评分：{score}",
+    "sceneBadge": "场景：{scene}",
+    "severityBadge": "质疑程度：{level}",
+    "severityLow": "低",
+    "severityMedium": "中",
+    "severityHigh": "高",
+    "suggestedBadge": "建议：{score}",
+    "revisedBadge": "修正后：{score}",
+    "finalBadge": "最终：{score}",
+    "reasoningToggle": "{agent}分析过程",
+    "sortedBadge": "已排序 {count} 张照片",
+    "resortedBadge": "已重新排序 {count} 张照片",
+    "finalRankBadge": "最终排序 {count} 张照片"
+  },
   "result": {
     "scoreCaption": "综合评分",
     "scoreCaptionJoint": "系列综合评分",

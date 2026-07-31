@@ -99,3 +99,60 @@ export interface GenreMetadata {
   /** 维度定义（key → 中文标签），resolveDimensionName 的查找源 */
   dimensions: Array<{ key: string; label: string }>
 }
+
+// ── 评估过程披露域（ProcessTimeline / ProcessStep / ChallengeList / ReasoningBlock）──
+
+/** 过程步骤类别（对齐 app.js L680/699/726/745 step-{kind}） */
+export type ProcessStepKind = 'proposal' | 'critique' | 'revision' | 'arbitration'
+
+/** 批判严重程度（对齐 venus-core CritiqueSchema.severity，供 Flow 映射 badge variant） */
+export type CritiqueSeverity = 'LOW' | 'MEDIUM' | 'HIGH'
+
+/** 徽章变体（镜像 BaseBadge.vue variant 联合，类型层单一来源） */
+export type ProcessBadgeVariant =
+  | 'step-score'
+  | 'step-tag'
+  | 'severity-low'
+  | 'severity-medium'
+  | 'severity-high'
+
+/** 步骤徽章（text 由调用方解析 i18n 后传入，如「评分：8.5」「质疑程度：高」） */
+export interface ProcessStepBadge {
+  variant: ProcessBadgeVariant
+  text: string
+}
+
+/**
+ * 质疑项（对齐 venus-core CritiqueChallenge，camelCase 归一后形状）。
+ *
+ * 消费方：Flow 映射层（归一 + i18n）→ ChallengeList（渲染）。
+ */
+export interface ChallengeItem {
+  /** 维度原始 key（ChallengeList 内经 resolveDimensionName 解析，DimensionList 先例） */
+  dimension: string
+  issue: string
+  evidence: string
+  /** 建议分；null/非有限值时不渲染箭头尾缀（group.js L952-954 健壮版） */
+  suggestedScore: number | null
+}
+
+/**
+ * 过程步骤渲染数据（app.js renderProcess / group.js createProcessStep 的归一化输出）。
+ *
+ * 消费方：Flow 映射层（unwrap AgentCallResult + i18n 解析 + severity→variant 转换）
+ * → ProcessTimeline / ProcessStep（纯渲染，组件零业务）。
+ */
+export interface ProcessStepItem {
+  kind: ProcessStepKind
+  /** 步骤标题（调用方复用 review.step* 键解析） */
+  title: string
+  badges: ProcessStepBadge[]
+  /** 步骤内容 Markdown（空串时不渲染，对齐 group.js L937） */
+  content: string
+  /** 质疑项（仅 critique 步骤；空/缺省时不渲染 ChallengeList，对齐 group.js L944） */
+  challenges?: ChallengeItem[]
+  /** 推理文本（null/空/空白时不渲染 ReasoningBlock，对齐 app.js L770） */
+  reasoning?: string | null
+  /** 推理折叠按钮完整文案（调用方组合 process.reasoningToggle 键；缺省时即使 reasoning 非空也不渲染） */
+  reasoningToggle?: string
+}

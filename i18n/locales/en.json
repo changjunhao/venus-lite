@@ -170,6 +170,22 @@
     "failed": "The evaluation could not be completed. Please try again",
     "failedHint": "Try again later; if the problem persists, re-select your photos"
   },
+  "process": {
+    "title": "View evaluation process",
+    "scoreBadge": "Score: {score}",
+    "sceneBadge": "Scene: {scene}",
+    "severityBadge": "Challenge level: {level}",
+    "severityLow": "Low",
+    "severityMedium": "Medium",
+    "severityHigh": "High",
+    "suggestedBadge": "Suggested: {score}",
+    "revisedBadge": "Revised: {score}",
+    "finalBadge": "Final: {score}",
+    "reasoningToggle": "{agent} reasoning",
+    "sortedBadge": "Sorted {count} photos",
+    "resortedBadge": "Re-sorted {count} photos",
+    "finalRankBadge": "Final ranking: {count} photos"
+  },
   "result": {
     "scoreCaption": "Overall score",
     "scoreCaptionJoint": "Series overall score",
