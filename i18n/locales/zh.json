@@ -149,6 +149,27 @@
     "perImageTitle": "包含逐图明细",
     "perImageDescription": "开启后，将为每张照片补充评分和点评，评估时间会相应增加"
   },
+  "review": {
+    "index": "REVIEW IN PROGRESS",
+    "preparing": "准备中...",
+    "preparingSub": "正在准备评估，请稍候",
+    "evaluating": "评估中",
+    "evaluatingSub": "评估进行中，请保持页面打开",
+    "stepGenreDetector": "门类识别",
+    "stepProposer": "提案者初评",
+    "stepCritic": "批判者质疑",
+    "stepProposerRevision": "提案者修正",
+    "stepArbiter": "仲裁者裁决",
+    "hintGenreDetector": "识别结果将决定后续使用的评估维度",
+    "hintProposer": "逐项评估构图、光影、主体与技术完成度",
+    "hintCritic": "检查初评的评分依据、偏差与一致性",
+    "hintProposerRevision": "根据质疑重新核对各维度评分",
+    "hintArbiter": "综合双方论证，形成最终评分与结论",
+    "reasoningSuffix": "过程",
+    "complete": "评估完成 · 综合评分 {score}",
+    "failed": "评估未能完成，请重试",
+    "failedHint": "请稍后重试；若问题持续，请重新选择照片"
+  },
   "error": {
     "notFound": "你要找的页面不存在，可能已被移动或删除。",
     "generic": "页面暂时无法显示，请稍后重试。",

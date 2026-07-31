@@ -149,6 +149,27 @@
     "perImageTitle": "Include per-image details",
     "perImageDescription": "When enabled, each photo gets its own score and critique; evaluation time increases accordingly"
   },
+  "review": {
+    "index": "REVIEW IN PROGRESS",
+    "preparing": "Preparing…",
+    "preparingSub": "Setting up the evaluation, please wait",
+    "evaluating": "Evaluating",
+    "evaluatingSub": "Evaluation in progress — please keep this page open",
+    "stepGenreDetector": "Genre identification",
+    "stepProposer": "Proposer's initial review",
+    "stepCritic": "Critic's challenge",
+    "stepProposerRevision": "Proposer's revision",
+    "stepArbiter": "Arbitrator's verdict",
+    "hintGenreDetector": "The result selects the assessment dimensions used downstream",
+    "hintProposer": "Assessing composition, light, subject and technical execution item by item",
+    "hintCritic": "Checking the initial review for evidence, bias and consistency",
+    "hintProposerRevision": "Re-examining dimension scores in light of the challenges",
+    "hintArbiter": "Weighing both arguments into a final score and conclusion",
+    "reasoningSuffix": "process",
+    "complete": "Evaluation complete · Overall score {score}",
+    "failed": "The evaluation could not be completed. Please try again",
+    "failedHint": "Try again later; if the problem persists, re-select your photos"
+  },
   "error": {
     "notFound": "The page you are looking for does not exist. It may have been moved or deleted.",
     "generic": "This page cannot be displayed right now. Please try again later.",
