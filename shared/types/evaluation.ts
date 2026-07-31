@@ -63,3 +63,22 @@ export interface ReasoningBlock {
   /** agent_complete 后置 true → markstream-vue 收敛未闭合结构 */
   final: boolean
 }
+
+/** §5.4 分数带标识（DESIGN.md L231-236 四区间） */
+export type ScoreBandKey = 'unformed' | 'basic' | 'clear' | 'strong'
+
+/**
+ * 分数带定义项（DESIGN.md §5.4 评分颜色）。
+ *
+ * 消费方：getScoreBand（shared/utils/format.ts）→ ScorePanel（CSS class）/
+ * useShareImage（Canvas 色值按 key 映射）（component-plan §4.3 单一来源）。
+ */
+export interface ScoreBand {
+  key: ScoreBandKey
+  /** 区间上界（不含）；仅 strong 为 Infinity */
+  ceiling: number
+  /** 中文默认标签（i18n 场景由调用方按 key 解析本地化文案；Canvas 场景直接消费） */
+  label: string
+  /** 对应 CSS class 名（venus utils.js L47-50 原样保留——跨项目设计语言锚点） */
+  colorClass: string
+}

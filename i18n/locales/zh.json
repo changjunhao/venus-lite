@@ -170,6 +170,14 @@
     "failed": "评估未能完成，请重试",
     "failedHint": "请稍后重试；若问题持续，请重新选择照片"
   },
+  "result": {
+    "scoreCaption": "综合评分",
+    "scoreCaptionJoint": "系列综合评分",
+    "bandUnformed": "尚未成形",
+    "bandBasic": "基础成立",
+    "bandClear": "表达清晰",
+    "bandStrong": "优势明确"
+  },
   "error": {
     "notFound": "你要找的页面不存在，可能已被移动或删除。",
     "generic": "页面暂时无法显示，请稍后重试。",

@@ -170,6 +170,14 @@
     "failed": "The evaluation could not be completed. Please try again",
     "failedHint": "Try again later; if the problem persists, re-select your photos"
   },
+  "result": {
+    "scoreCaption": "Overall score",
+    "scoreCaptionJoint": "Series overall score",
+    "bandUnformed": "Not yet formed",
+    "bandBasic": "Foundation established",
+    "bandClear": "Clear expression",
+    "bandStrong": "Distinct strength"
+  },
   "error": {
     "notFound": "The page you are looking for does not exist. It may have been moved or deleted.",
     "generic": "This page cannot be displayed right now. Please try again later.",
