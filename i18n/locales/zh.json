@@ -113,7 +113,18 @@
     "titleSingle": "拖入一张照片，或点击选择",
     "titleMulti": "拖入 2–10 张照片，或点击批量选择",
     "dragTitle": "松开以添加照片",
-    "formatHint": "4K 以下支持 JPEG、PNG、WebP、BMP、TIFF 和 HEIC；4K–8K 仅支持 JPEG 或 PNG"
+    "formatHint": "4K 以下支持 JPEG、PNG、WebP、BMP、TIFF 和 HEIC；4K–8K 仅支持 JPEG 或 PNG",
+    "previewAlt": "待评估照片预览",
+    "exif": {
+      "cameraModel": "相机",
+      "lensModel": "镜头",
+      "fNumber": "光圈",
+      "shutterSpeed": "快门",
+      "iso": "ISO",
+      "focalLength": "焦距",
+      "dateTimeOriginal": "拍摄",
+      "flash": "闪光灯"
+    }
   },
   "error": {
     "notFound": "你要找的页面不存在，可能已被移动或删除。",

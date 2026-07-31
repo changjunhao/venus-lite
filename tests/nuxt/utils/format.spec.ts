@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { splitFileName } from '#shared/utils/format'
+import { formatFileSize, splitFileName } from '#shared/utils/format'
 
 describe('splitFileName', () => {
   it('常规文件名拆分为主体与含点扩展名', () => {
@@ -31,5 +31,22 @@ describe('splitFileName', () => {
 
   it('空字符串返回空主体与空扩展名', () => {
     expect(splitFileName('')).toEqual({ stem: '', ext: '' })
+  })
+})
+
+describe('formatFileSize', () => {
+  it('小于 1024 字节显示为 B', () => {
+    expect(formatFileSize(0)).toBe('0 B')
+    expect(formatFileSize(1023)).toBe('1023 B')
+  })
+
+  it('KB 范围保留一位小数', () => {
+    expect(formatFileSize(1024)).toBe('1.0 KB')
+    expect(formatFileSize(1536)).toBe('1.5 KB')
+  })
+
+  it('MB 范围保留一位小数', () => {
+    expect(formatFileSize(1024 * 1024)).toBe('1.0 MB')
+    expect(formatFileSize(5.5 * 1024 * 1024)).toBe('5.5 MB')
   })
 })

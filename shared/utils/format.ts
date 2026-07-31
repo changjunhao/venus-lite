@@ -23,3 +23,10 @@ export function formatDateTime(isoString: string, locale = 'zh-CN'): string {
     minute: '2-digit',
   })
 }
+
+/** 文件体积格式化（逐行移植 venus utils.js L24-28）：B / KB / MB 三档，KB 与 MB 保留一位小数 */
+export function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
