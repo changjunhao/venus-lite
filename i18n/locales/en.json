@@ -135,7 +135,19 @@
       "focalLength": "Focal length",
       "dateTimeOriginal": "Taken",
       "flash": "Flash"
-    }
+    },
+    "genreLabel": "Photography genre",
+    "genreAuto": "Auto-detect",
+    "genrePortrait": "Portrait",
+    "genreLandscape": "Landscape",
+    "genreDocumentary": "Documentary",
+    "genreFineArt": "Fine art",
+    "genreCommercial": "Commercial",
+    "genreArchitecture": "Architecture",
+    "genreNature": "Nature",
+    "genreSports": "Sports",
+    "perImageTitle": "Include per-image details",
+    "perImageDescription": "When enabled, each photo gets its own score and critique; evaluation time increases accordingly"
   },
   "error": {
     "notFound": "The page you are looking for does not exist. It may have been moved or deleted.",

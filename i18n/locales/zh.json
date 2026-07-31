@@ -135,7 +135,19 @@
       "focalLength": "焦距",
       "dateTimeOriginal": "拍摄",
       "flash": "闪光灯"
-    }
+    },
+    "genreLabel": "摄影门类",
+    "genreAuto": "自动识别",
+    "genrePortrait": "人像",
+    "genreLandscape": "风光",
+    "genreDocumentary": "纪实",
+    "genreFineArt": "艺术",
+    "genreCommercial": "商业",
+    "genreArchitecture": "建筑",
+    "genreNature": "自然",
+    "genreSports": "运动",
+    "perImageTitle": "包含逐图明细",
+    "perImageDescription": "开启后，将为每张照片补充评分和点评，评估时间会相应增加"
   },
   "error": {
     "notFound": "你要找的页面不存在，可能已被移动或删除。",
