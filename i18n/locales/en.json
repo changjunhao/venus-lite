@@ -88,6 +88,27 @@
       "cta": "Start a single review"
     }
   },
+  "single": {
+    "seoTitle": "Venus — Single Frame Review",
+    "seoDescription": "Use the Venus multi-agent system to assess composition, light, technique and visual impact of a single photograph.",
+    "heroEyebrow": "SINGLE REVIEW",
+    "heroTitle": "Single Frame Review",
+    "heroLede": "Put the work back at the centre of viewing — from initial review and challenge to verdict, get scores, evidence and directions to improve."
+  },
+  "groupJoint": {
+    "seoTitle": "Venus — Joint Series Review",
+    "seoDescription": "Use Venus to run a joint series review of 2–10 photographs, with scores, analysis and verifiable evidence.",
+    "heroEyebrow": "JOINT SERIES REVIEW",
+    "heroTitle": "Joint Series Review",
+    "heroLede": "Treat your photos as one series and analyse overall narrative, visual consistency, rhythm and completeness."
+  },
+  "groupCompare": {
+    "seoTitle": "Venus — Comparative Review",
+    "seoDescription": "Use Venus to compare 2–10 photographs side by side, with scores, analysis and verifiable evidence.",
+    "heroEyebrow": "COMPARATIVE REVIEW",
+    "heroTitle": "Comparative Review",
+    "heroLede": "Let every photo be seen under the same frame and the same standard — get a ranking, scores and the evidence behind each difference."
+  },
   "error": {
     "notFound": "The page you are looking for does not exist. It may have been moved or deleted.",
     "generic": "This page cannot be displayed right now. Please try again later.",

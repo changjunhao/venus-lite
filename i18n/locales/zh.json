@@ -88,6 +88,27 @@
       "cta": "开始单图评估"
     }
   },
+  "single": {
+    "seoTitle": "Venus 单图摄影美学评估",
+    "seoDescription": "使用 Venus 多智能体系统评估单张摄影作品的构图、光影、技术与视觉影响力。",
+    "heroEyebrow": "SINGLE REVIEW",
+    "heroTitle": "单图美学评估",
+    "heroLede": "把作品放回观看的中心，从初评、质疑到仲裁，获得评分、判断依据与改进方向。"
+  },
+  "groupJoint": {
+    "seoTitle": "Venus 组图联合评估",
+    "seoDescription": "使用 Venus 对 2–10 张照片进行组图联合评估，获得评分、分析与判断依据。",
+    "heroEyebrow": "JOINT SERIES REVIEW",
+    "heroTitle": "组图联合评估",
+    "heroLede": "把照片作为一个系列，分析整体叙事、视觉一致性、节奏与系列完成度。"
+  },
+  "groupCompare": {
+    "seoTitle": "Venus 组图对比评估",
+    "seoDescription": "使用 Venus 对 2–10 张照片进行组图对比评估，获得评分、分析与判断依据。",
+    "heroEyebrow": "COMPARATIVE REVIEW",
+    "heroTitle": "组图对比评估",
+    "heroLede": "让每张照片在同一视框与评估标准下被观看，获得排序、分数和差异依据。"
+  },
   "error": {
     "notFound": "你要找的页面不存在，可能已被移动或删除。",
     "generic": "页面暂时无法显示，请稍后重试。",
