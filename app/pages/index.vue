@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import type { HealthStatus } from '#shared/types/api'
 import type { ContactSheetFrame } from '~/components/home/HomeContactSheet.vue'
 import type { ModeCardItem } from '~/components/home/ModeCard.vue'
 import type { ProcessStepItem } from '~/components/home/ProcessSection.vue'
 import type { ResultProofItem } from '~/components/home/ResultSample.vue'
 
 const config = useRuntimeConfig()
-const { t, localeProperties } = useI18n()
+const { t } = useI18n()
 
 useSeoMeta({
   title: config.public.siteName,
@@ -108,9 +107,6 @@ const sampleProofs = computed<ResultProofItem[]>(() => [
   { term: t('home.sample.improve.term'), detail: t('home.sample.improve.detail') },
   { term: t('home.sample.basis.term'), detail: t('home.sample.basis.detail') },
 ])
-
-// SSR 取数示例：服务端渲染时完成请求，View Source 可见数据
-const { data: health } = await useFetch<HealthStatus>('/api/health')
 </script>
 
 <template>
@@ -167,65 +163,5 @@ const { data: health } = await useFetch<HealthStatus>('/api/health')
       :lede="$t('home.cta.lede')"
       :cta-label="$t('home.cta.cta')"
     />
-
-    <section class="status" :aria-label="$t('home.statusSection')">
-      <h2 class="status-title">{{ $t('home.statusSection') }}</h2>
-      <dl v-if="health" class="status-grid">
-        <div class="status-item">
-          <dt>{{ $t('home.statusLabel') }}</dt>
-          <dd class="status-ok">{{ health.status === 'ok' ? $t('home.statusOk') : health.status }}</dd>
-        </div>
-        <div class="status-item">
-          <dt>{{ $t('home.version') }}</dt>
-          <dd>{{ health.version }}</dd>
-        </div>
-        <div class="status-item">
-          <dt>{{ $t('home.serverTime') }}</dt>
-          <dd>{{ formatDateTime(health.time, localeProperties.language) }}</dd>
-        </div>
-      </dl>
-      <p v-else class="status-empty">{{ $t('home.statusEmpty') }}</p>
-    </section>
   </div>
 </template>
-
-<style scoped>
-.status {
-  border-top: 1px solid var(--hairline);
-  padding-block: var(--space-6);
-}
-
-.status-title {
-  font-size: 24px;
-  margin-bottom: var(--space-5);
-}
-
-.status-grid {
-  display: grid;
-  gap: var(--space-4);
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  max-width: 640px;
-}
-
-.status-item dt {
-  color: var(--ink-muted);
-  font-size: 12px;
-  font-family: var(--font-data);
-  letter-spacing: 0.08em;
-  margin-bottom: var(--space-1);
-}
-
-.status-item dd {
-  color: var(--ink);
-  font-family: var(--font-data);
-  font-size: 16px;
-}
-
-.status-ok {
-  color: var(--verdigris);
-}
-
-.status-empty {
-  color: var(--ink-muted);
-}
-</style>

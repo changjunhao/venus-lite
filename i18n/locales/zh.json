@@ -85,13 +85,7 @@
       "title": "从一张照片开始。",
       "lede": "上传作品，查看从初评、质疑到仲裁的完整评估结果。",
       "cta": "开始单图评估"
-    },
-    "statusSection": "服务状态",
-    "statusLabel": "状态",
-    "statusOk": "运行正常",
-    "version": "版本",
-    "serverTime": "服务器时间",
-    "statusEmpty": "暂时无法获取服务状态，请稍后刷新。"
+    }
   },
   "error": {
     "notFound": "你要找的页面不存在，可能已被移动或删除。",

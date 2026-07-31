@@ -85,13 +85,7 @@
       "title": "Start with one photograph.",
       "lede": "Upload your work and see the full evaluation — from initial review and challenge to final verdict.",
       "cta": "Start a single review"
-    },
-    "statusSection": "Service status",
-    "statusLabel": "Status",
-    "statusOk": "Operational",
-    "version": "Version",
-    "serverTime": "Server time",
-    "statusEmpty": "Service status is unavailable right now. Please refresh later."
+    }
   },
   "error": {
     "notFound": "The page you are looking for does not exist. It may have been moved or deleted.",
