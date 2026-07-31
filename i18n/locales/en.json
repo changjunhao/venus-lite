@@ -80,6 +80,12 @@
       "improve": { "term": "Improve", "detail": "Hold back the edge highlights so the viewing path lingers longer." },
       "basis": { "term": "Basis", "detail": "An overall judgment across composition, light, subject and visual impact." }
     },
+    "cta": {
+      "eyebrow": "READY",
+      "title": "Start with one photograph.",
+      "lede": "Upload your work and see the full evaluation — from initial review and challenge to final verdict.",
+      "cta": "Start a single review"
+    },
     "statusSection": "Service status",
     "statusLabel": "Status",
     "statusOk": "Operational",

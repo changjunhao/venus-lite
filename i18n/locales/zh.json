@@ -80,6 +80,12 @@
       "improve": { "term": "改进", "detail": "压低边缘高光，让观看路径停留得更久。" },
       "basis": { "term": "依据", "detail": "构图、光影、主体与视觉影响力的综合判断。" }
     },
+    "cta": {
+      "eyebrow": "READY",
+      "title": "从一张照片开始。",
+      "lede": "上传作品，查看从初评、质疑到仲裁的完整评估结果。",
+      "cta": "开始单图评估"
+    },
     "statusSection": "服务状态",
     "statusLabel": "状态",
     "statusOk": "运行正常",

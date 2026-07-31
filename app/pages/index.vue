@@ -161,6 +161,13 @@ const { data: health } = await useFetch<HealthStatus>('/api/health')
       frame-label="FRAME 02 / REVIEWED"
     />
 
+    <HomeCta
+      :eyebrow="$t('home.cta.eyebrow')"
+      :title="$t('home.cta.title')"
+      :lede="$t('home.cta.lede')"
+      :cta-label="$t('home.cta.cta')"
+    />
+
     <section class="status" :aria-label="$t('home.statusSection')">
       <h2 class="status-title">{{ $t('home.statusSection') }}</h2>
       <dl v-if="health" class="status-grid">
