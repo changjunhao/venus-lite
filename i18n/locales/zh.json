@@ -48,6 +48,27 @@
         "cta": "比较一组照片"
       }
     },
+    "process": {
+      "eyebrow": "METHOD",
+      "title": "不是一次回答，而是一场有依据的审美辩论。",
+      "lede": "三个评审角色从不同立场审视作品，让分数经得起质疑，也让建议能够回到下一次拍摄与编辑。",
+      "genre": {
+        "title": "门类识别",
+        "description": "识别摄影门类，为作品选择适合的评估维度和语境。"
+      },
+      "proposal": {
+        "title": "提案者初评",
+        "description": "观察照片，形成维度评分、作品点评与初步建议。"
+      },
+      "challenge": {
+        "title": "批判者质疑",
+        "description": "检查初评中的偏差、证据不足和评分不一致。"
+      },
+      "verdict": {
+        "title": "仲裁者裁决",
+        "description": "综合双方论证，形成最终评分、排序或系列结论。"
+      }
+    },
     "statusSection": "服务状态",
     "statusLabel": "状态",
     "statusOk": "运行正常",

@@ -48,6 +48,27 @@
         "cta": "Compare a set"
       }
     },
+    "process": {
+      "eyebrow": "METHOD",
+      "title": "Not a one-off answer, but an evidence-based aesthetic debate.",
+      "lede": "Three reviewing roles examine each work from different positions, so scores withstand challenge and advice carries back into the next shoot and edit.",
+      "genre": {
+        "title": "Genre identification",
+        "description": "Identify the photographic genre to select the assessment dimensions and context that fit the work."
+      },
+      "proposal": {
+        "title": "Proposer's initial review",
+        "description": "Read the photo and form dimension scores, critique and preliminary advice."
+      },
+      "challenge": {
+        "title": "Critic's challenge",
+        "description": "Check the initial review for bias, thin evidence and inconsistent scoring."
+      },
+      "verdict": {
+        "title": "Arbitrator's verdict",
+        "description": "Weigh both arguments into a final score, ranking or series conclusion."
+      }
+    },
     "statusSection": "Service status",
     "statusLabel": "Status",
     "statusOk": "Operational",

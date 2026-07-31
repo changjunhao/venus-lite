@@ -2,6 +2,7 @@
 import type { HealthStatus } from '#shared/types/api'
 import type { ContactSheetFrame } from '~/components/home/HomeContactSheet.vue'
 import type { ModeCardItem } from '~/components/home/ModeCard.vue'
+import type { ProcessStepItem } from '~/components/home/ProcessSection.vue'
 
 const config = useRuntimeConfig()
 const { t, localeProperties } = useI18n()
@@ -79,6 +80,27 @@ const modes = computed<ModeCardItem[]>(() => [
   },
 ])
 
+// venus index.html L119-124 源四步：方法论步骤为真实评审环节（§4.2），
+// 编号由 ProcessSection 按顺序派生
+const processSteps = computed<ProcessStepItem[]>(() => [
+  {
+    title: t('home.process.genre.title'),
+    description: t('home.process.genre.description'),
+  },
+  {
+    title: t('home.process.proposal.title'),
+    description: t('home.process.proposal.description'),
+  },
+  {
+    title: t('home.process.challenge.title'),
+    description: t('home.process.challenge.description'),
+  },
+  {
+    title: t('home.process.verdict.title'),
+    description: t('home.process.verdict.description'),
+  },
+])
+
 // SSR 取数示例：服务端渲染时完成请求，View Source 可见数据
 const { data: health } = await useFetch<HealthStatus>('/api/health')
 </script>
@@ -105,6 +127,14 @@ const { data: health } = await useFetch<HealthStatus>('/api/health')
       :title="$t('home.modes.title')"
       :description="$t('home.modes.description')"
       :modes="modes"
+    />
+
+    <HomeProcessSection
+      id="process"
+      :eyebrow="$t('home.process.eyebrow')"
+      :title="$t('home.process.title')"
+      :lede="$t('home.process.lede')"
+      :steps="processSteps"
     />
 
     <section class="status" :aria-label="$t('home.statusSection')">
