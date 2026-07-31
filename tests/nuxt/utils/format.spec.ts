@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { SCORE_BANDS, formatFileSize, getScoreBand, splitFileName } from '#shared/utils/format'
+import { SCORE_BANDS, formatFileSize, getScoreBand, resolveDimensionName, splitFileName } from '#shared/utils/format'
+import type { GenreMetadata } from '#shared/types/evaluation'
 
 describe('splitFileName', () => {
   it('常规文件名拆分为主体与含点扩展名', () => {
@@ -96,5 +97,48 @@ describe('getScoreBand', () => {
     expect(SCORE_BANDS).toHaveLength(4)
     expect(SCORE_BANDS.map(b => b.key)).toEqual(['unformed', 'basic', 'clear', 'strong'])
     expect(SCORE_BANDS[3]!.ceiling).toBe(Infinity)
+  })
+})
+
+// 回归锚点：venus utils.js L79-95 getDimensionName
+describe('resolveDimensionName', () => {
+  const metadata: Record<string, GenreMetadata> = {
+    portrait: {
+      label: '人像',
+      dimensionLabels: ['光影质量', '构图与视觉引导'],
+      subtypes: [{ value: 'studio', label: '棚拍' }],
+      dimensions: [
+        { key: 'lighting_quality', label: '光影质量' },
+        { key: 'composition_depth', label: '构图与视觉引导' },
+      ],
+    },
+    landscape: {
+      label: '风光',
+      dimensionLabels: ['空间层次'],
+      subtypes: [],
+      dimensions: [{ key: 'spatial_layers', label: '空间层次' }],
+    },
+  }
+
+  it('当前门类 dimensions 命中返回 label', () => {
+    expect(resolveDimensionName('lighting_quality', 'portrait', metadata)).toBe('光影质量')
+  })
+
+  it('genre 未命中但其他门类有时回退查找', () => {
+    expect(resolveDimensionName('spatial_layers', 'portrait', metadata)).toBe('空间层次')
+  })
+
+  it('metadata 为 null 时返回原始 key', () => {
+    expect(resolveDimensionName('lighting_quality', 'portrait', null)).toBe('lighting_quality')
+    expect(resolveDimensionName('lighting_quality')).toBe('lighting_quality')
+  })
+
+  it('genre 为空字符串时跳过首选路径直接全门类回退', () => {
+    expect(resolveDimensionName('composition_depth', '', metadata)).toBe('构图与视觉引导')
+  })
+
+  it('门类无 dimensions 字段时安全回退 key', () => {
+    const broken = { portrait: { label: '人像', dimensionLabels: [], subtypes: [] } } as unknown as Record<string, GenreMetadata>
+    expect(resolveDimensionName('lighting_quality', 'portrait', broken)).toBe('lighting_quality')
   })
 })

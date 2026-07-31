@@ -3,7 +3,7 @@
  *
  * 位于 shared/utils/ 下，Nuxt 4 会同时向 app 与 server 自动导入。
  */
-import type { ScoreBand } from '#shared/types/evaluation'
+import type { GenreMetadata, ScoreBand } from '#shared/types/evaluation'
 
 /** 拆分文件名主体与扩展名，截断展示时保留扩展名（DESIGN.md §13.2）；点开头/点结尾/含点扩展名超 8 字符视为无扩展名 */
 export function splitFileName(name: string): { stem: string; ext: string } {
@@ -48,4 +48,31 @@ export const SCORE_BANDS: ScoreBand[] = [
 export function getScoreBand(score: number): ScoreBand {
   const s = Number.isFinite(score) ? score : 0
   return SCORE_BANDS.find(band => s < band.ceiling) ?? SCORE_BANDS[SCORE_BANDS.length - 1]!
+}
+
+/**
+ * 维度名称解析（逐行移植 venus utils.js L79-95 getDimensionName）。
+ * 当前门类优先 → 全门类回退 → 原始 key 兜底。
+ * 消费方：DimensionList（渲染）/ 未来 useShareImage（Canvas）。
+ */
+export function resolveDimensionName(
+  key: string,
+  genre?: string,
+  metadata?: Record<string, GenreMetadata> | null,
+): string {
+  if (metadata) {
+    // 当前门类的维度列表（venus-core 格式：dimensions 是 [{key, label}] 数组）
+    if (genre && metadata[genre]?.dimensions) {
+      const found = metadata[genre].dimensions.find(d => d.key === key)
+      if (found) return found.label
+    }
+    // 回退：遍历所有门类查找
+    for (const g of Object.values(metadata)) {
+      if (g.dimensions) {
+        const found = g.dimensions.find(d => d.key === key)
+        if (found) return found.label
+      }
+    }
+  }
+  return key
 }

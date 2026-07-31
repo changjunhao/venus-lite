@@ -82,3 +82,20 @@ export interface ScoreBand {
   /** 对应 CSS class 名（venus utils.js L47-50 原样保留——跨项目设计语言锚点） */
   colorClass: string
 }
+
+/**
+ * 门类元数据（形状对齐 venus-core src/schema/index.ts GenreMetadata）。
+ *
+ * 消费方：useEvalMetadata（/api/metadata 拉取与缓存）→ DimensionList（维度名解析）
+ * / GenreControls（门类选项与场景标签）。
+ */
+export interface GenreMetadata {
+  /** 门类中文标签 */
+  label: string
+  /** 维度中文标签列表（历史兼容字段） */
+  dimensionLabels: string[]
+  /** 场景子类型选项 */
+  subtypes: Array<{ value: string; label: string }>
+  /** 维度定义（key → 中文标签），resolveDimensionName 的查找源 */
+  dimensions: Array<{ key: string; label: string }>
+}
