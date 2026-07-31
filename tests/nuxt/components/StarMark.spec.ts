@@ -2,16 +2,16 @@ import { describe, expect, it } from 'vitest'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import StarMark from '~/components/ui/StarMark.vue'
 
-// venus 源标记（四页导航/页脚逐字一致），作为图形保真的回归锚点
-const SOURCE_PATH_D = 'M16 0L18.5 13.5L32 16L18.5 18.5L16 32L13.5 18.5L0 16L13.5 13.5L16 0Z'
+// 品牌星芒 path（与 public/assets/logo-mark.svg 逐字一致），作为图形保真的回归锚点
+const SOURCE_PATH_D = 'M16 2L19 13L30 16L19 19L16 30L13 19L2 16L13 13L16 2Z'
 
 describe('StarMark', () => {
-  it('默认渲染为 22px 的 svg，viewBox 固定 32 网格', async () => {
+  it('默认渲染为 24px 的 svg，viewBox 固定 32 网格', async () => {
     const wrapper = await mountSuspended(StarMark)
     const svg = wrapper.find('svg')
     expect(svg.exists()).toBe(true)
-    expect(svg.attributes('width')).toBe('22')
-    expect(svg.attributes('height')).toBe('22')
+    expect(svg.attributes('width')).toBe('24')
+    expect(svg.attributes('height')).toBe('24')
     expect(svg.attributes('viewBox')).toBe('0 0 32 32')
   })
 
@@ -24,8 +24,8 @@ describe('StarMark', () => {
     expect(svg.attributes('viewBox')).toBe('0 0 32 32')
   })
 
-  // 图形保真：path 与 venus 源逐字相等，颜色只经 currentColor 继承（无 color prop）
-  it('path 逐字复刻 venus 源标记且 fill 为 currentColor', async () => {
+  // 图形保真：path 与 logo-mark.svg 逐字相等，颜色只经 currentColor 继承（无 color prop）
+  it('path 逐字复刻 logo-mark.svg 且 fill 为 currentColor', async () => {
     const wrapper = await mountSuspended(StarMark)
     const path = wrapper.find('path')
     expect(path.attributes('d')).toBe(SOURCE_PATH_D)

@@ -14,6 +14,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@alicloud/openapi-core": "^1.0.8",
     "@alicloud/sts20150401": "^1.2.0",
     "@nuxtjs/i18n": "^10.5.0",
     "@theogony/venus-core": "file:../venus-core",
@@ -30,6 +31,7 @@
     "@nuxt/eslint": "1.16.0",
     "@nuxt/fonts": "0.14.0",
     "@nuxt/test-utils": "4.1.0",
+    "@types/ali-oss": "^6.23.3",
     "@vue/test-utils": "^2.4.11",
     "eslint": "^10.8.0",
     "happy-dom": "^20.11.1",

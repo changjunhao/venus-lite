@@ -18,6 +18,18 @@ export interface HealthStatus {
   time: string
 }
 
+/** STS 临时凭证（OSS 直传用） */
+export interface StsCredentials {
+  accessKeyId: string
+  accessKeySecret: string
+  securityToken: string
+  expiration: string
+  /** OSS 所在区域，如 oss-cn-beijing */
+  region: string
+  /** 目标 Bucket 名称 */
+  bucket: string
+}
+
 /** 备忘录条目（架构演示用） */
 export interface Note {
   id: string

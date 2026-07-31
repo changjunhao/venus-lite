@@ -61,6 +61,13 @@ export default defineNuxtConfig({
   runtimeConfig: {
     // 服务端私有（NUXT_APP_VERSION）
     appVersion: '',
+    // OSS / STS（NUXT_OSS_*）—— 仅服务端可见，用于签发 STS 临时凭证
+    ossRegion: '',
+    ossBucket: '',
+    ossStsRoleArn: '',
+    ossStsAccessKeyId: '',
+    ossStsAccessKeySecret: '',
+    ossStsSessionDurationSeconds: 900,
     // 客户端可见（NUXT_PUBLIC_SITE_NAME）
     public: {
       siteName: 'Venus',
