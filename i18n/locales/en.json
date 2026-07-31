@@ -109,6 +109,12 @@
     "heroTitle": "Comparative Review",
     "heroLede": "Let every photo be seen under the same frame and the same standard — get a ranking, scores and the evidence behind each difference."
   },
+  "upload": {
+    "titleSingle": "Drop a photo, or click to choose",
+    "titleMulti": "Drop 2–10 photos, or click to choose",
+    "dragTitle": "Release to add photos",
+    "formatHint": "JPEG, PNG, WebP, BMP, TIFF and HEIC up to 4K; JPEG or PNG only for 4K–8K"
+  },
   "error": {
     "notFound": "The page you are looking for does not exist. It may have been moved or deleted.",
     "generic": "This page cannot be displayed right now. Please try again later.",
