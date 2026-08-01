@@ -234,7 +234,11 @@
       "time": "评估时间"
     },
     "contactSheetAria": "系列照片接触印样",
-    "contactPhotoAlt": "系列中的第 {index} 张照片"
+    "contactPhotoAlt": "系列中的第 {index} 张照片",
+    "perImageEyebrow": "PER IMAGE",
+    "perImageHeading": "逐图明细",
+    "perImageAlt": "第 {index} 张照片的评估明细",
+    "perImageFallbackName": "第 {index} 张"
   },
   "share": {
     "action": "生成分享图",

@@ -234,7 +234,11 @@
       "time": "Evaluated at"
     },
     "contactSheetAria": "Series contact sheet",
-    "contactPhotoAlt": "Photo {index} in the series"
+    "contactPhotoAlt": "Photo {index} in the series",
+    "perImageEyebrow": "PER IMAGE",
+    "perImageHeading": "Per-Image Details",
+    "perImageAlt": "Evaluation detail for photo {index}",
+    "perImageFallbackName": "Photo {index}"
   },
   "share": {
     "action": "Generate share image",
