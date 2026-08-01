@@ -19,7 +19,7 @@ importers:
         version: 10.5.0(@vue/compiler-dom@3.5.40)(db0@0.3.4)(esbuild@0.28.1)(eslint@10.8.0(jiti@2.7.0)(supports-color@10.2.2))(ioredis@5.11.1(supports-color@10.2.2))(magicast@0.5.3)(rolldown@1.2.0)(rollup@4.62.3)(supports-color@10.2.2)(typescript@5.9.3)(vite@8.1.5(@types/node@22.20.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.0)(yaml@2.9.0))(vue@3.5.40(typescript@5.9.3))
       '@theogony/venus-core':
         specifier: file:../venus-core
-        version: file:../venus-core(supports-color@10.2.2)(ws@8.21.1)
+        version: file:../venus-core(h3@1.15.11)(supports-color@10.2.2)(ws@8.21.1)
       ali-oss:
         specifier: ^6.23.0
         version: 6.23.0(supports-color@10.2.2)
@@ -2014,9 +2014,12 @@ packages:
     engines: {node: '>=22.0.0'}
     peerDependencies:
       express: ^5.2.1
+      h3: ^1.15.0
       hono: ^4.12.32
     peerDependenciesMeta:
       express:
+        optional: true
+      h3:
         optional: true
       hono:
         optional: true
@@ -7865,13 +7868,15 @@ snapshots:
       estraverse: 5.3.0
       picomatch: 4.0.5
 
-  '@theogony/venus-core@file:../venus-core(supports-color@10.2.2)(ws@8.21.1)':
+  '@theogony/venus-core@file:../venus-core(h3@1.15.11)(supports-color@10.2.2)(ws@8.21.1)':
     dependencies:
       '@anthropic-ai/sdk': 0.115.0(zod@4.4.3)
       '@google/genai': 2.13.0(supports-color@10.2.2)
       openai: 7.1.0(ws@8.21.1)(zod@4.4.3)
       vectorjson: 0.5.1
       zod: 4.4.3
+    optionalDependencies:
+      h3: 1.15.11
     transitivePeerDependencies:
       - '@aws-sdk/credential-provider-node'
       - '@modelcontextprotocol/sdk'

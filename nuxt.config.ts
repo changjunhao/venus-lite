@@ -68,6 +68,57 @@ export default defineNuxtConfig({
     ossStsAccessKeyId: '',
     ossStsAccessKeySecret: '',
     ossStsSessionDurationSeconds: 900,
+    // ── Venus Engine 全局配置（NUXT_VENUS_*，仅服务端可见）──
+    venusProviderType: 'openai-chat', // openai-chat | openai-responses | anthropic | gemini
+    venusProviderBaseUrl: '',
+    venusProviderApiKey: '',
+    venusProviderModel: '',
+    venusProviderTimeout: 60000,
+    venusMaxRetries: 3,
+    venusReasoningEnabled: true,
+    venusReasoningEffort: '', // none | minimal | low | medium | high | max | xhigh
+    venusReasoningBudgetTokens: 0,
+    // ── Venus Engine 每 Agent 独立 Provider（NUXT_VENUS_<AGENT>_*）──
+    // genreDetector
+    venusGenreDetectorProviderType: '',
+    venusGenreDetectorBaseUrl: '',
+    venusGenreDetectorApiKey: '',
+    venusGenreDetectorModel: '',
+    venusGenreDetectorTimeout: 0,
+    venusGenreDetectorReasoningEffort: '',
+    venusGenreDetectorReasoningBudgetTokens: 0,
+    // proposer
+    venusProposerProviderType: '',
+    venusProposerBaseUrl: '',
+    venusProposerApiKey: '',
+    venusProposerModel: '',
+    venusProposerTimeout: 0,
+    venusProposerReasoningEffort: '',
+    venusProposerReasoningBudgetTokens: 0,
+    // critic
+    venusCriticProviderType: '',
+    venusCriticBaseUrl: '',
+    venusCriticApiKey: '',
+    venusCriticModel: '',
+    venusCriticTimeout: 0,
+    venusCriticReasoningEffort: '',
+    venusCriticReasoningBudgetTokens: 0,
+    // arbiter
+    venusArbiterProviderType: '',
+    venusArbiterBaseUrl: '',
+    venusArbiterApiKey: '',
+    venusArbiterModel: '',
+    venusArbiterTimeout: 0,
+    venusArbiterReasoningEffort: '',
+    venusArbiterReasoningBudgetTokens: 0,
+    // revision（修正轮，默认沿用 proposer 配置）
+    venusRevisionProviderType: '',
+    venusRevisionBaseUrl: '',
+    venusRevisionApiKey: '',
+    venusRevisionModel: '',
+    venusRevisionTimeout: 0,
+    venusRevisionReasoningEffort: '',
+    venusRevisionReasoningBudgetTokens: 0,
     // 客户端可见（NUXT_PUBLIC_SITE_NAME）
     public: {
       siteName: 'Venus',
