@@ -217,6 +217,18 @@
       "time": "Evaluated at"
     }
   },
+  "share": {
+    "action": "Generate share image",
+    "loadingImage": "Reading photo…",
+    "generating": "Generating share image…",
+    "exporting": "Preparing preview…",
+    "failed": "Generation failed, please retry",
+    "previewLabel": "Share image preview",
+    "previewImgAlt": "Share image preview",
+    "download": "Download image",
+    "cancel": "Cancel",
+    "closeAria": "Close preview"
+  },
   "error": {
     "notFound": "The page you are looking for does not exist. It may have been moved or deleted.",
     "generic": "This page cannot be displayed right now. Please try again later.",
