@@ -3,14 +3,15 @@ import type { Mock } from 'vitest'
 import type { Ref } from 'vue'
 import { DOMWrapper, flushPromises } from '@vue/test-utils'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import SingleEvaluationFlow, {
+import SingleEvaluationFlow from '~/components/business/SingleEvaluationFlow.vue'
+import {
   buildSingleMetadataItems,
   fill,
   mapProcessSteps,
   normalizeChallenges,
   severityVariant,
   type ProcessStepLabels,
-} from '~/components/business/SingleEvaluationFlow.vue'
+} from '~/utils/evaluation-mapping'
 
 // 测试环境强制 zh locale：happy-dom 的 navigator.language 为 en-US，
 // i18n detectBrowserLanguage 会探测为 en；cookie 优先生效（nuxt.config cookieKey 'venus-locale'）

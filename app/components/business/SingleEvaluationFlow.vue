@@ -1,16 +1,9 @@
 <script lang="ts">
-// 双 script 块编译为同一模块，导入统一收拢于此（setup 块共享模块作用域）
-import type {
-  ChallengeItem,
-  EvaluationResult,
-  ExifTagKey,
-  ProcessBadgeVariant,
-  ProcessStepBadge,
-  ProcessStepItem,
-  StreamAgent,
-} from '#shared/types/evaluation'
+// 共享纯函数已迁移至 ~/utils/evaluation-mapping（Joint/Compare 复用）；
+// 双 script 块编译为同一模块，导入统一收拢于此（setup 块共享模块作用域）。
+import type { EvaluationResult, ExifTagKey, ProcessStepItem, StreamAgent } from '#shared/types/evaluation'
 import type { SelectOption } from '~/components/ui/BaseSelect.vue'
-import { formatDateTime, formatDuration, formatGenreSceneTag, getScoreBand } from '#shared/utils/format'
+import { formatGenreSceneTag, getScoreBand } from '#shared/utils/format'
 // 六个编排依赖显式导入（非自动导入）：Flow 的核心编排面，
 // 同时保证测试经 vi.mock('~/composables/*') 拦截的确定性
 import { resolveGenreLabel, resolveSceneLabel, useEvalMetadata } from '~/composables/useEvalMetadata'
@@ -19,223 +12,11 @@ import { useExif } from '~/composables/useExif'
 import { useImageSelection } from '~/composables/useImageSelection'
 import { useOssUpload } from '~/composables/useOssUpload'
 import { useShareImage } from '~/composables/useShareImage'
-
-/**
- * 简单占位符插值：fill('评分：{score}', { score: '8.5' }) → '评分：8.5'。
- * 未知占位符原样保留；供导出纯函数使用（组件内 i18n 场景直接用 t(key, params)）。
- */
-export function fill(template: string, params: Record<string, string | number>): string {
-  return template.replace(/\{(\w+)\}/g, (match, key: string) =>
-    key in params ? String(params[key]) : match,
-  )
-}
-
-/**
- * 批判严重程度 → BaseBadge variant（app.js L696 `severity || 'LOW'` 兜底；
- * severity 大写枚举 → 小写 variant 的转换归 Flow 映射层——ProcessStep L13-14 约定）。
- */
-export function severityVariant(severity: unknown): ProcessBadgeVariant {
-  const s = String(severity || 'LOW').toLowerCase()
-  if (s === 'medium') return 'severity-medium'
-  if (s === 'high') return 'severity-high'
-  return 'severity-low'
-}
-
-/** 未知值收窄为普通对象记录（null / 数组 / 原始类型 → null） */
-function asRecord(value: unknown): Record<string, unknown> | null {
-  return typeof value === 'object' && value !== null && !Array.isArray(value)
-    ? value as Record<string, unknown>
-    : null
-}
-
-/**
- * 解包 AgentCallResult：{ result, reasoning } → result（app.js L669-671 unwrap）。
- * reasoning 从外层 wrapper 读取（app.js L688 process.proposal?.reasoning）；
- * wrapper.result 缺失时回退 wrapper 本身（app.js `data?.result || data`）。
- */
-function unwrapAgentCall(data: unknown): { result: Record<string, unknown> | null, reasoning: string } {
-  const wrapper = asRecord(data)
-  if (!wrapper) return { result: null, reasoning: '' }
-  const reasoning = typeof wrapper.reasoning === 'string' ? wrapper.reasoning : ''
-  return { result: asRecord(wrapper.result) ?? wrapper, reasoning }
-}
-
-/** 分数读取：total_score ?? totalScore → toFixed(1)；null/非有限值 → '-'（app.js L684/730/749） */
-function formatStepScore(record: Record<string, unknown>): string {
-  const raw = record.total_score ?? record.totalScore
-  const n = typeof raw === 'number' ? raw : Number(raw)
-  return Number.isFinite(n) ? n.toFixed(1) : '-'
-}
-
-/**
- * 质疑项归一（app.js L708-714）：snake_case/camelCase 双读；
- * suggestedScore 非有限值 → null（group.js L952-954 健壮版，ChallengeItem 契约）。
- */
-export function normalizeChallenges(raw: unknown): ChallengeItem[] {
-  if (!Array.isArray(raw)) return []
-  const items: ChallengeItem[] = []
-  for (const entry of raw) {
-    const c = asRecord(entry)
-    if (!c) continue
-    const suggested = c.suggested_score ?? c.suggestedScore
-    items.push({
-      dimension: String(c.dimension ?? ''),
-      issue: String(c.issue ?? ''),
-      evidence: String(c.evidence ?? ''),
-      suggestedScore: typeof suggested === 'number' && Number.isFinite(suggested) ? suggested : null,
-    })
-  }
-  return items
-}
-
-/** mapProcessSteps 的预解析标签袋（Flow 以 t() 解析 process.* / review.step* / agent 短名键后传入） */
-export interface ProcessStepLabels {
-  stepProposal: string
-  stepCritique: string
-  stepRevision: string
-  stepArbitration: string
-  scoreBadge: string
-  sceneBadge: string
-  severityBadge: string
-  severityLow: string
-  severityMedium: string
-  severityHigh: string
-  suggestedBadge: string
-  revisedBadge: string
-  finalBadge: string
-  reasoningToggle: string
-  agentProposer: string
-  agentCritic: string
-  agentRevision: string
-  agentArbiter: string
-}
-
-/**
- * 评估过程映射（app.js renderProcess L663-766 → ProcessStepItem[]）。
- *
- * - 四步按 proposal → critique → revision（条件）→ arbitration 顺序组装；
- * - reasoning/reasoningToggle 双条件满足时渲染（ProcessStep L59-67 守卫契约）；
- * - 场景徽章经 resolveScene 解析门类子类型标签，未传时原样输出 sceneType
- *   （app.js L677 genreInfo.subtypes 查找的接缝参数化）。
- */
-export function mapProcessSteps(
-  process: Record<string, unknown>,
-  labels: ProcessStepLabels,
-  resolveScene?: (sceneType: string) => string,
-): ProcessStepItem[] {
-  const steps: ProcessStepItem[] = []
-
-  // 提案者初评（app.js L674-691）
-  const proposalCall = unwrapAgentCall(process.proposal)
-  if (proposalCall.result) {
-    const proposal = proposalCall.result
-    const sceneType = String(proposal.scene_type ?? proposal.sceneType ?? '')
-    const sceneName = sceneType ? (resolveScene ? resolveScene(sceneType) : sceneType) : ''
-    const badges: ProcessStepBadge[] = [
-      { variant: 'step-score', text: fill(labels.scoreBadge, { score: formatStepScore(proposal) }) },
-    ]
-    if (sceneName) {
-      badges.push({ variant: 'step-tag', text: fill(labels.sceneBadge, { scene: sceneName }) })
-    }
-    steps.push({
-      kind: 'proposal',
-      title: labels.stepProposal,
-      badges,
-      content: String(proposal.critique ?? ''),
-      reasoning: proposalCall.reasoning || null,
-      reasoningToggle: fill(labels.reasoningToggle, { agent: labels.agentProposer }),
-    })
-  }
-
-  // 批判者质疑（app.js L694-719）
-  const critiqueCall = unwrapAgentCall(process.critique)
-  if (critiqueCall.result) {
-    const critique = critiqueCall.result
-    const severity = critique.severity ?? 'LOW'
-    const level = severity === 'MEDIUM'
-      ? labels.severityMedium
-      : severity === 'HIGH'
-        ? labels.severityHigh
-        : labels.severityLow
-    const badges: ProcessStepBadge[] = [
-      { variant: severityVariant(severity), text: fill(labels.severityBadge, { level }) },
-    ]
-    const suggested = critique.suggested_total_score ?? critique.suggestedTotalScore
-    if (typeof suggested === 'number' && Number.isFinite(suggested)) {
-      badges.push({ variant: 'step-score', text: fill(labels.suggestedBadge, { score: suggested.toFixed(1) }) })
-    }
-    steps.push({
-      kind: 'critique',
-      title: labels.stepCritique,
-      badges,
-      content: String(critique.overall_assessment ?? critique.overallAssessment ?? ''),
-      challenges: normalizeChallenges(critique.challenges),
-      reasoning: critiqueCall.reasoning || null,
-      reasoningToggle: fill(labels.reasoningToggle, { agent: labels.agentCritic }),
-    })
-  }
-
-  // 提案者修正——条件步骤，仅在发生时出现（app.js L722-736，DESIGN §9.9）
-  const revisionCall = unwrapAgentCall(process.revision)
-  if (revisionCall.result) {
-    steps.push({
-      kind: 'revision',
-      title: labels.stepRevision,
-      badges: [
-        { variant: 'step-score', text: fill(labels.revisedBadge, { score: formatStepScore(revisionCall.result) }) },
-      ],
-      content: String(revisionCall.result.critique ?? ''),
-      reasoning: revisionCall.reasoning || null,
-      reasoningToggle: fill(labels.reasoningToggle, { agent: labels.agentRevision }),
-    })
-  }
-
-  // 仲裁者裁决（app.js L739-755）
-  const arbitrationCall = unwrapAgentCall(process.arbitration)
-  if (arbitrationCall.result) {
-    const arbitration = arbitrationCall.result
-    steps.push({
-      kind: 'arbitration',
-      title: labels.stepArbitration,
-      badges: [
-        { variant: 'step-score', text: fill(labels.finalBadge, { score: formatStepScore(arbitration) }) },
-      ],
-      content: String(arbitration.arbitration_notes ?? arbitration.arbitrationNotes ?? ''),
-      reasoning: arbitrationCall.reasoning || null,
-      reasoningToggle: fill(labels.reasoningToggle, { agent: labels.agentArbiter }),
-    })
-  }
-
-  return steps
-}
-
-/** buildSingleMetadataItems 的预解析标签袋（result.meta.* 键） */
-export interface MetadataItemLabels {
-  duration: string
-  rounds: string
-  time: string
-}
-
-/**
- * 单图元数据条 3 项（app.js L558-562）：耗时 / 轮次 / 时间。
- * durationMs 双读 + NaN 防御归 0；rounds 缺失回退 '-'（app.js L561）。
- */
-export function buildSingleMetadataItems(
-  meta: Record<string, unknown> | null | undefined,
-  labels: MetadataItemLabels,
-  locale: string,
-): Array<{ label: string, value: string }> {
-  const rawDuration = meta?.durationMs ?? meta?.duration_ms ?? 0
-  const duration = typeof rawDuration === 'number' && Number.isFinite(rawDuration) ? rawDuration : 0
-  const rawRounds = meta?.rounds
-  const rounds = rawRounds != null && rawRounds !== '' ? String(rawRounds) : '-'
-  const evaluatedAt = String(meta?.evaluatedAt ?? meta?.evaluated_at ?? new Date().toISOString())
-  return [
-    { label: labels.duration, value: formatDuration(duration, locale) },
-    { label: labels.rounds, value: rounds },
-    { label: labels.time, value: formatDateTime(evaluatedAt, locale) },
-  ]
-}
+import {
+  buildSingleMetadataItems,
+  mapProcessSteps,
+  type ProcessStepLabels,
+} from '~/utils/evaluation-mapping'
 </script>
 
 <script setup lang="ts">
@@ -255,8 +36,8 @@ export function buildSingleMetadataItems(
  *   （group.js L1083-1087 invalidateResult 先例）；venus app.js 无此逻辑。
  * - 评估按钮仅在加载中禁用（app.js L863）；无文件点击走错误提示（app.js L247-250），
  *   不以静默禁用替代出错路径（§15.3「出错后如何继续」）。
- * - 结果播报与图片舞台暂内联：待 Joint/Compare 复用时分别抽取为
- *   EvaluationResultAnnouncer（component-plan §2.4）与 ImageStage（SinglePreview L16-17）。
+ * - 结果播报已抽取为 EvaluationResultAnnouncer（component-plan §2.4，Joint/Compare 复用）；
+ *   图片舞台暂内联：待后续抽取为 ImageStage（SinglePreview L16-17）。
  */
 
 // ── Composables（顶层解构，模板自动解包 ref）──
@@ -572,7 +353,7 @@ async function evaluate(): Promise<void> {
         detectedGenre.value = g
       },
     },
-    stepLabels.value,
+    stepLabels,
   )
 }
 
@@ -674,12 +455,12 @@ function onShareClose(): void {
         :index-label="t('review.index')"
         :steps="streamSteps"
         :blocks="reasoningBlocks"
+        :reasoning-suffix="t('review.reasoningSuffix')"
       />
     </div>
 
-    <!-- 结果播报（single.html L123）：§14.5 完成只播报一次；
-         暂内联，待 Joint/Compare 复用抽取为 EvaluationResultAnnouncer（component-plan §2.4） -->
-    <p class="visually-hidden" role="status">{{ announced }}</p>
+    <!-- 结果播报（single.html L123）：§14.5 完成只播报一次（component-plan §2.4） -->
+    <BusinessEvaluationResultAnnouncer :message="announced" />
 
     <!-- 结果区（single.html L125-188） -->
     <section v-if="result" ref="resultRef" class="single-results">
@@ -904,17 +685,6 @@ function onShareClose(): void {
 /* style.css L942 */
 .report-disclosure {
   border-bottom: 1px solid var(--hairline);
-}
-
-/* style.css L140-148：§14.5 live region 视觉隐藏 */
-.visually-hidden {
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  height: 1px;
-  overflow: hidden;
-  position: absolute;
-  white-space: nowrap;
-  width: 1px;
 }
 
 /* ── 响应式（style.css L1068-1166）── */
