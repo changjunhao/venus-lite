@@ -195,7 +195,18 @@
     "bandStrong": "优势明确",
     "chapterCritique": "专业点评",
     "chapterSuggestions": "改进建议",
-    "chapterArbitration": "裁决说明"
+    "chapterArbitration": "裁决说明",
+    "exifTitle": "EXIF 拍摄信息",
+    "exif": {
+      "cameraModel": "相机型号",
+      "lensModel": "镜头型号",
+      "fNumber": "光圈",
+      "shutterSpeed": "快门速度",
+      "iso": "ISO",
+      "focalLength": "焦距",
+      "dateTimeOriginal": "拍摄时间",
+      "flash": "闪光灯"
+    }
   },
   "error": {
     "notFound": "你要找的页面不存在，可能已被移动或删除。",

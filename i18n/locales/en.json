@@ -195,7 +195,18 @@
     "bandStrong": "Distinct strength",
     "chapterCritique": "Expert Critique",
     "chapterSuggestions": "Suggestions",
-    "chapterArbitration": "Verdict Notes"
+    "chapterArbitration": "Verdict Notes",
+    "exifTitle": "EXIF shooting info",
+    "exif": {
+      "cameraModel": "Camera model",
+      "lensModel": "Lens",
+      "fNumber": "Aperture",
+      "shutterSpeed": "Shutter speed",
+      "iso": "ISO",
+      "focalLength": "Focal length",
+      "dateTimeOriginal": "Taken at",
+      "flash": "Flash"
+    }
   },
   "error": {
     "notFound": "The page you are looking for does not exist. It may have been moved or deleted.",
