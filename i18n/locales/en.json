@@ -93,21 +93,39 @@
     "seoDescription": "Use the Venus multi-agent system to assess composition, light, technique and visual impact of a single photograph.",
     "heroEyebrow": "SINGLE REVIEW",
     "heroTitle": "Single Frame Review",
-    "heroLede": "Put the work back at the centre of viewing — from initial review and challenge to verdict, get scores, evidence and directions to improve."
+    "heroLede": "Put the work back at the centre of viewing — from initial review and challenge to verdict, get scores, evidence and directions to improve.",
+    "inputTitle": "Select a work",
+    "inputIntro": "Choose a photography genre and upload a photo. The system will assess composition, light, subject, technical execution and visual impact.",
+    "evaluate": "Start single review",
+    "evaluating": "Reviewing…",
+    "noFileError": "Please select a photo first",
+    "resultPhotoAlt": "Reviewed photo",
+    "resultStageAria": "Reviewed photo",
+    "dimensionAria": "Dimension scores"
   },
   "groupJoint": {
     "seoTitle": "Venus — Joint Series Review",
     "seoDescription": "Use Venus to run a joint series review of 2–10 photographs, with scores, analysis and verifiable evidence.",
     "heroEyebrow": "JOINT SERIES REVIEW",
     "heroTitle": "Joint Series Review",
-    "heroLede": "Treat your photos as one series and analyse overall narrative, visual consistency, rhythm and completeness."
+    "heroLede": "Treat your photos as one series and analyse overall narrative, visual consistency, rhythm and completeness.",
+    "inputTitle": "Build a series",
+    "inputIntro": "Upload 2–10 photos and arrange their order. The system will focus on the relationships between photos, not just score them one by one.",
+    "evaluate": "Start joint review",
+    "evaluating": "Reviewing as series…",
+    "minImagesError": "Please select 2–10 photos before starting the review"
   },
   "groupCompare": {
     "seoTitle": "Venus — Comparative Review",
     "seoDescription": "Use Venus to compare 2–10 photographs side by side, with scores, analysis and verifiable evidence.",
     "heroEyebrow": "COMPARATIVE REVIEW",
     "heroTitle": "Comparative Review",
-    "heroLede": "Let every photo be seen under the same frame and the same standard — get a ranking, scores and the evidence behind each difference."
+    "heroLede": "Let every photo be seen under the same frame and the same standard — get a ranking, scores and the evidence behind each difference.",
+    "inputTitle": "Choose photos to compare",
+    "inputIntro": "Upload 2–10 photos. The system will compare each work under a unified standard — order does not affect the assessment.",
+    "evaluate": "Start comparative review",
+    "evaluating": "Comparing…",
+    "minImagesError": "Please select 2–10 photos before starting the review"
   },
   "focusCompare": {
     "eyebrow": "FOCUS / TWO FRAMES",
@@ -164,12 +182,23 @@
     "genreNature": "Nature",
     "genreSports": "Sports",
     "perImageTitle": "Include per-image details",
-    "perImageDescription": "When enabled, each photo gets its own score and critique; evaluation time increases accordingly"
+    "perImageDescription": "When enabled, each photo gets its own score and critique; evaluation time increases accordingly",
+    "error": {
+      "unsupportedType": "This photo format is not supported — please choose JPEG, PNG, WebP, BMP, TIFF or HEIC",
+      "unreadable": "The photo could not be read — please select it again",
+      "exceeds8k": "The photo is {width}×{height}, exceeding the 8K limit (7680×4320) — please downscale and retry",
+      "highResFormat": "The photo is {width}×{height}; only JPEG or PNG is supported for 4K–8K",
+      "uploadFailed": "Photo preparation failed — please try again later",
+      "duplicate": "is already in the selection",
+      "overCapacity": "You can select at most {max} photos"
+    }
   },
   "review": {
     "index": "REVIEW IN PROGRESS",
     "preparing": "Preparing…",
     "preparingSub": "Setting up the evaluation, please wait",
+    "uploadingPhoto": "Preparing your photo…",
+    "starting": "Starting the evaluation…",
     "evaluating": "Evaluating",
     "evaluatingSub": "Evaluation in progress — please keep this page open",
     "stepGenreDetector": "Genre identification",
@@ -182,6 +211,8 @@
     "hintCritic": "Checking the initial review for evidence, bias and consistency",
     "hintProposerRevision": "Re-examining dimension scores in light of the challenges",
     "hintArbiter": "Weighing both arguments into a final score and conclusion",
+    "stepActive": "{step} in progress",
+    "genreDetected": "Photography genre: {genre}",
     "reasoningSuffix": "process",
     "complete": "Evaluation complete · Overall score {score}",
     "failed": "The evaluation could not be completed. Please try again",
@@ -199,6 +230,10 @@
     "revisedBadge": "Revised: {score}",
     "finalBadge": "Final: {score}",
     "reasoningToggle": "{agent} reasoning",
+    "agentProposer": "Proposer's",
+    "agentCritic": "Critic's",
+    "agentRevision": "Proposer's revision",
+    "agentArbiter": "Arbitrator's",
     "sortedBadge": "Sorted {count} photos",
     "resortedBadge": "Re-sorted {count} photos",
     "finalRankBadge": "Final ranking: {count} photos"
@@ -233,6 +268,8 @@
       "rounds": "Rounds",
       "time": "Evaluated at"
     },
+    "announced": "Evaluation complete — results are ready",
+    "sceneUnclassified": "Unclassified",
     "contactSheetAria": "Series contact sheet",
     "contactPhotoAlt": "Photo {index} in the series",
     "perImageEyebrow": "PER IMAGE",

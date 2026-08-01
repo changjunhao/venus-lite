@@ -93,21 +93,39 @@
     "seoDescription": "使用 Venus 多智能体系统评估单张摄影作品的构图、光影、技术与视觉影响力。",
     "heroEyebrow": "SINGLE REVIEW",
     "heroTitle": "单图美学评估",
-    "heroLede": "把作品放回观看的中心，从初评、质疑到仲裁，获得评分、判断依据与改进方向。"
+    "heroLede": "把作品放回观看的中心，从初评、质疑到仲裁，获得评分、判断依据与改进方向。",
+    "inputTitle": "选择一张作品",
+    "inputIntro": "选择摄影门类并上传照片。系统将从构图、光影、主体、技术完成度与视觉影响力等维度展开评估。",
+    "evaluate": "开始单图评估",
+    "evaluating": "单图评估中…",
+    "noFileError": "请先选择一张照片",
+    "resultPhotoAlt": "已评估照片",
+    "resultStageAria": "已评估照片",
+    "dimensionAria": "维度评分"
   },
   "groupJoint": {
     "seoTitle": "Venus 组图联合评估",
     "seoDescription": "使用 Venus 对 2–10 张照片进行组图联合评估，获得评分、分析与判断依据。",
     "heroEyebrow": "JOINT SERIES REVIEW",
     "heroTitle": "组图联合评估",
-    "heroLede": "把照片作为一个系列，分析整体叙事、视觉一致性、节奏与系列完成度。"
+    "heroLede": "把照片作为一个系列，分析整体叙事、视觉一致性、节奏与系列完成度。",
+    "inputTitle": "建立一个系列",
+    "inputIntro": "上传 2–10 张照片并调整顺序。系统会关注照片之间的关系，而不只是逐张打分。",
+    "evaluate": "开始联合评估",
+    "evaluating": "联合评估中...",
+    "minImagesError": "请选择 2–10 张照片后再开始评估"
   },
   "groupCompare": {
     "seoTitle": "Venus 组图对比评估",
     "seoDescription": "使用 Venus 对 2–10 张照片进行组图对比评估，获得评分、分析与判断依据。",
     "heroEyebrow": "COMPARATIVE REVIEW",
     "heroTitle": "组图对比评估",
-    "heroLede": "让每张照片在同一视框与评估标准下被观看，获得排序、分数和差异依据。"
+    "heroLede": "让每张照片在同一视框与评估标准下被观看，获得排序、分数和差异依据。",
+    "inputTitle": "选择需要比较的照片",
+    "inputIntro": "上传 2–10 张照片。系统会在统一标准下比较每张作品，排序不受上传顺序影响。",
+    "evaluate": "开始对比评估",
+    "evaluating": "对比评估中...",
+    "minImagesError": "请选择 2–10 张照片后再开始评估"
   },
   "focusCompare": {
     "eyebrow": "FOCUS / TWO FRAMES",
@@ -164,12 +182,23 @@
     "genreNature": "自然",
     "genreSports": "运动",
     "perImageTitle": "包含逐图明细",
-    "perImageDescription": "开启后，将为每张照片补充评分和点评，评估时间会相应增加"
+    "perImageDescription": "开启后，将为每张照片补充评分和点评，评估时间会相应增加",
+    "error": {
+      "unsupportedType": "不支持该照片格式，请选择 JPEG、PNG、WebP、BMP、TIFF 或 HEIC",
+      "unreadable": "无法读取照片，请重新选择",
+      "exceeds8k": "照片尺寸为 {width}×{height}，超过 8K 上限（7680×4320），请缩小后重试",
+      "highResFormat": "照片尺寸为 {width}×{height}；4K–8K 照片仅支持 JPEG 或 PNG",
+      "uploadFailed": "照片准备失败，请稍后重试",
+      "duplicate": "已在选择列表中",
+      "overCapacity": "最多只能选择 {max} 张照片"
+    }
   },
   "review": {
     "index": "REVIEW IN PROGRESS",
     "preparing": "准备中...",
     "preparingSub": "正在准备评估，请稍候",
+    "uploadingPhoto": "正在准备照片…",
+    "starting": "正在开始评估…",
     "evaluating": "评估中",
     "evaluatingSub": "评估进行中，请保持页面打开",
     "stepGenreDetector": "门类识别",
@@ -182,6 +211,8 @@
     "hintCritic": "检查初评的评分依据、偏差与一致性",
     "hintProposerRevision": "根据质疑重新核对各维度评分",
     "hintArbiter": "综合双方论证，形成最终评分与结论",
+    "stepActive": "{step}中",
+    "genreDetected": "摄影门类：{genre}",
     "reasoningSuffix": "过程",
     "complete": "评估完成 · 综合评分 {score}",
     "failed": "评估未能完成，请重试",
@@ -199,6 +230,10 @@
     "revisedBadge": "修正后：{score}",
     "finalBadge": "最终：{score}",
     "reasoningToggle": "{agent}分析过程",
+    "agentProposer": "提案者",
+    "agentCritic": "批判者",
+    "agentRevision": "提案者修正",
+    "agentArbiter": "仲裁者",
     "sortedBadge": "已排序 {count} 张照片",
     "resortedBadge": "已重新排序 {count} 张照片",
     "finalRankBadge": "最终排序 {count} 张照片"
@@ -233,6 +268,8 @@
       "rounds": "评估轮次",
       "time": "评估时间"
     },
+    "announced": "评估完成，可以查看结果",
+    "sceneUnclassified": "未分类",
     "contactSheetAria": "系列照片接触印样",
     "contactPhotoAlt": "系列中的第 {index} 张照片",
     "perImageEyebrow": "PER IMAGE",
