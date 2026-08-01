@@ -33,6 +33,20 @@ export function formatFileSize(bytes: number): string {
 }
 
 /**
+ * 耗时格式化（逐行移植 venus utils.js L30-33）：<1000 显示毫秒，否则秒保留一位小数。
+ * 调用方可传入当前 BCP-47 locale（formatDateTime 先例），默认中文单位（§15.4）。
+ * 与 venus 源码一致不做内部 NaN 防御——归一在 useEvaluationStream 事件解析层完成
+ * （component-plan §4.4），调用方经 `?? 0` 兜底后传入（group.js L565 先例）。
+ */
+export function formatDuration(ms: number, locale = 'zh-CN'): string {
+  const unit = locale.startsWith('zh')
+    ? { millisecond: '毫秒', second: '秒' }
+    : { millisecond: 'ms', second: 's' }
+  if (ms < 1000) return `${ms} ${unit.millisecond}`
+  return `${(ms / 1000).toFixed(1)} ${unit.second}`
+}
+
+/**
  * §5.4 评分区间单一来源（逐行移植 venus utils.js L46-51）。
  * ScorePanel（CSS class）、useShareImage（Canvas 色值按 key 映射）共同消费
  * （component-plan §4.3）。

@@ -209,6 +209,12 @@
       "focalLength": "Focal length",
       "dateTimeOriginal": "Taken at",
       "flash": "Flash"
+    },
+    "meta": {
+      "images": "Photos",
+      "duration": "Duration",
+      "rounds": "Rounds",
+      "time": "Evaluated at"
     }
   },
   "error": {

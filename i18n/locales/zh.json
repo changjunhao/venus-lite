@@ -209,6 +209,12 @@
       "focalLength": "焦距",
       "dateTimeOriginal": "拍摄时间",
       "flash": "闪光灯"
+    },
+    "meta": {
+      "images": "照片数量",
+      "duration": "评估耗时",
+      "rounds": "评估轮次",
+      "time": "评估时间"
     }
   },
   "error": {

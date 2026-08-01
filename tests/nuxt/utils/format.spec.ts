@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { SCORE_BANDS, formatFileSize, formatGenreSceneTag, getScoreBand, resolveDimensionName, splitFileName } from '#shared/utils/format'
+import { SCORE_BANDS, formatDuration, formatFileSize, formatGenreSceneTag, getScoreBand, resolveDimensionName, splitFileName } from '#shared/utils/format'
 import type { GenreMetadata } from '#shared/types/evaluation'
 
 describe('splitFileName', () => {
@@ -49,6 +49,25 @@ describe('formatFileSize', () => {
   it('MB 范围保留一位小数', () => {
     expect(formatFileSize(1024 * 1024)).toBe('1.0 MB')
     expect(formatFileSize(5.5 * 1024 * 1024)).toBe('5.5 MB')
+  })
+})
+
+// 回归锚点：venus utils.js L30-33 formatDuration
+describe('formatDuration', () => {
+  it('小于 1000 毫秒显示为毫秒', () => {
+    expect(formatDuration(0)).toBe('0 毫秒')
+    expect(formatDuration(450)).toBe('450 毫秒')
+    expect(formatDuration(999)).toBe('999 毫秒')
+  })
+
+  it('大于等于 1000 毫秒显示为秒并保留一位小数', () => {
+    expect(formatDuration(1000)).toBe('1.0 秒')
+    expect(formatDuration(12345)).toBe('12.3 秒')
+  })
+
+  it('非 zh locale 使用 ms/s 单位', () => {
+    expect(formatDuration(450, 'en')).toBe('450 ms')
+    expect(formatDuration(12345, 'en')).toBe('12.3 s')
   })
 })
 
