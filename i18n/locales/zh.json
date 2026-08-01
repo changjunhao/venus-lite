@@ -187,6 +187,9 @@
     "finalRankBadge": "最终排序 {count} 张照片"
   },
   "result": {
+    "titleSingle": "单图评估结果",
+    "titleJoint": "组图联合评估结果",
+    "titleCompare": "组图对比评估结果",
     "scoreCaption": "综合评分",
     "scoreCaptionJoint": "系列综合评分",
     "bandUnformed": "尚未成形",

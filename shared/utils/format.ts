@@ -76,3 +76,14 @@ export function resolveDimensionName(
   }
   return key
 }
+
+/**
+ * §15.1 门类与场景合并为单个标签，按“门类 · 场景”的层级顺序排列
+ * （逐行移植 venus utils.js L66-69）。
+ * 不显示“门类”“场景”前缀词（§15.1）；compare 模式无系列场景，
+ * sceneName 传空串即仅输出门类（group.js L537）。
+ * 消费方：Flow 映射层（结果区头标签）/ 未来 useShareImage（Canvas）。
+ */
+export function formatGenreSceneTag(genreName: string, sceneName?: string): string {
+  return [genreName, sceneName].filter(Boolean).join(' · ')
+}

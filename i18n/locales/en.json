@@ -187,6 +187,9 @@
     "finalRankBadge": "Final ranking: {count} photos"
   },
   "result": {
+    "titleSingle": "Single Evaluation Result",
+    "titleJoint": "Joint Series Evaluation Result",
+    "titleCompare": "Comparative Evaluation Result",
     "scoreCaption": "Overall score",
     "scoreCaptionJoint": "Series overall score",
     "bandUnformed": "Not yet formed",

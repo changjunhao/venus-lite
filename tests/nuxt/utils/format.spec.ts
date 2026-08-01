@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { SCORE_BANDS, formatFileSize, getScoreBand, resolveDimensionName, splitFileName } from '#shared/utils/format'
+import { SCORE_BANDS, formatFileSize, formatGenreSceneTag, getScoreBand, resolveDimensionName, splitFileName } from '#shared/utils/format'
 import type { GenreMetadata } from '#shared/types/evaluation'
 
 describe('splitFileName', () => {
@@ -140,5 +140,28 @@ describe('resolveDimensionName', () => {
   it('门类无 dimensions 字段时安全回退 key', () => {
     const broken = { portrait: { label: '人像', dimensionLabels: [], subtypes: [] } } as unknown as Record<string, GenreMetadata>
     expect(resolveDimensionName('lighting_quality', 'portrait', broken)).toBe('lighting_quality')
+  })
+})
+
+// 回归锚点：venus utils.js L66-69 formatGenreSceneTag
+describe('formatGenreSceneTag', () => {
+  it('门类 + 场景合并为“门类 · 场景”', () => {
+    expect(formatGenreSceneTag('人像', '室内人像')).toBe('人像 · 室内人像')
+  })
+
+  it('场景为空串时仅输出门类（compare 模式，group.js L537）', () => {
+    expect(formatGenreSceneTag('风光', '')).toBe('风光')
+  })
+
+  it('场景缺省时仅输出门类', () => {
+    expect(formatGenreSceneTag('纪实')).toBe('纪实')
+  })
+
+  it('门类为空串时仅输出场景', () => {
+    expect(formatGenreSceneTag('', '街拍')).toBe('街拍')
+  })
+
+  it('两者皆空时输出空串', () => {
+    expect(formatGenreSceneTag('', '')).toBe('')
   })
 })
