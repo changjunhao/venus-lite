@@ -32,10 +32,13 @@ withDefaults(
     steps: StreamStepItem[]
     /** 推理块数据 → EvaluationStreamReasoning */
     blocks: ReasoningBlock[]
+    /** 推理块标题后缀（透传 StreamReasoning；Flow 传 t('review.reasoningSuffix')） */
+    reasoningSuffix?: string
   }>(),
   {
     subtext: undefined,
     indexLabel: 'REVIEW IN PROGRESS',
+    reasoningSuffix: '',
   },
 )
 </script>
@@ -53,7 +56,7 @@ withDefaults(
     </div>
 
     <EvaluationStreamSteps :steps="steps" class="review-progress-steps" />
-    <EvaluationStreamReasoning :blocks="blocks" class="review-progress-reasoning" />
+    <EvaluationStreamReasoning :blocks="blocks" :suffix="reasoningSuffix" class="review-progress-reasoning" />
   </section>
 </template>
 

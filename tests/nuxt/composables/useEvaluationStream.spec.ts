@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { effectScope } from 'vue'
+import { effectScope, ref } from 'vue'
 
 // ── vi.hoisted：mock 必须在模块加载前定义 ──
 
@@ -473,6 +473,41 @@ describe('useEvaluationStream', () => {
     expect(api.steps.value).toHaveLength(5)
     expect(api.steps.value[3]!.agent).toBe('proposer-revision')
     expect(api.steps.value.every(s => s.status === 'done')).toBe(true)
+
+    scope.stop()
+  })
+
+  it('响应式 labels：切换标签源后 steps/reasoningBlocks 即时重新解析（locale 切换场景）', async () => {
+    const EN_LABELS: Record<StreamAgent, string> = {
+      genreDetector: 'Genre identification',
+      proposer: 'Proposer\'s initial review',
+      critic: 'Critic\'s challenge',
+      'proposer-revision': 'Proposer\'s revision',
+      arbiter: 'Arbitrator\'s verdict',
+    }
+    const labelsRef = ref<Record<StreamAgent, string>>({ ...LABELS })
+
+    mockFetch.mockResolvedValue(createSSEResponse([
+      sseFrame({ type: 'evaluation_start', data: { imageUrl: 'x.jpg', genre: 'portrait' }, timestamp: 1 }),
+      sseFrame({ type: 'agent_call', round: 1, agent: 'proposer', timestamp: 2 }),
+      sseFrame({ type: 'reasoning_chunk', agent: 'proposer', content: '分析', timestamp: 3 }),
+      sseFrame({ type: 'agent_complete', round: 1, agent: 'proposer', data: { result: {}, reasoning: null }, timestamp: 4 }),
+      sseFrame({ type: 'evaluation_complete', data: { totalScore: 7.0 }, timestamp: 5 }),
+    ]))
+
+    const { api, scope } = createApi()
+    await api.startSingle({ imageUrl: 'x.jpg' }, { onComplete: vi.fn() }, labelsRef)
+
+    // zh 标签（流开始时的 locale）
+    expect(api.steps.value[0]!.label).toBe('门类识别')
+    expect(api.reasoningBlocks.value[0]!.label).toBe('提案者初评')
+
+    // 模拟 locale 切换：Flow 的 stepLabels computed 重新求值，
+    // composable 经 toValue 重新解析——无需事件驱动
+    labelsRef.value = EN_LABELS
+    expect(api.steps.value[0]!.label).toBe('Genre identification')
+    expect(api.steps.value[1]!.label).toBe('Proposer\'s initial review')
+    expect(api.reasoningBlocks.value[0]!.label).toBe('Proposer\'s initial review')
 
     scope.stop()
   })

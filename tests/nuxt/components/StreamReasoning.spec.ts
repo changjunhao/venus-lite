@@ -15,20 +15,28 @@ describe('StreamReasoning', () => {
 
   // ── 单块渲染（回归锚点：app.js L819-829 块结构）──
 
-  it('单块渲染：header 标签「{label}过程」+ 内容区', async () => {
+  it('单块渲染：header 标签「{label}{suffix}」+ 内容区', async () => {
     const blocks: ReasoningBlock[] = [
       { agent: 'proposer', label: '提案者初评', content: '正在分析构图', final: false },
     ]
-    const wrapper = await mountSuspended(StreamReasoning, { props: { blocks } })
+    const wrapper = await mountSuspended(StreamReasoning, { props: { blocks, suffix: '过程' } })
 
     expect(wrapper.find('.stream-thinking').exists()).toBe(true)
     const block = wrapper.find('.stream-think-block')
     expect(block.exists()).toBe(true)
     expect(block.attributes('data-agent')).toBe('proposer')
 
-    // app.js L825 `${label}过程`
+    // app.js L825 `${label}过程`；suffix 由调用方传入（双 locale 场景传 t('review.reasoningSuffix')）
     expect(wrapper.find('.stream-think-agent').text()).toBe('提案者初评过程')
     expect(wrapper.find('.stream-think-content').exists()).toBe(true)
+  })
+
+  it('suffix 缺省时标题仅为 label（不硬编码「过程」）', async () => {
+    const blocks: ReasoningBlock[] = [
+      { agent: 'proposer', label: 'Proposer\'s initial review', content: 'content', final: false },
+    ]
+    const wrapper = await mountSuspended(StreamReasoning, { props: { blocks } })
+    expect(wrapper.find('.stream-think-agent').text()).toBe('Proposer\'s initial review')
   })
 
   it('BaseMarkdown 收到流式态 content 与 final=false', async () => {

@@ -19,6 +19,7 @@
  *   resolveStreamAgent 仅做防御性兜底
  */
 
+import type { MaybeRefOrGetter } from 'vue'
 import type { ReasoningBlock, StepStatus, StreamAgent, StreamStepItem } from '#shared/types/evaluation'
 
 // ── 常量（对齐 app.js L12-31 / group.js L25-37）──
@@ -209,23 +210,59 @@ export function normalizeResult(raw: Record<string, unknown>): Record<string, un
  */
 export function useEvaluationStream() {
   const phase = shallowRef<StreamPhase>('idle')
-  const steps = shallowRef<StreamStepItem[]>([])
-  const reasoningBlocks = shallowRef<ReasoningBlock[]>([])
   const error = shallowRef<string | null>(null)
+
+  // ── 内部原始状态（steps / reasoningBlocks 为响应式派生，见下方 computed）──
+
+  /** 当前活跃 agent（null = 无活跃步骤） */
+  const activeAgent = shallowRef<StreamAgent | null>(null)
+  /** 步骤轨道目标状态（active / done） */
+  const trackStatus = shallowRef<StepStatus>('pending')
+  /** 是否已触发修正步骤（条件插入 proposer-revision） */
+  const hasRevision = shallowRef(false)
+  /** 推理块状态（label 由 labelsSource 派生，不在此烘焙） */
+  const blockStates = shallowRef<Array<Omit<ReasoningBlock, 'label'>>>([])
 
   let abortController: AbortController | null = null
   /** 非响应式累积缓冲（对齐 app.js state.streamReasoning），避免 O(n²) 字符串拼接 */
   let reasoningAccum: Record<string, string[]> = {}
-  /** 是否已触发修正步骤（条件插入 proposer-revision） */
-  let hasRevision = false
-  /** 步骤标签（由 start 方法初始化） */
-  let stepLabels: Record<StreamAgent, string> = {
+  /**
+   * 步骤标签响应式源（由 start 方法初始化）。
+   *
+   * 接受 MaybeRefOrGetter 而非快照字符串：Flow 传入 t() 派生的 computed，
+   * locale 切换时 steps / reasoningBlocks 经下方 computed 自动重新解析标签——
+   * 修复流式期间切换语言后步骤轨道/推理块标题滞留旧 locale 文案的问题。
+   * composable 仍不解析 i18n（labels 恒由组件传入，仅改为响应式传入）。
+   */
+  let labelsSource: MaybeRefOrGetter<Partial<Record<StreamAgent, string>>> | null = null
+
+  /** 标签解析：默认空串 + 调用方覆盖（原 stepLabels 变量合并逻辑的响应式等价） */
+  const resolvedLabels = computed<Record<StreamAgent, string>>(() => ({
     genreDetector: '',
     proposer: '',
     critic: '',
     'proposer-revision': '',
     arbiter: '',
-  }
+    ...(toValue(labelsSource) ?? {}),
+  }))
+
+  /**
+   * 步骤轨道（派生自原始状态 + 响应式标签）。
+   * idle 阶段返回空数组（原 steps.value 初始 [] 行为）；
+   * start 置 phase='streaming' 后即渲染四固定步 pending 态。
+   */
+  const steps = computed<StreamStepItem[]>(() => {
+    if (phase.value === 'idle') return []
+    return buildSteps(activeAgent.value, trackStatus.value, hasRevision.value, resolvedLabels.value)
+  })
+
+  /** 推理块（label 派生自响应式标签，locale 切换即时更新） */
+  const reasoningBlocks = computed<ReasoningBlock[]>(() =>
+    blockStates.value.map(block => ({
+      ...block,
+      label: resolvedLabels.value[block.agent] || block.agent,
+    })),
+  )
 
   // ── 内部：事件分发（对齐 app.js L408-483 / group.js L391-429）──
 
@@ -235,15 +272,17 @@ export function useEvaluationStream() {
     switch (type) {
       case 'evaluation_start':
       case 'group_evaluation_start': {
-        // 初始化步骤轨道
-        steps.value = buildSteps(null, 'pending', false, stepLabels)
+        // 初始化步骤轨道（派生自原始状态，见 steps computed）
+        activeAgent.value = null
+        trackStatus.value = 'pending'
         break
       }
 
       case 'genre_detected': {
         const data = event.data as Record<string, unknown> | undefined
         const genre = (data?.genre as string) || ''
-        steps.value = buildSteps('genreDetector', 'done', hasRevision, stepLabels)
+        activeAgent.value = 'genreDetector'
+        trackStatus.value = 'done'
         callbacks.onGenreDetected?.(genre)
         break
       }
@@ -253,8 +292,9 @@ export function useEvaluationStream() {
           event.agent as string,
           event.round as number | undefined,
         )
-        if (agent === 'proposer-revision') hasRevision = true
-        steps.value = buildSteps(agent, 'active', hasRevision, stepLabels)
+        if (agent === 'proposer-revision') hasRevision.value = true
+        activeAgent.value = agent
+        trackStatus.value = 'active'
         break
       }
 
@@ -264,22 +304,17 @@ export function useEvaluationStream() {
         if (!reasoningAccum[agent]) reasoningAccum[agent] = []
         reasoningAccum[agent]!.push(content)
 
-        // 更新 reasoningBlocks（整体替换 shallowRef）
+        // 更新 blockStates（整体替换 shallowRef；label 由 reasoningBlocks computed 派生）
         const joined = reasoningAccum[agent]!.join('')
-        const existing = reasoningBlocks.value
+        const existing = blockStates.value
         const idx = existing.findIndex(b => b.agent === agent)
         if (idx >= 0) {
           const updated = [...existing]
           updated[idx] = { ...updated[idx]!, content: joined }
-          reasoningBlocks.value = updated
+          blockStates.value = updated
         }
         else {
-          reasoningBlocks.value = [...existing, {
-            agent,
-            label: stepLabels[agent] || agent,
-            content: joined,
-            final: false,
-          }]
+          blockStates.value = [...existing, { agent, content: joined, final: false }]
         }
         break
       }
@@ -289,14 +324,15 @@ export function useEvaluationStream() {
           event.agent as string,
           event.round as number | undefined,
         )
-        // 置对应 ReasoningBlock.final = true
-        const idx = reasoningBlocks.value.findIndex(b => b.agent === agent)
+        // 置对应 blockState.final = true
+        const idx = blockStates.value.findIndex(b => b.agent === agent)
         if (idx >= 0) {
-          const updated = [...reasoningBlocks.value]
+          const updated = [...blockStates.value]
           updated[idx] = { ...updated[idx]!, final: true }
-          reasoningBlocks.value = updated
+          blockStates.value = updated
         }
-        steps.value = buildSteps(agent, 'done', hasRevision, stepLabels)
+        activeAgent.value = agent
+        trackStatus.value = 'done'
         break
       }
 
@@ -304,7 +340,8 @@ export function useEvaluationStream() {
       case 'group_evaluation_complete': {
         const data = event.data as Record<string, unknown>
         const normalized = normalizeResult(data)
-        steps.value = buildSteps(null, 'done', hasRevision, stepLabels)
+        activeAgent.value = null
+        trackStatus.value = 'done'
         phase.value = 'complete'
         callbacks.onComplete(normalized)
         return true // 标记已获取最终结果
@@ -373,17 +410,18 @@ export function useEvaluationStream() {
    *
    * @param options 请求选项（imageUrl / genre / context）
    * @param callbacks 事件回调（onComplete / onError / onGenreDetected）
-   * @param labels 步骤标签（调用方解析 i18n 后传入）
+   * @param labels 步骤标签响应式源（调用方传入 t() 派生的 computed，
+   *   locale 切换时步骤/推理块标签自动重新解析；亦兼容普通对象快照）
    */
   async function startSingle(
     options: SingleStreamOptions,
     callbacks: StreamCallbacks,
-    labels?: Partial<Record<StreamAgent, string>>,
+    labels?: MaybeRefOrGetter<Partial<Record<StreamAgent, string>>>,
   ): Promise<void> {
     if (import.meta.server) return
 
     reset()
-    if (labels) stepLabels = { ...stepLabels, ...labels }
+    if (labels) labelsSource = labels
     phase.value = 'streaming'
     abortController = new AbortController()
 
@@ -418,17 +456,17 @@ export function useEvaluationStream() {
    *
    * @param options 请求选项（imageUrls / mode / genre / includePerImage）
    * @param callbacks 事件回调（onComplete / onError / onGenreDetected）
-   * @param labels 步骤标签（调用方解析 i18n 后传入）
+   * @param labels 步骤标签响应式源（同 startSingle：传 computed 则 locale 切换即时生效）
    */
   async function startGroup(
     options: GroupStreamOptions,
     callbacks: StreamCallbacks,
-    labels?: Partial<Record<StreamAgent, string>>,
+    labels?: MaybeRefOrGetter<Partial<Record<StreamAgent, string>>>,
   ): Promise<void> {
     if (import.meta.server) return
 
     reset()
-    if (labels) stepLabels = { ...stepLabels, ...labels }
+    if (labels) labelsSource = labels
     phase.value = 'streaming'
     abortController = new AbortController()
 
@@ -465,16 +503,17 @@ export function useEvaluationStream() {
     if (phase.value === 'streaming') phase.value = 'idle'
   }
 
-  /** 重置所有状态到初始值（新一轮评估前调用） */
+  /** 重置所有状态到初始值（新一轮评估前调用；labelsSource 保留——同评估会话内标签源不变） */
   function reset(): void {
     abortController?.abort()
     abortController = null
     phase.value = 'idle'
-    steps.value = []
-    reasoningBlocks.value = []
+    activeAgent.value = null
+    trackStatus.value = 'pending'
+    hasRevision.value = false
+    blockStates.value = []
     error.value = null
     reasoningAccum = {}
-    hasRevision = false
   }
 
   // 对齐 useOssUpload / useImageSelection 的 onScopeDispose 清理模式

@@ -21,6 +21,7 @@ describe('ReviewProgress', () => {
     subtext: '逐项评估构图、光影、主体与技术完成度',
     steps,
     blocks,
+    reasoningSuffix: '过程',
   }
 
   // ── 可见性（回归锚点：app.js L862 .toggle('active', loading)）──
@@ -103,9 +104,16 @@ describe('ReviewProgress', () => {
     expect(items[1]!.classes()).toContain('active')
   })
 
-  it('推理区收到 blocks 并渲染块标题', async () => {
+  it('推理区收到 blocks 并渲染块标题（reasoningSuffix 透传）', async () => {
     const wrapper = await mountSuspended(ReviewProgress, { props: baseProps })
     expect(wrapper.find('.stream-think-agent').text()).toBe('提案者初评过程')
+  })
+
+  it('reasoningSuffix 切换后标题即时更新（双 locale 场景）', async () => {
+    const wrapper = await mountSuspended(ReviewProgress, {
+      props: { ...baseProps, reasoningSuffix: 'process' },
+    })
+    expect(wrapper.find('.stream-think-agent').text()).toBe('提案者初评process')
   })
 
   // ── 透传 ──
