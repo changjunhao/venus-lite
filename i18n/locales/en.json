@@ -128,7 +128,15 @@
     "inputIntro": "Upload 2–10 photos. The system will compare each work under a unified standard — order does not affect the assessment.",
     "evaluate": "Start comparative review",
     "evaluating": "Comparing…",
-    "minImagesError": "Please select 2–10 photos before starting the review"
+    "minImagesError": "Please select 2–10 photos before starting the review",
+    "rankingEyebrow": "FINAL RANKING",
+    "rankingHeading": "Final Ranking",
+    "summaryTitle": "Comparison Summary",
+    "winnerTitle": "Best of group",
+    "rankTitleTemplate": "Rank {rank}",
+    "photoLabelTemplate": "Photo {index}",
+    "missingText": "Photo removed from current selection; re-upload to preview",
+    "rankingAltTemplate": "Rank {rank}: photo {index}"
   },
   "focusCompare": {
     "eyebrow": "FOCUS / TWO FRAMES",

@@ -1,8 +1,7 @@
 <script setup lang="ts">
 /**
  * 组图对比评估页（group-compare.html → /group-compare）。
- * 当前为路由/SEO 壳（component-plan §2.4）：PageHero 已就位，
- * 待 CompareEvaluationFlow 实现后插入 .evaluation-shell。
+ * 路由/SEO 壳（component-plan §2.4）：PageHero + CompareEvaluationFlow 编排。
  */
 const { t } = useI18n()
 
@@ -20,6 +19,6 @@ useSeoMeta({
       :lede="$t('groupCompare.heroLede')"
     />
 
-    <!-- TODO: CompareEvaluationFlow -->
+    <BusinessCompareEvaluationFlow />
   </div>
 </template>

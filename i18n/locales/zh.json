@@ -128,7 +128,15 @@
     "inputIntro": "上传 2–10 张照片。系统会在统一标准下比较每张作品，排序不受上传顺序影响。",
     "evaluate": "开始对比评估",
     "evaluating": "对比评估中...",
-    "minImagesError": "请选择 2–10 张照片后再开始评估"
+    "minImagesError": "请选择 2–10 张照片后再开始评估",
+    "rankingEyebrow": "FINAL RANKING",
+    "rankingHeading": "最终排名",
+    "summaryTitle": "对比总结",
+    "winnerTitle": "本组最佳",
+    "rankTitleTemplate": "第 {rank} 名",
+    "photoLabelTemplate": "第 {index} 张照片",
+    "missingText": "照片已从当前列表移除，重新上传后可查看预览",
+    "rankingAltTemplate": "排名第 {rank}：第 {index} 张照片"
   },
   "focusCompare": {
     "eyebrow": "FOCUS / TWO FRAMES",

@@ -105,6 +105,12 @@ export interface ProcessStepLabels {
   agentCritic: string
   agentRevision: string
   agentArbiter: string
+  /** compare 专用：提案排序徽章模板（group.js L985「已排序 {count} 张照片」） */
+  sortedBadge?: string
+  /** compare 专用：修正重排徽章模板（group.js L1012「已重新排序 {count} 张照片」） */
+  resortedBadge?: string
+  /** compare 专用：仲裁终排徽章模板（group.js L1025「最终排序 {count} 张照片」） */
+  finalRankBadge?: string
 }
 
 /**
@@ -117,13 +123,18 @@ export interface ProcessStepLabels {
  * - resolveProposalContent 参数化 proposal/revision 的 content 取值：
  *   single 默认 `critique`（app.js L684）；joint 传 jointProposalContent
  *   取 `group_analysis || critique`（group.js L989/L1015）；
- *   compare 预留 `comparison_summary` 分支（group.js L989 else 分支）。
+ *   compare 传 compareProposalContent 取 `comparison_summary`（group.js L989 else 分支）；
+ * - mode 参数化徽章策略（group.js L979-986/L1010-1012/L1022-1025 的 mode 分支）：
+ *   compare 时 proposal/revision/arbitration 以排序计数徽章替代评分徽章
+ *   （GroupCompareProposerResult 无 total_score，venus-core types L401-406）；
+ *   默认（joint/single）路径不变——第 5 参数可选，既有调用方零感知。
  */
 export function mapProcessSteps(
   process: Record<string, unknown>,
   labels: ProcessStepLabels,
   resolveScene?: (sceneType: string) => string,
   resolveProposalContent?: (proposal: Record<string, unknown>) => string,
+  mode?: 'joint' | 'compare',
 ): ProcessStepItem[] {
   const steps: ProcessStepItem[] = []
 
@@ -131,13 +142,21 @@ export function mapProcessSteps(
   const proposalCall = unwrapAgentCall(process.proposal)
   if (proposalCall.result) {
     const proposal = proposalCall.result
-    const sceneType = String(proposal.scene_type ?? proposal.sceneType ?? '')
-    const sceneName = sceneType ? (resolveScene ? resolveScene(sceneType) : sceneType) : ''
-    const badges: ProcessStepBadge[] = [
-      { variant: 'step-score', text: fill(labels.scoreBadge, { score: formatStepScore(proposal) }) },
-    ]
-    if (sceneName) {
-      badges.push({ variant: 'step-tag', text: fill(labels.sceneBadge, { scene: sceneName }) })
+    const badges: ProcessStepBadge[] = []
+    if (mode === 'compare') {
+      // compare：排序计数徽章（group.js L985，createBadge 默认 step-score L901）
+      if (labels.sortedBadge) {
+        badges.push({ variant: 'step-score', text: fill(labels.sortedBadge, { count: rankingCount(proposal) }) })
+      }
+    }
+    else {
+      // joint/single：评分 + 场景徽章（app.js L684-689 / group.js L979-983）
+      badges.push({ variant: 'step-score', text: fill(labels.scoreBadge, { score: formatStepScore(proposal) }) })
+      const sceneType = String(proposal.scene_type ?? proposal.sceneType ?? '')
+      const sceneName = sceneType ? (resolveScene ? resolveScene(sceneType) : sceneType) : ''
+      if (sceneName) {
+        badges.push({ variant: 'step-tag', text: fill(labels.sceneBadge, { scene: sceneName }) })
+      }
     }
     steps.push({
       kind: 'proposal',
@@ -180,12 +199,20 @@ export function mapProcessSteps(
   // 提案者修正——条件步骤，仅在发生时出现（app.js L722-736，DESIGN §9.9）
   const revisionCall = unwrapAgentCall(process.revision)
   if (revisionCall.result) {
+    const badges: ProcessStepBadge[] = []
+    if (mode === 'compare') {
+      // compare：重排徽章（group.js L1012；GroupCompareProposerResult 无 total_score → 无 revisedBadge）
+      if (labels.resortedBadge) {
+        badges.push({ variant: 'step-score', text: fill(labels.resortedBadge, { count: rankingCount(revisionCall.result) }) })
+      }
+    }
+    else {
+      badges.push({ variant: 'step-score', text: fill(labels.revisedBadge, { score: formatStepScore(revisionCall.result) }) })
+    }
     steps.push({
       kind: 'revision',
       title: labels.stepRevision,
-      badges: [
-        { variant: 'step-score', text: fill(labels.revisedBadge, { score: formatStepScore(revisionCall.result) }) },
-      ],
+      badges,
       content: resolveProposalContent ? resolveProposalContent(revisionCall.result) : String(revisionCall.result.critique ?? ''),
       reasoning: revisionCall.reasoning || null,
       reasoningToggle: fill(labels.reasoningToggle, { agent: labels.agentRevision }),
@@ -196,12 +223,20 @@ export function mapProcessSteps(
   const arbitrationCall = unwrapAgentCall(process.arbitration)
   if (arbitrationCall.result) {
     const arbitration = arbitrationCall.result
+    const badges: ProcessStepBadge[] = []
+    if (mode === 'compare') {
+      // compare：终排徽章（group.js L1025；GroupCompareArbitrationResult 无 total_score → 无 finalBadge）
+      if (labels.finalRankBadge) {
+        badges.push({ variant: 'step-score', text: fill(labels.finalRankBadge, { count: rankingCount(arbitration) }) })
+      }
+    }
+    else {
+      badges.push({ variant: 'step-score', text: fill(labels.finalBadge, { score: formatStepScore(arbitration) }) })
+    }
     steps.push({
       kind: 'arbitration',
       title: labels.stepArbitration,
-      badges: [
-        { variant: 'step-score', text: fill(labels.finalBadge, { score: formatStepScore(arbitration) }) },
-      ],
+      badges,
       content: String(arbitration.arbitration_notes ?? arbitration.arbitrationNotes ?? ''),
       reasoning: arbitrationCall.reasoning || null,
       reasoningToggle: fill(labels.reasoningToggle, { agent: labels.agentArbiter }),
@@ -214,6 +249,16 @@ export function mapProcessSteps(
 /** joint 提案/修正内容：group_analysis 优先，回退 critique（group.js L989/L1015） */
 export function jointProposalContent(p: Record<string, unknown>): string {
   return String(p.group_analysis ?? p.groupAnalysis ?? p.critique ?? '')
+}
+
+/** compare 提案/修正内容：comparison_summary（group.js L989 else 分支，无 critique 回退） */
+export function compareProposalContent(p: Record<string, unknown>): string {
+  return String(p.comparison_summary ?? p.comparisonSummary ?? '')
+}
+
+/** compare ranking 数组长度（group.js L985/L1012/L1025 `proposal.ranking?.length || 0`） */
+function rankingCount(record: Record<string, unknown>): number {
+  return Array.isArray(record.ranking) ? record.ranking.length : 0
 }
 
 /** buildSingleMetadataItems 的预解析标签袋（result.meta.* 键） */
