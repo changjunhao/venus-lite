@@ -113,7 +113,10 @@
     "inputIntro": "Upload 2–10 photos and arrange their order. The system will focus on the relationships between photos, not just score them one by one.",
     "evaluate": "Start joint review",
     "evaluating": "Reviewing as series…",
-    "minImagesError": "Please select 2–10 photos before starting the review"
+    "minImagesError": "Please select 2–10 photos before starting the review",
+    "contactHeading": "Series photos",
+    "summaryTitle": "Series analysis",
+    "dimensionAria": "Series dimension scores"
   },
   "groupCompare": {
     "seoTitle": "Venus — Comparative Review",
@@ -198,6 +201,9 @@
     "preparing": "Preparing…",
     "preparingSub": "Setting up the evaluation, please wait",
     "uploadingPhoto": "Preparing your photo…",
+    "uploadingGroupPhoto": "Photo {index} of {count} · preparing…",
+    "groupPhotosReady": "{count} photos ready",
+    "groupUploadFailed": "Photo {index} of {count} could not be prepared. Please try again.",
     "starting": "Starting the evaluation…",
     "evaluating": "Evaluating",
     "evaluatingSub": "Evaluation in progress — please keep this page open",

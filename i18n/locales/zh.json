@@ -113,7 +113,10 @@
     "inputIntro": "上传 2–10 张照片并调整顺序。系统会关注照片之间的关系，而不只是逐张打分。",
     "evaluate": "开始联合评估",
     "evaluating": "联合评估中...",
-    "minImagesError": "请选择 2–10 张照片后再开始评估"
+    "minImagesError": "请选择 2–10 张照片后再开始评估",
+    "contactHeading": "系列照片",
+    "summaryTitle": "系列整体分析",
+    "dimensionAria": "系列维度评分"
   },
   "groupCompare": {
     "seoTitle": "Venus 组图对比评估",
@@ -198,6 +201,9 @@
     "preparing": "准备中...",
     "preparingSub": "正在准备评估，请稍候",
     "uploadingPhoto": "正在准备照片…",
+    "uploadingGroupPhoto": "第 {index}/{count} 张 · 正在准备照片",
+    "groupPhotosReady": "{count} 张照片已准备完成",
+    "groupUploadFailed": "第 {index}/{count} 张照片准备失败，请稍后重试",
     "starting": "正在开始评估…",
     "evaluating": "评估中",
     "evaluatingSub": "评估进行中，请保持页面打开",
