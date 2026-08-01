@@ -215,7 +215,9 @@
       "duration": "评估耗时",
       "rounds": "评估轮次",
       "time": "评估时间"
-    }
+    },
+    "contactSheetAria": "系列照片接触印样",
+    "contactPhotoAlt": "系列中的第 {index} 张照片"
   },
   "share": {
     "action": "生成分享图",

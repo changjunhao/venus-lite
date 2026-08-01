@@ -215,7 +215,9 @@
       "duration": "Duration",
       "rounds": "Rounds",
       "time": "Evaluated at"
-    }
+    },
+    "contactSheetAria": "Series contact sheet",
+    "contactPhotoAlt": "Photo {index} in the series"
   },
   "share": {
     "action": "Generate share image",
