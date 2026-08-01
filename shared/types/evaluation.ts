@@ -49,6 +49,14 @@ export type {
 export type ExifTagKey = keyof ExifData
 
 /**
+ * 排名条目（从 venus-core GroupCompareEvaluationResult 派生，component-plan L176 承诺）。
+ *
+ * 消费方：RankingList / RankingCard / 未来 FocusCompare。
+ * 派生而非双写：venus-core 形状变更自动传导。
+ */
+export type RankingItem = GroupCompareEvaluationResult['ranking'][number]
+
+/**
  * 评审轨道 Agent 标识（对齐 venus app.js L12-18 AGENT_LABELS 键名）。
  *
  * `proposer-revision` 为条件步骤——仅在批判者质疑引发修正时出现
