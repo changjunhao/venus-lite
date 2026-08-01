@@ -109,6 +109,23 @@
     "heroTitle": "Comparative Review",
     "heroLede": "Let every photo be seen under the same frame and the same standard — get a ranking, scores and the evidence behind each difference."
   },
+  "focusCompare": {
+    "eyebrow": "FOCUS / TWO FRAMES",
+    "title": "Focus Compare",
+    "intro": "Pick two photos to compare their score gap, strengths and limitations at identical size. Click either image to enter immersive comparison.",
+    "leftLabel": "Left photo",
+    "rightLabel": "Right photo",
+    "optionTemplate": "#{rank} · Photo {index} · {name}",
+    "closeText": "Exit immersive",
+    "closeAria": "Exit immersive comparison",
+    "rationaleLabel": "Strengths & limitations",
+    "rationaleFallback": "No further evidence available",
+    "deltaHeading": "Overall score gap",
+    "deltaBarsAria": "Overall score comparison of the two photos",
+    "deltaLeftBar": "Left {score}",
+    "deltaRightBar": "Right {score}",
+    "deltaNote": "Trace each difference against the strengths and limitations on both sides; the overall score is no substitute for the photos themselves and the written evidence."
+  },
   "upload": {
     "titleSingle": "Drop a photo, or click to choose",
     "titleMulti": "Drop 2–10 photos, or click to choose",

@@ -109,6 +109,23 @@
     "heroTitle": "组图对比评估",
     "heroLede": "让每张照片在同一视框与评估标准下被观看，获得排序、分数和差异依据。"
   },
+  "focusCompare": {
+    "eyebrow": "FOCUS / TWO FRAMES",
+    "title": "双图聚焦比较",
+    "intro": "选择两张照片，在相同尺寸下核对综合分差、优势与限制。点击任一大图可进入沉浸对比。",
+    "leftLabel": "左侧照片",
+    "rightLabel": "右侧照片",
+    "optionTemplate": "#{rank} · 第 {index} 张 · {name}",
+    "closeText": "退出沉浸",
+    "closeAria": "退出沉浸对比",
+    "rationaleLabel": "优势与限制",
+    "rationaleFallback": "暂无进一步判断依据",
+    "deltaHeading": "综合评分差值",
+    "deltaBarsAria": "两张照片综合评分对比",
+    "deltaLeftBar": "左侧 {score}",
+    "deltaRightBar": "右侧 {score}",
+    "deltaNote": "差异来源请结合两侧“优势与限制”逐项核对；综合分不替代照片本身与文字依据。"
+  },
   "upload": {
     "titleSingle": "拖入一张照片，或点击选择",
     "titleMulti": "拖入 2–10 张照片，或点击批量选择",
