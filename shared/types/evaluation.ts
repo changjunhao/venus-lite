@@ -3,25 +3,47 @@
  *
  * 位于 shared/types/ 下，Nuxt 4 会同时向 app 与 server 自动导入，
  * 也可通过 `#shared/types/evaluation` 显式导入。
- * 后续 EvaluationResult / GroupResult / SSE 事件类型在此扩展。
+ *
+ * 类型来源分两部分：
+ * - venus-core 重导出：评估结果、SSE 事件、EXIF、门类等核心类型
+ *   （单一来源，避免双写与版本漂移）
+ * - 本地 UI 专属：StreamAgent / ScoreBand / ProcessStep 等
+ *   （venus-core 无对应物，为 venus-lite 前端渲染层特有）
  */
 
-/**
- * EXIF 元数据（形状对齐 venus upload.js L45-116 extractExif 输出）。
- *
- * 消费方：useExif（提取）→ SinglePreview / ExifTagList（输入区展示）
- * → ExifPanel（结果区网格）。所有字段可选——提取失败或字段缺失时为 null。
- */
-export interface ExifData {
-  cameraModel?: string
-  lensModel?: string
-  fNumber?: number
-  shutterSpeed?: string
-  iso?: number
-  focalLength?: number
-  dateTimeOriginal?: string
-  flash?: string
-}
+// ── venus-core 类型重导出（单一来源）──
+// 评估域核心类型统一来自 @theogony/venus-core，避免双写与版本漂移。
+// 源文件：venus-core/src/types.ts + venus-core/src/schema/index.ts
+export type {
+  // Schema-inferred types
+  ExifData,
+  GenreMetadata,
+  // Genre & context
+  Genre,
+  EvaluationContext,
+  // Single evaluation results
+  EvaluationResult,
+  ProposerResult,
+  ArbitrationResult,
+  CritiqueResult,
+  CritiqueChallenge,
+  SceneTypeReview,
+  // Group evaluation results
+  GroupJointEvaluationResult,
+  GroupCompareEvaluationResult,
+  GroupEvaluationResult,
+  PerImageDetail,
+  GroupEvaluationMetadata,
+  // Agent types
+  AgentCallResult,
+  // Stream events
+  EvaluationStreamEvent,
+  GroupEvaluationStreamEvent,
+  EvaluationEvent,
+} from '@theogony/venus-core'
+
+// ── 本地 UI 专属类型 ──
+// 以下类型是 venus-lite 前端渲染层特有概念，venus-core 无对应物。
 
 /** EXIF 字段键（标签列表遍历与 labels 映射的类型约束） */
 export type ExifTagKey = keyof ExifData
@@ -81,23 +103,6 @@ export interface ScoreBand {
   label: string
   /** 对应 CSS class 名（venus utils.js L47-50 原样保留——跨项目设计语言锚点） */
   colorClass: string
-}
-
-/**
- * 门类元数据（形状对齐 venus-core src/schema/index.ts GenreMetadata）。
- *
- * 消费方：useEvalMetadata（/api/metadata 拉取与缓存）→ DimensionList（维度名解析）
- * / GenreControls（门类选项与场景标签）。
- */
-export interface GenreMetadata {
-  /** 门类中文标签 */
-  label: string
-  /** 维度中文标签列表（历史兼容字段） */
-  dimensionLabels: string[]
-  /** 场景子类型选项 */
-  subtypes: Array<{ value: string; label: string }>
-  /** 维度定义（key → 中文标签），resolveDimensionName 的查找源 */
-  dimensions: Array<{ key: string; label: string }>
 }
 
 // ── 评估过程披露域（ProcessTimeline / ProcessStep / ChallengeList / ReasoningBlock）──
