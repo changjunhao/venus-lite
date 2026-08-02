@@ -218,7 +218,7 @@ pm2 startup && pm2 save     # 设置开机自启
 pnpm build
 
 # 2. 打包产物
-tar -czf venus-lite-deploy.tar.gz .output ecosystem.config.cjs .env.example
+COPYFILE_DISABLE=1 tar -czf venus-lite-deploy.tar.gz .output ecosystem.config.cjs .env.example
 
 # 3. 上传至服务器
 scp venus-lite-deploy.tar.gz user@server:/opt/venus-lite/
