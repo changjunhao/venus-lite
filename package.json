@@ -1,5 +1,6 @@
 {
   "name": "venus-lite",
+  "description": "AI-powered photography aesthetics evaluation — multi-agent adversarial review with streaming progress, built on Nuxt 4 & venus-core",
   "type": "module",
   "private": true,
   "scripts": {
