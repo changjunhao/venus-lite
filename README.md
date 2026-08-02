@@ -185,11 +185,52 @@ pnpm test
 pnpm test:watch
 ```
 
-## Production Build
+## Production Build & Deployment
 
 ```bash
-pnpm build        # Build
+pnpm build        # Build (output to .output/)
 pnpm preview      # Preview production build locally
 ```
 
-In production, inject config via process environment variables (PM2 / `node --env-file`). See [Nuxt deployment docs](https://nuxt.com/docs/getting-started/deployment) for details.
+### PM2 Deployment
+
+The project ships with an [ecosystem.config.cjs](./ecosystem.config.cjs) for PM2 process management.
+
+```bash
+# Start
+pm2 start ecosystem.config.cjs --only venus-lite
+
+# Common operations
+pm2 status                  # Process status
+pm2 logs venus-lite         # Live logs
+pm2 restart venus-lite      # Restart
+pm2 stop venus-lite         # Stop
+pm2 delete venus-lite       # Remove process
+pm2 startup && pm2 save     # Enable auto-start on boot
+```
+
+### Server Deployment Workflow
+
+The `.output/` directory is self-contained (no `node_modules` needed). The server only requires **Node.js ≥ 20.6**.
+
+```bash
+# 1. Build locally
+pnpm build
+
+# 2. Package artifacts
+tar -czf venus-lite-deploy.tar.gz .output ecosystem.config.cjs .env.example
+
+# 3. Upload to server
+scp venus-lite-deploy.tar.gz user@server:/opt/venus-lite/
+
+# 4. Deploy on server
+ssh user@server
+cd /opt/venus-lite
+tar -xzf venus-lite-deploy.tar.gz
+cp .env.example .env && vim .env   # Fill in production secrets (first deploy only)
+mkdir -p logs
+pm2 start ecosystem.config.cjs --only venus-lite
+pm2 startup && pm2 save
+```
+
+Environment variables are injected via `--env-file=.env` (configured in ecosystem.config.cjs). See [Nuxt deployment docs](https://nuxt.com/docs/getting-started/deployment) for more details.

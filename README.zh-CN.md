@@ -185,11 +185,52 @@ pnpm test
 pnpm test:watch
 ```
 
-## 生产构建
+## 生产构建与部署
 
 ```bash
-pnpm build        # 构建
+pnpm build        # 构建（产物输出至 .output/）
 pnpm preview      # 本地预览生产构建
 ```
 
-生产环境通过进程环境变量注入配置（PM2 / `node --env-file`），参见 [Nuxt 部署文档](https://nuxt.com/docs/getting-started/deployment)。
+### PM2 部署
+
+项目自带 [ecosystem.config.cjs](./ecosystem.config.cjs) 用于 PM2 进程管理。
+
+```bash
+# 启动
+pm2 start ecosystem.config.cjs --only venus-lite
+
+# 常用操作
+pm2 status                  # 查看进程状态
+pm2 logs venus-lite         # 实时日志
+pm2 restart venus-lite      # 重启
+pm2 stop venus-lite         # 停止
+pm2 delete venus-lite       # 移除进程
+pm2 startup && pm2 save     # 设置开机自启
+```
+
+### 服务器部署流程
+
+`.output/` 目录为自包含产物（无需 `node_modules`），服务器仅需 **Node.js ≥ 20.6**。
+
+```bash
+# 1. 本地构建
+pnpm build
+
+# 2. 打包产物
+tar -czf venus-lite-deploy.tar.gz .output ecosystem.config.cjs .env.example
+
+# 3. 上传至服务器
+scp venus-lite-deploy.tar.gz user@server:/opt/venus-lite/
+
+# 4. 服务器端部署
+ssh user@server
+cd /opt/venus-lite
+tar -xzf venus-lite-deploy.tar.gz
+cp .env.example .env && vim .env   # 填入生产环境变量（仅首次部署）
+mkdir -p logs
+pm2 start ecosystem.config.cjs --only venus-lite
+pm2 startup && pm2 save
+```
+
+环境变量通过 `--env-file=.env` 注入（已在 ecosystem.config.cjs 中配置）。更多详情参见 [Nuxt 部署文档](https://nuxt.com/docs/getting-started/deployment)。
