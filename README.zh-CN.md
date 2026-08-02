@@ -136,8 +136,6 @@ pnpm dev
 | POST | `/api/evaluate/group` | 组图评估（同步） |
 | POST | `/api/evaluate/group/stream` | 组图评估（SSE 流式） |
 | GET | `/api/oss/sts` | 签发 OSS STS 临时凭证 |
-| GET | `/api/notes` | 备忘录列表（演示） |
-| POST | `/api/notes` | 创建备忘录（演示） |
 
 错误统一返回 `ApiError` 结构（`code` + `message`）。
 

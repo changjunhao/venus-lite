@@ -136,8 +136,6 @@ Each agent (Genre Detector / Proposer / Critic / Arbiter / Revision) can be inde
 | POST | `/api/evaluate/group` | Group evaluation (sync) |
 | POST | `/api/evaluate/group/stream` | Group evaluation (SSE streaming) |
 | GET | `/api/oss/sts` | Issue OSS STS temporary credentials |
-| GET | `/api/notes` | List notes (demo) |
-| POST | `/api/notes` | Create note (demo) |
 
 Errors follow a unified `ApiError` shape (`code` + `message`).
 

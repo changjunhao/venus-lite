@@ -54,7 +54,6 @@ export default defineNuxtConfig({
   // 路由级渲染策略（骨架示例均走 SSR；后续页面可按需追加 prerender/swr 等规则）
   routeRules: {
     '/': { ssr: true },
-    '/notes': { ssr: true },
   },
 
   // 环境变量体系：运行时经 NUXT_ 前缀覆盖（见 .env.example）
