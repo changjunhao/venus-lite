@@ -60,7 +60,8 @@ server/
 │   └── metadata.get.ts   # Engine metadata
 ├── middleware/            # Request logging
 └── utils/
-    └── venus-engine.ts   # Venus engine singleton + Nitro adapter
+    ├── venus-engine.ts   # Venus engine singleton + Nitro adapter
+    └── kimi.ts           # Kimi (Moonshot) file upload — auto ms:// conversion
 shared/
 ├── types/                # Shared types between app & server (api.ts, evaluation.ts)
 ├── utils/                # Isomorphic helpers (format.ts)
@@ -124,6 +125,8 @@ Supported provider types: `openai-chat` | `openai-responses` | `anthropic` | `ge
 Each agent (Genre Detector / Proposer / Critic / Arbiter / Revision) can be independently configured via `NUXT_VENUS_<AGENT>_*` variables for provider, model, and reasoning parameters. Falls back to global config when unset.
 
 > When any of `BASE_URL` + `API_KEY` + `MODEL` is missing, `/api/evaluate*` and `/api/metadata` return 503 `VENUS_DISABLED`.
+
+**Kimi (Moonshot) auto-detection**: When `NUXT_VENUS_PROVIDER_BASE_URL` contains `moonshot.cn`, images are automatically uploaded to the Moonshot file API and converted to `ms://` protocol URLs before evaluation — no extra configuration needed.
 
 ## API Routes
 

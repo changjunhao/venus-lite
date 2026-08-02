@@ -6,8 +6,9 @@ import {
   createVenusEngine,
 } from '@theogony/venus-core'
 import { createNitroAdapter } from '@theogony/venus-core/nitro'
-import type { VenusEngine, LLMProvider, AgentRole, ReasoningEffort, ReasoningConfig } from '@theogony/venus-core'
+import type { VenusEngine, LLMProvider, AgentRole, ReasoningEffort, ReasoningConfig, AdapterHooks } from '@theogony/venus-core'
 import type { EventHandler, H3Event } from 'h3'
+import { isKimiProvider, createKimiHooks } from './kimi'
 
 // ── 类型 ──────────────────────────────────────────────────
 
@@ -20,6 +21,7 @@ const AGENT_ROLES: AgentRole[] = ['genreDetector', 'proposer', 'critic', 'arbite
 // ── 惰性单例：引擎与适配器均在首个请求时构建（构造开销大，且需运行时配置）──
 let engine: VenusEngine | null = null
 let apiHandler: EventHandler | null = null
+let adapterHooks: AdapterHooks | undefined
 
 // ── Provider 工厂 ─────────────────────────────────────────
 
@@ -212,12 +214,22 @@ export function createEngineFromConfig(config: Record<string, unknown>): VenusEn
 /**
  * 获取 VenusEngine 单例。
  * 惰性初始化：首次调用时读取运行时配置并创建引擎。
+ * 若检测到 Kimi（Moonshot）Provider，同时构建文件上传 hooks。
  */
 export function getVenusEngine(event: H3Event): VenusEngine {
   if (engine) return engine
 
   const config = useRuntimeConfig(event) as unknown as Record<string, unknown>
   engine = createEngineFromConfig(config)
+
+  // Kimi 场景：全局 baseURL 包含 moonshot.cn 时启用文件上传 hooks
+  const baseURL = (config.venusProviderBaseUrl as string) || ''
+  const apiKey = (config.venusProviderApiKey as string) || ''
+  if (isKimiProvider(baseURL)) {
+    adapterHooks = createKimiHooks(baseURL, apiKey)
+    console.log('   Kimi: ON (文件上传模式, ms:// protocol)')
+  }
+
   return engine
 }
 
@@ -233,7 +245,10 @@ export function getVenusEngine(event: H3Event): VenusEngine {
  */
 function getVenusApiHandler(event: H3Event): EventHandler {
   if (!apiHandler) {
-    apiHandler = createNitroAdapter(getVenusEngine(event), { prefix: '/api' }).handler
+    apiHandler = createNitroAdapter(getVenusEngine(event), {
+      prefix: '/api',
+      ...(adapterHooks ? { hooks: adapterHooks } : {}),
+    }).handler
   }
   return apiHandler
 }

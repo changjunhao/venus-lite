@@ -60,7 +60,8 @@ server/
 │   └── metadata.get.ts   # 引擎元数据
 ├── middleware/            # 请求日志
 └── utils/
-    └── venus-engine.ts   # Venus 引擎单例 + Nitro 适配器
+    ├── venus-engine.ts   # Venus 引擎单例 + Nitro 适配器
+    └── kimi.ts           # Kimi（Moonshot）文件上传 — 自动 ms:// 转换
 shared/
 ├── types/                # 前后端共享类型（api.ts, evaluation.ts）
 ├── utils/                # 同构工具（format.ts）
@@ -124,6 +125,8 @@ pnpm dev
 每个 Agent（Genre Detector / Proposer / Critic / Arbiter / Revision）可通过 `NUXT_VENUS_<AGENT>_*` 独立配置 Provider、模型与推理参数，未配置时回落全局。
 
 > `BASE_URL` + `API_KEY` + `MODEL` 三项缺一时，`/api/evaluate*` 与 `/api/metadata` 返回 503 `VENUS_DISABLED`。
+
+**Kimi（Moonshot）自动检测**：当 `NUXT_VENUS_PROVIDER_BASE_URL` 包含 `moonshot.cn` 时，图片会在评估前自动上传至 Moonshot 文件接口并转换为 `ms://` 协议地址，无需额外配置。
 
 ## API 路由
 
