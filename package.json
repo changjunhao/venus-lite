@@ -17,7 +17,7 @@
     "@alicloud/openapi-core": "^1.0.8",
     "@alicloud/sts20150401": "^1.2.0",
     "@nuxtjs/i18n": "^10.5.0",
-    "@theogony/venus-core": "file:../venus-core",
+    "@theogony/venus-core": "^0.14.0",
     "ali-oss": "^6.23.0",
     "exifreader": "^4.41.3",
     "markstream-vue": "^1.0.7",

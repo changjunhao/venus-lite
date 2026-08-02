@@ -5,3 +5,5 @@ allowBuilds:
   exifreader: false
   protobufjs: false
   unrs-resolver: true
+minimumReleaseAgeExclude:
+  - '@theogony/venus-core@0.14.0'
