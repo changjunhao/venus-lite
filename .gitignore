@@ -23,5 +23,6 @@ logs
 .env.*
 !.env.example
 /docs/
+/deploy
 
 venus-lite-deploy.tar.gz

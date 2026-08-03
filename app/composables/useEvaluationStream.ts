@@ -14,7 +14,7 @@
  * 设计约束：
  * - 纯客户端能力（§四.5）：依赖 fetch/ReadableStream/TextDecoder，SSR 守卫
  * - 状态用 shallowRef + 整体替换数组（对齐 useOssUpload / useImageSelection 模式）
- * - 不引入新依赖
+ * - 不引入新依赖（useCsrf 为 nuxt-security/nuxt-csurf 自动导入）
  * - venus-core 流式模式已直接发射 'proposer-revision'（engine.ts L587/L981），
  *   resolveStreamAgent 仅做防御性兜底
  */
@@ -211,6 +211,12 @@ export function normalizeResult(raw: Record<string, unknown>): Record<string, un
 export function useEvaluationStream() {
   const phase = shallowRef<StreamPhase>('idle')
   const error = shallowRef<string | null>(null)
+
+  // CSRF token（nuxt-security/nuxt-csurf）：两处原生 fetch POST 不走 $fetch 封装，
+  // 需手动带 csrf-token 头，否则被 csurf 中间件 403。useCsrf 客户端从
+  // SSR 注入的 <meta name="csrf-token"> 读取，返回普通字符串（非 Ref）。
+  // SSR 侧无值但 startSingle/startGroup 均有 import.meta.server 提前返回，不会实际发起请求。
+  const { csrf } = useCsrf()
 
   // ── 内部原始状态（steps / reasoningBlocks 为响应式派生，见下方 computed）──
 
@@ -428,7 +434,7 @@ export function useEvaluationStream() {
     try {
       const response = await fetch('/api/evaluate/stream', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'csrf-token': csrf || '' },
         body: JSON.stringify({
           imageUrl: options.imageUrl,
           genre: options.genre || undefined,
@@ -473,7 +479,7 @@ export function useEvaluationStream() {
     try {
       const response = await fetch('/api/evaluate/group/stream', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'csrf-token': csrf || '' },
         body: JSON.stringify({
           imageUrls: options.imageUrls,
           mode: options.mode,

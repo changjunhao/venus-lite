@@ -1,11 +1,31 @@
 import { THEME_INIT_SCRIPT } from './shared/theme'
+import { createHash } from 'node:crypto'
+
+// CSP img-src 白名单：
+// - OSS 签名 URL：上传后的图片经 signatureUrl 展示（useOssUpload），
+//   需把 Bucket 域名加入 img-src，否则默认 CSP（'self' + data:）会拦截；
+//   Bucket 未配置（如本地开发）时不追加，data: 回退路径不受影响。
+// - blob:：选图即时预览（useImageSelection）与分享图预览（useShareImage）
+//   均经 URL.createObjectURL 产生 blob URL。
+const ossRegion = process.env.NUXT_OSS_REGION || ''
+const ossBucket = process.env.NUXT_OSS_BUCKET || ''
+const ossImgOrigin = ossBucket && ossRegion ? `https://${ossBucket}.${ossRegion}.aliyuncs.com` : ''
+
+// CSRF 加密密钥归一：uncsrf 直接把 encryptSecret 的 UTF-8 字节用作 aes-256-cbc 密钥，
+// 必须恰好 32 字节（长度不符会抛 ERR_CRYPTO_INVALID_KEYLEN 致 SSR 500）。
+// 用户配置任意长度随机串均可，此处经 SHA-256 派生固定 32 字节；未配置时留空，
+// 由 csurf 运行时生成随机密钥（与模块缺省行为一致，但重启后失效）。
+const rawCsrfSecret = process.env.NUXT_SECURITY_CSRF_SECRET || ''
+const csrfEncryptSecret = rawCsrfSecret
+  ? createHash('sha256').update(rawCsrfSecret).digest('base64').slice(0, 32)
+  : undefined
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
 
-  modules: ['@nuxt/fonts', '@nuxt/a11y', '@nuxt/eslint', '@nuxt/test-utils/module', '@nuxtjs/i18n'],
+  modules: ['@nuxt/fonts', '@nuxt/a11y', '@nuxt/eslint', '@nuxt/test-utils/module', '@nuxtjs/i18n', 'nuxt-security'],
 
   // 全局样式：Design Tokens 先于基础样式加载。
   // markstream-vue 置于 main.css 之前：其 dist CSS 残留未限定作用域的 .container 规则
@@ -52,8 +72,38 @@ export default defineNuxtConfig({
   },
 
   // 路由级渲染策略（骨架示例均走 SSR；后续页面可按需追加 prerender/swr 等规则）
+  // security.rateLimiter 为 nuxt-security 按路由限流分档（令牌桶，内存 lruCache 驱动）：
+  // evaluate 直烧 LLM 配额最严；oss/sts 防凭证收割；metadata 宽松。
   routeRules: {
     '/': { ssr: true },
+    '/api/evaluate/**': { security: { rateLimiter: { tokensPerInterval: 5, interval: 60000 } } },
+    '/api/oss/sts': { security: { rateLimiter: { tokensPerInterval: 10, interval: 300000 } } },
+    '/api/metadata': { security: { rateLimiter: { tokensPerInterval: 60, interval: 300000 } } },
+  },
+
+  // 应用层安全防护（nuxt-security，OWASP/Helmet 风格）。
+  // 与 Nginx 边缘层分工：Nginx 管 TLS/边缘限流/嗅探拦截/静态缓存，
+  // 安全响应头由本模块统一负责，避免双层重复头。
+  security: {
+    headers: {
+      contentSecurityPolicy: {
+        // 仅覆盖 img-src，其余指令沿用模块默认（含 nonce + strict-dynamic 的 script-src）
+        'img-src': ["'self'", 'data:', 'blob:', ...(ossImgOrigin ? [ossImgOrigin] : [])],
+      },
+    },
+    rateLimiter: {
+      // 本机健康检查/监控放行；全局档位用默认 150 次/5min
+      whiteList: ['127.0.0.1'],
+    },
+    csrf: {
+      // 固定加密密钥（NUXT_SECURITY_CSRF_SECRET，任意长度随机串，如 openssl rand -hex 32）：
+      // 缺省随机密钥在 PM2 重启后失效，存量页面 token 会全部 403。
+      // 底层 nuxt-csurf 将其并入 runtimeConfig.csurf，亦可用 NUXT_CSURF_ENCRYPT_SECRET 运行时覆盖
+      // （注意：该运行时覆盖不经过 SHA-256 归一，必须自行提供恰好 32 字节的串）。
+      encryptSecret: csrfEncryptSecret,
+    },
+    // 保留客户端 console 便于排障（默认为 true 会移除）
+    removeLoggers: false,
   },
 
   // 环境变量体系：运行时经 NUXT_ 前缀覆盖（见 .env.example）

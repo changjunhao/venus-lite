@@ -28,7 +28,8 @@ module.exports = {
       env: {
         NODE_ENV: 'production',
         PORT: 3000,
-        HOST: '0.0.0.0',
+        // 仅监听回环：公网流量必须经 Nginx 反代进入，杜绝绕过边缘防护直连 3000
+        HOST: '127.0.0.1',
       },
 
       autorestart: true,
