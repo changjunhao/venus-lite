@@ -8,7 +8,77 @@
  */
 
 import OpenAI from 'openai'
+import { lookup } from 'node:dns/promises'
+import { isIP } from 'node:net'
 import type { AdapterHooks } from '@theogony/venus-core'
+
+// ── SSRF 防护 ───────────────────────────────────────────
+// imageUrl 由用户请求体直接提供，fetch 前必须阻断内网/回环/链路本地/云元数据地址，
+// 否则攻击者可借 POST /api/evaluate 探测内网或读取云实例元数据（CWE-918）。
+
+/** 重定向跟随上限（手动跟随并对每跳重新校验目标，防止经 302 跳入内网） */
+const MAX_REDIRECTS = 5
+
+/** 判断 IPv4/IPv6 是否落在私有、保留、回环、链路本地或未指定地址段 */
+function isBlockedIp(ip: string): boolean {
+  if (isIP(ip) === 4) {
+    const [a = 0, b = 0] = ip.split('.').map(Number)
+    return (
+      a === 10 // 10.0.0.0/8
+      || a === 127 // 127.0.0.0/8 回环
+      || a === 0 // 0.0.0.0/8
+      || (a === 100 && b >= 64 && b <= 127) // 100.64.0.0/10 CGNAT
+      || (a === 169 && b === 254) // 169.254.0.0/16 链路本地 + 云元数据 169.254.169.254
+      || (a === 172 && b >= 16 && b <= 31) // 172.16.0.0/12
+      || (a === 192 && b === 168) // 192.168.0.0/16
+      || a >= 224 // 组播 / 保留段
+    )
+  }
+  // IPv6：::1 回环、fe80::/10 链路本地、fc00::/7 ULA、:: 未指定
+  const v6 = ip.toLowerCase()
+  return (
+    v6 === '::1'
+    || v6 === '::'
+    || v6.startsWith('fe8')
+    || v6.startsWith('fc')
+    || v6.startsWith('fd')
+  )
+}
+
+/**
+ * 校验目标 URL 可安全抓取：仅 https；主机为 IP 字面量时直接判段，
+ * 为域名时先 DNS 解析再对全部解析结果判段（缓解 DNS 重绑定）。
+ */
+async function assertSafeFetchTarget(rawUrl: string): Promise<void> {
+  let url: URL
+  try {
+    url = new URL(rawUrl)
+  } catch {
+    throw new Error('Invalid image URL')
+  }
+  if (url.protocol !== 'https:') throw new Error('Only https image URLs are allowed')
+
+  const host = url.hostname.replace(/^\[|\]$/g, '')
+  const ips = isIP(host) ? [host] : (await lookup(host, { all: true })).map((r) => r.address)
+  if (ips.some(isBlockedIp)) throw new Error('Image URL resolves to a blocked address')
+}
+
+/** 手动跟随重定向的 fetch：每跳均重新做 SSRF 校验 */
+async function safeFetchImage(rawUrl: string): Promise<Response> {
+  let currentUrl = rawUrl
+  for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
+    await assertSafeFetchTarget(currentUrl)
+    const resp = await fetch(currentUrl, { redirect: 'manual' })
+    if (resp.status >= 300 && resp.status < 400) {
+      const location = resp.headers.get('location')
+      if (!location) throw new Error(`Redirect without location: ${resp.status}`)
+      currentUrl = new URL(location, currentUrl).toString()
+      continue
+    }
+    return resp
+  }
+  throw new Error('Too many redirects')
+}
 
 // ── 惰性单例 ─────────────────────────────────────────────
 let kimiClient: OpenAI | null = null
@@ -56,8 +126,8 @@ export async function resolveImageForKimi(
     buffer = Buffer.from(match[2]!, 'base64')
     filename = `image.${ext}`
   } else if (imageUrl.startsWith('http')) {
-    // 获取远程图片
-    const resp = await fetch(imageUrl)
+    // 获取远程图片（fetch 前做 SSRF 校验，见 assertSafeFetchTarget）
+    const resp = await safeFetchImage(imageUrl)
     if (!resp.ok) throw new Error(`Failed to fetch image: ${resp.status}`)
     buffer = Buffer.from(await resp.arrayBuffer())
     // 尝试从 Content-Type 推断扩展名
