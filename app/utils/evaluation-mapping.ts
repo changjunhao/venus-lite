@@ -14,6 +14,7 @@ import type {
   ProcessBadgeVariant,
   ProcessStepBadge,
   ProcessStepItem,
+  RawArbitrationNotes,
 } from '#shared/types/evaluation'
 import { formatDateTime, formatDuration } from '#shared/utils/format'
 
@@ -233,11 +234,12 @@ export function mapProcessSteps(
     else {
       badges.push({ variant: 'step-score', text: fill(labels.finalBadge, { score: formatStepScore(arbitration) }) })
     }
+    const arbitrationNotes = arbitration.arbitration_notes as RawArbitrationNotes | undefined
     steps.push({
       kind: 'arbitration',
       title: labels.stepArbitration,
       badges,
-      content: String(arbitration.arbitration_notes ?? arbitration.arbitrationNotes ?? ''),
+      content: arbitrationNotes?.final_rationale ?? '',
       reasoning: arbitrationCall.reasoning || null,
       reasoningToggle: fill(labels.reasoningToggle, { agent: labels.agentArbiter }),
     })

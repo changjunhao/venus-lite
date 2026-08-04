@@ -171,9 +171,6 @@ export function normalizeResult(raw: Record<string, unknown>): Record<string, un
   if (!result.sceneType && result.scene_type) {
     result.sceneType = result.scene_type
   }
-  if (!result.arbitrationNotes && result.arbitration_notes) {
-    result.arbitrationNotes = result.arbitration_notes
-  }
   if (!result.groupAnalysis && result.group_analysis) {
     result.groupAnalysis = result.group_analysis
   }

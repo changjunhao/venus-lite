@@ -3,74 +3,104 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import MarkdownRender from 'markstream-vue'
 import CritiqueReport from '~/components/evaluation/CritiqueReport.vue'
 
-/** 三章全传的基准 props */
 const fullProps = {
   critique: '构图稳健，光影层次丰富。',
-  suggestions: '建议强化前景引导线。',
-  arbitrationNotes: '综合双方论证，维持初评判断。',
+  suggestions: ['强化前景引导线。', '降低右上角高光。'],
+  arbitrationNotes: {
+    sceneTypeRuling: '该图属于环境人像，应优先评价人物与环境的关系。',
+    decisions: [
+      {
+        target: 'lighting_quality',
+        decision: 'partial' as const,
+        reason: '高光确有损失，但没有影响人物识别。',
+      },
+      {
+        target: 'composition_focus',
+        decision: 'reject' as const,
+        reason: '环境信息服务于叙事，不构成无效干扰。',
+      },
+    ],
+    finalRationale: '综合争议证据，维持当前评分。',
+  },
 }
 
 describe('CritiqueReport', () => {
-  // ── 结构回归（锚点 single.html L153-157）──
-
-  it('三章全传时渲染 .editorial-report-body 根节点与 3 个 .report-chapter', async () => {
+  it('完整结构渲染 CRITIQUE / ACTION / VERDICT 三章', async () => {
     const wrapper = await mountSuspended(CritiqueReport, { props: fullProps })
     expect(wrapper.classes()).toContain('editorial-report-body')
     expect(wrapper.findAll('.report-chapter')).toHaveLength(3)
+    expect(wrapper.findAll('.section-index').map(el => el.text())).toEqual(['CRITIQUE', 'ACTION', 'VERDICT'])
   })
 
-  it('各章包含 .section-index 眉标 + h3 标题 + .critique-text 正文', async () => {
+  it('仅 critique 使用 Markdown，结构化字段不再进入 Markdown parser', async () => {
     const wrapper = await mountSuspended(CritiqueReport, { props: fullProps })
-    const chapters = wrapper.findAll('.report-chapter')
-    for (const chapter of chapters) {
-      expect(chapter.find('.section-index').exists()).toBe(true)
-      expect(chapter.find('h3.chapter-title').exists()).toBe(true)
-      expect(chapter.find('.critique-text').exists()).toBe(true)
-      expect(chapter.find('.critique-text .markstream-vue').exists()).toBe(true)
-    }
+    const renderers = wrapper.findAllComponents(MarkdownRender)
+    expect(renderers).toHaveLength(1)
+    expect(renderers[0]!.props('content')).toBe(fullProps.critique)
+    expect(renderers[0]!.props('final')).toBe(true)
   })
 
-  it('眉标文本依次为 CRITIQUE / ACTION / VERDICT', async () => {
+  it('suggestions 直接按数组渲染为有序列表', async () => {
     const wrapper = await mountSuspended(CritiqueReport, { props: fullProps })
-    const labels = wrapper.findAll('.section-index').map((el) => el.text())
-    expect(labels).toEqual(['CRITIQUE', 'ACTION', 'VERDICT'])
+    const items = wrapper.findAll('.suggestion-list li')
+    expect(items).toHaveLength(2)
+    expect(items.map(item => item.text())).toEqual(fullProps.suggestions)
   })
 
-  // ── 章节显隐（锚点 group-compare.html L156-160）──
+  it('arbitrationNotes 分区展示场景判定、逐条裁决和最终理由', async () => {
+    const wrapper = await mountSuspended(CritiqueReport, {
+      props: {
+        ...fullProps,
+        sceneTypeRulingLabel: '场景判定',
+        decisionsLabel: '争议裁决',
+        finalRationaleLabel: '最终理由',
+        decisionPartialLabel: '部分采纳',
+        decisionRejectLabel: '驳回',
+      },
+    })
+    expect(wrapper.findAll('.arbitration-block h4').map(el => el.text())).toEqual([
+      '场景判定',
+      '争议裁决',
+      '最终理由',
+    ])
+    expect(wrapper.findAll('.decision-target').map(el => el.text())).toEqual([
+      'lighting_quality',
+      'composition_focus',
+    ])
+    expect(wrapper.findAll('.decision-status').map(el => el.text())).toEqual(['部分采纳', '驳回'])
+    expect(wrapper.find('.arbitration-final p').text()).toBe(fullProps.arbitrationNotes.finalRationale)
+  })
 
-  it('showCritique 为 false 时仅渲染 ACTION + VERDICT 两章', async () => {
+  it('LOW 无争议时 decisions 为空，只隐藏争议裁决分区', async () => {
+    const wrapper = await mountSuspended(CritiqueReport, {
+      props: {
+        ...fullProps,
+        arbitrationNotes: {
+          sceneTypeRuling: '场景判断一致。',
+          decisions: [],
+          finalRationale: '采用双方共识。',
+        },
+      },
+    })
+    expect(wrapper.find('.decision-list').exists()).toBe(false)
+    expect(wrapper.findAll('.arbitration-block')).toHaveLength(2)
+  })
+
+  it('showCritique=false 时仅渲染 ACTION + VERDICT', async () => {
     const wrapper = await mountSuspended(CritiqueReport, {
       props: { ...fullProps, showCritique: false },
     })
-    const chapters = wrapper.findAll('.report-chapter')
-    expect(chapters).toHaveLength(2)
-    const labels = wrapper.findAll('.section-index').map((el) => el.text())
-    expect(labels).toEqual(['ACTION', 'VERDICT'])
+    expect(wrapper.findAll('.section-index').map(el => el.text())).toEqual(['ACTION', 'VERDICT'])
   })
 
-  it('critique 为空字符串时 CRITIQUE 章不渲染', async () => {
+  it('空建议数组和缺失仲裁对象不渲染对应章节', async () => {
     const wrapper = await mountSuspended(CritiqueReport, {
-      props: { ...fullProps, critique: '' },
+      props: { critique: '', suggestions: [] },
     })
-    const labels = wrapper.findAll('.section-index').map((el) => el.text())
-    expect(labels).toEqual(['ACTION', 'VERDICT'])
-  })
-
-  it('三章内容全空时根节点存在但无 .report-chapter', async () => {
-    const wrapper = await mountSuspended(CritiqueReport)
-    expect(wrapper.classes()).toContain('editorial-report-body')
     expect(wrapper.findAll('.report-chapter')).toHaveLength(0)
   })
 
-  // ── 眉标与标题 ──
-
-  it('默认标题为中文（专业点评 / 改进建议 / 裁决说明）', async () => {
-    const wrapper = await mountSuspended(CritiqueReport, { props: fullProps })
-    const titles = wrapper.findAll('h3.chapter-title').map((el) => el.text())
-    expect(titles).toEqual(['专业点评', '改进建议', '裁决说明'])
-  })
-
-  it('传入自定义标题时覆盖默认值', async () => {
+  it('支持自定义章节标题', async () => {
     const wrapper = await mountSuspended(CritiqueReport, {
       props: {
         ...fullProps,
@@ -79,45 +109,12 @@ describe('CritiqueReport', () => {
         arbitrationTitle: 'Verdict Notes',
       },
     })
-    const titles = wrapper.findAll('h3.chapter-title').map((el) => el.text())
-    expect(titles).toEqual(['Expert Critique', 'Suggestions', 'Verdict Notes'])
+    expect(wrapper.findAll('h3.chapter-title').map(el => el.text())).toEqual([
+      'Expert Critique',
+      'Suggestions',
+      'Verdict Notes',
+    ])
   })
-
-  // ── 修饰符 class（锚点 style.css L939-940）──
-
-  it('ACTION 章携带 .report-suggestions class', async () => {
-    const wrapper = await mountSuspended(CritiqueReport, { props: fullProps })
-    const chapters = wrapper.findAll('.report-chapter')
-    expect(chapters[1]!.classes()).toContain('report-suggestions')
-  })
-
-  it('VERDICT 章携带 .report-arbitration class', async () => {
-    const wrapper = await mountSuspended(CritiqueReport, { props: fullProps })
-    const chapters = wrapper.findAll('.report-chapter')
-    expect(chapters[2]!.classes()).toContain('report-arbitration')
-  })
-
-  it('CRITIQUE 章无附加修饰 class', async () => {
-    const wrapper = await mountSuspended(CritiqueReport, { props: fullProps })
-    const chapters = wrapper.findAll('.report-chapter')
-    expect(chapters[0]!.classes()).toEqual(['report-chapter'])
-  })
-
-  // ── BaseMarkdown 集成 ──
-
-  it('各章 MarkdownRender 接收对应 content 与 final=true', async () => {
-    const wrapper = await mountSuspended(CritiqueReport, { props: fullProps })
-    const renderers = wrapper.findAllComponents(MarkdownRender)
-    expect(renderers).toHaveLength(3)
-    expect(renderers[0]!.props('content')).toBe(fullProps.critique)
-    expect(renderers[1]!.props('content')).toBe(fullProps.suggestions)
-    expect(renderers[2]!.props('content')).toBe(fullProps.arbitrationNotes)
-    for (const renderer of renderers) {
-      expect(renderer.props('final')).toBe(true)
-    }
-  })
-
-  // ── attrs 透传（先例 ScorePanel.spec.ts L145-153）──
 
   it('attrs 落根元素', async () => {
     const wrapper = await mountSuspended(CritiqueReport, {
@@ -126,6 +123,5 @@ describe('CritiqueReport', () => {
     })
     expect(wrapper.attributes('id')).toBe('critique-report')
     expect(wrapper.classes()).toContain('extra')
-    expect(wrapper.classes()).toContain('editorial-report-body')
   })
 })

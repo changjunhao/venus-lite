@@ -16,7 +16,13 @@
  * - 字体来源：tokens.css --font-display/ui/data
  */
 
-import type { ExifData, GenreMetadata, ScoreBandKey } from '#shared/types/evaluation'
+import type {
+  ArbitrationNotes,
+  ExifData,
+  GenreMetadata,
+  ScoreBandKey,
+  Suggestions,
+} from '#shared/types/evaluation'
 import { formatGenreSceneTag, getScoreBand, resolveDimensionName } from '#shared/utils/format'
 
 // ── 常量（对齐 venus share-image.js L10-42）──
@@ -79,8 +85,8 @@ export interface ShareImageOptions {
   exif?: ExifData | null
   evaluatedAt?: string
   critique?: string
-  suggestions?: string
-  arbitrationNotes?: string
+  suggestions?: Suggestions
+  arbitrationNotes?: ArbitrationNotes
   onProgress?: (message: string) => void
 }
 
@@ -337,6 +343,20 @@ export function formatPosterDate(iso?: string): string {
   return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`
 }
 
+
+/** Select poster review paragraphs from the formal structured evaluation contract. */
+export function buildShareReviewParagraphs(
+  critique: string | undefined,
+  arbitrationNotes: ArbitrationNotes | undefined,
+  suggestions: Suggestions | undefined,
+  fallback: string,
+): string[] {
+  if (critique) return prepareReviewParagraphs(critique, fallback)
+  if (arbitrationNotes) return prepareReviewParagraphs(arbitrationNotes.finalRationale, fallback)
+  if (suggestions?.length) return suggestions
+  return [fallback]
+}
+
 // ── 核心引擎 ──
 
 /** 模块级测量画布单例（避免每次生成 createElement） */
@@ -395,7 +415,7 @@ export async function generateShareImage(options: ShareImageOptions): Promise<Sh
   // 图片边注：与页面标签共用同一格式化函数
   const marginaliaText = formatGenreSceneTag(genreText, sceneLabel)
   const reviewFallback = '这张作品暂未生成点评，请结合维度评分查看构图、光影、主体、技术完成度与视觉影响力方面的表现。'
-  const reviewParas = prepareReviewParagraphs(critique || arbitrationNotes || suggestions, reviewFallback)
+  const reviewParas = buildShareReviewParagraphs(critique, arbitrationNotes, suggestions, reviewFallback)
   const dims = getShareDimensions(dimensions, genre, metadata)
   const exifItems = buildExifSummaryItems(exif)
   const dateText = formatPosterDate(evaluatedAt)

@@ -6,4 +6,4 @@ allowBuilds:
   protobufjs: false
   unrs-resolver: true
 minimumReleaseAgeExclude:
-  - '@theogony/venus-core@0.14.0'
+  - '@theogony/venus-core@0.15.0'

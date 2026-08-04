@@ -176,8 +176,8 @@ const COMPARE_RESULT_FIXTURE = {
     { index: 0, rank: 2, score: 7.5, rationale: '构图稳健' },
   ],
   comparisonSummary: '对比总结内容……',
-  suggestions: '对比改进建议……',
-  arbitrationNotes: '对比裁决说明……',
+  suggestions: ['对比改进建议……'],
+  arbitrationNotes: { sceneTypeRuling: '场景判定明确。', decisions: [], finalRationale: '对比裁决说明……' },
   perImage: [
     { index: 0, score: 7.5, comment: '第一张点评' },
     { index: 1, score: 8.2, comment: '第二张点评' },
@@ -209,7 +209,7 @@ const COMPARE_RESULT_FIXTURE = {
           { index: 1, rank: 1, score: 8.2, rationale: '' },
           { index: 0, rank: 2, score: 7.5, rationale: '' },
         ],
-        arbitration_notes: '裁决内容',
+        arbitration_notes: { scene_type_ruling: '场景判定明确。', decisions: [], final_rationale: '裁决内容' },
       },
       reasoning: '仲裁推理',
     },
@@ -329,7 +329,7 @@ describe('mapProcessSteps mode=compare', () => {
     arbitration: {
       result: {
         ranking: [{ index: 1, rank: 1 }, { index: 0, rank: 2 }],
-        arbitration_notes: '裁决内容',
+        arbitration_notes: { scene_type_ruling: '场景判定明确。', decisions: [], final_rationale: '裁决内容' },
       },
     },
   }

@@ -176,8 +176,8 @@ const JOINT_RESULT_FIXTURE = {
   dimensions: { composition: 8.0, light: 7.5 },
   groupAnalysis: '系列整体分析内容……',
   critique: '系列专业点评……',
-  suggestions: '系列改进建议……',
-  arbitrationNotes: '系列裁决说明……',
+  suggestions: ['系列改进建议……'],
+  arbitrationNotes: { sceneTypeRuling: '场景判定明确。', decisions: [], finalRationale: '系列裁决说明……' },
   perImage: [
     { index: 0, score: 7.5, comment: '第一张点评' },
     { index: 1, score: 8.1, comment: '第二张点评' },
@@ -198,7 +198,7 @@ const JOINT_RESULT_FIXTURE = {
       reasoning: '批判推理',
     },
     arbitration: {
-      result: { total_score: 7.8, arbitration_notes: '裁决内容' },
+      result: { total_score: 7.8, arbitration_notes: { scene_type_ruling: '场景判定明确。', decisions: [], final_rationale: '裁决内容' } },
       reasoning: '仲裁推理',
     },
   },

@@ -289,7 +289,16 @@
     "perImageEyebrow": "PER IMAGE",
     "perImageHeading": "Per-Image Details",
     "perImageAlt": "Evaluation detail for photo {index}",
-    "perImageFallbackName": "Photo {index}"
+    "perImageFallbackName": "Photo {index}",
+    "arbitration": {
+      "sceneTypeRuling": "Scene ruling",
+      "decisions": "Decisions",
+      "finalRationale": "Final rationale",
+      "accept": "Accepted",
+      "partial": "Partially accepted",
+      "reject": "Rejected",
+      "consensus": "Consensus"
+    }
   },
   "share": {
     "action": "Generate share image",

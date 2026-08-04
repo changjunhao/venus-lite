@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
   buildExifSummaryItems,
+  buildShareReviewParagraphs,
   formatPosterDate,
   prepareReviewParagraphs,
   useShareImage,
@@ -74,6 +75,37 @@ describe('prepareReviewParagraphs', () => {
     const input = '- 项目一\n- 项目二'
     const result = prepareReviewParagraphs(input, 'fb')
     expect(result).toEqual(['项目一', '项目二'])
+  })
+})
+
+// ── 纯函数测试：buildShareReviewParagraphs ──
+
+describe('buildShareReviewParagraphs', () => {
+  const arbitrationNotes = {
+    sceneTypeRuling: '场景判断一致。',
+    decisions: [],
+    finalRationale: '综合证据后维持最终结论。',
+  }
+
+  it('优先使用 critique，并按既有规则清理 Markdown', () => {
+    expect(
+      buildShareReviewParagraphs('**专业点评**', arbitrationNotes, ['改进建议'], '默认文案'),
+    ).toEqual(['专业点评'])
+  })
+
+  it('无 critique 时使用仲裁对象的 finalRationale', () => {
+    expect(buildShareReviewParagraphs(undefined, arbitrationNotes, ['改进建议'], '默认文案')).toEqual([
+      '综合证据后维持最终结论。',
+    ])
+  })
+
+  it('只有 suggestions 时直接使用结构化数组', () => {
+    const suggestions = ['调整主体位置。', '降低背景高光。']
+    expect(buildShareReviewParagraphs(undefined, undefined, suggestions, '默认文案')).toBe(suggestions)
+  })
+
+  it('没有可用内容时返回 fallback', () => {
+    expect(buildShareReviewParagraphs(undefined, undefined, [], '默认文案')).toEqual(['默认文案'])
   })
 })
 

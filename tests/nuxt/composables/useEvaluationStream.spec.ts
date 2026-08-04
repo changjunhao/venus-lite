@@ -187,18 +187,18 @@ describe('buildSteps', () => {
 })
 
 describe('normalizeResult', () => {
-  it('归一 snake_case 顶层字段', () => {
+  it('不再把旧顶层 arbitration_notes 转换为 arbitrationNotes', () => {
     const raw = {
       total_score: 7.5,
       scene_type: 'golden_hour',
-      arbitration_notes: '综合判断',
+      arbitration_notes: { scene_type_ruling: '旧字段', decisions: [], final_rationale: '旧字段' },
       genre: 'landscape',
     }
     const result = normalizeResult(raw)
 
     expect(result.totalScore).toBe(7.5)
     expect(result.sceneType).toBe('golden_hour')
-    expect(result.arbitrationNotes).toBe('综合判断')
+    expect(result.arbitrationNotes).toBeUndefined()
     expect(result.genre).toBe('landscape')
   })
 
@@ -262,8 +262,8 @@ describe('useEvaluationStream', () => {
       sceneType: 'golden_hour',
       dimensions: { composition: 8.0 },
       critique: '构图精巧',
-      suggestions: '建议加强光影',
-      arbitrationNotes: '综合判断',
+      suggestions: ['建议加强光影'],
+      arbitrationNotes: { sceneTypeRuling: '场景判定明确。', decisions: [], finalRationale: '综合判断' },
       metadata: { evaluatedAt: '2026-01-01', durationMs: 2500, rounds: 3 },
     }
 

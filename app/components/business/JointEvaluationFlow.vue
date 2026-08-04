@@ -410,6 +410,13 @@ async function onStart(payload: GroupStartPayload): Promise<void> {
           :critique-title="t('result.chapterCritique')"
           :suggestions-title="t('result.chapterSuggestions')"
           :arbitration-title="t('result.chapterArbitration')"
+          :scene-type-ruling-label="t('result.arbitration.sceneTypeRuling')"
+          :decisions-label="t('result.arbitration.decisions')"
+          :final-rationale-label="t('result.arbitration.finalRationale')"
+          :decision-accept-label="t('result.arbitration.accept')"
+          :decision-partial-label="t('result.arbitration.partial')"
+          :decision-reject-label="t('result.arbitration.reject')"
+          :decision-consensus-label="t('result.arbitration.consensus')"
         />
       </UiBaseCard>
 

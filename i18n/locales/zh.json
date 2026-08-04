@@ -289,7 +289,16 @@
     "perImageEyebrow": "PER IMAGE",
     "perImageHeading": "逐图明细",
     "perImageAlt": "第 {index} 张照片的评估明细",
-    "perImageFallbackName": "第 {index} 张"
+    "perImageFallbackName": "第 {index} 张",
+    "arbitration": {
+      "sceneTypeRuling": "场景判定",
+      "decisions": "争议裁决",
+      "finalRationale": "最终理由",
+      "accept": "采纳",
+      "partial": "部分采纳",
+      "reject": "驳回",
+      "consensus": "共识"
+    }
   },
   "share": {
     "action": "生成分享图",

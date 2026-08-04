@@ -1,61 +1,59 @@
 <script setup lang="ts">
-/**
- * 点评三章：CRITIQUE / ACTION / VERDICT 编辑报告
- * （component-plan L118），收敛 venus single.html L153-157 三章静态 HTML
- * 与 app.js L544-550 renderMarkdown → innerHTML 的 DOM 操作为声明式组件。
- *
- * - §9.12：报告固定顺序——专业点评 → 改进建议 → 仲裁说明；
- *   主体最大宽度 42rem；仲裁说明 Display Serif 承载；
- *   改进建议 2px Amber 左边线（关键证据标记，不整段高亮）。
- * - 章节显隐由内容驱动（v-if 判空）+ showCritique 显式守卫：
- *   compare 页无 CRITIQUE 章（group-compare.html L156-160 无该 DOM），
- *   等价于 group.js L546 `if (elements.critiqueText)` 元素存在性检查——
- *   即使 API 返回 critique 字段，调用方置 false 即不渲染。
- * - 眉标 CRITIQUE/ACTION/VERDICT 为 §4.2 摄影语义常量（英文 ≤24 字符），
- *   硬编码于模板（先例 review.index "REVIEW IN PROGRESS" 在 zh locale 保持英文）。
- * - h3 从 venus 实现 Display Serif 25px/500（style.css L931-932）——
- *   DESIGN.md §9.12「子标题使用 UI Sans 18px/600」指章内子标题，
- *   章节标题属 §2.3「Serif 用于叙事与判断」范畴；
- *   与 ScorePanel/DimensionList/StreamSteps 忠实移植范式一致。
- * - 纯 props 组件不内嵌 $t()：章节标题由调用方解析 i18n 后传入
- *   （先例 ScorePanel L14 bandLabel）；未传时回退中文默认标签。
- * - 不含 .card 外壳——卡片归 Flow 组件以 BaseCard variant="plain" 包裹
- *   （ScorePanel L18 先例；venus 根为 section.card.critique-section）。
- * - strong 样式已由 BaseMarkdown :deep(strong) 覆盖（style.css L936-938），
- *   无需重复移植。
- */
+import type {
+  ArbitrationDecisionType,
+  ArbitrationNotes,
+  Suggestions,
+} from '#shared/types/evaluation'
+
 const props = withDefaults(
   defineProps<{
-    /** 专业点评 Markdown（app.js L545 data.critique）；空则不渲染本章 */
+    /** 专业点评 Markdown；空则不渲染本章 */
     critique?: string
-    /** 改进建议 Markdown（app.js L546 data.suggestions）；空则不渲染本章 */
-    suggestions?: string
-    /** 仲裁说明 Markdown（app.js L547 arbitrationNotes || arbitration_notes）；空则不渲染本章 */
-    arbitrationNotes?: string
-    /** compare 页无 CRITIQUE 章（group-compare.html L156-160），调用方置 false */
+    /** 已结构化的独立改进建议；空数组则不渲染本章 */
+    suggestions?: Suggestions
+    /** 已结构化的最终仲裁说明；缺失则不渲染本章 */
+    arbitrationNotes?: ArbitrationNotes
+    /** compare 页无 CRITIQUE 章，调用方置 false */
     showCritique?: boolean
-    /** CRITIQUE 章标题（调用方解析 i18n result.chapterCritique 后传入） */
     critiqueTitle?: string
-    /** ACTION 章标题（调用方解析 i18n result.chapterSuggestions 后传入） */
     suggestionsTitle?: string
-    /** VERDICT 章标题（调用方解析 i18n result.chapterArbitration 后传入） */
     arbitrationTitle?: string
+    sceneTypeRulingLabel?: string
+    decisionsLabel?: string
+    finalRationaleLabel?: string
+    decisionAcceptLabel?: string
+    decisionPartialLabel?: string
+    decisionRejectLabel?: string
+    decisionConsensusLabel?: string
   }>(),
   {
     critique: '',
-    suggestions: '',
-    arbitrationNotes: '',
+    suggestions: () => [],
+    arbitrationNotes: undefined,
     showCritique: true,
     critiqueTitle: '专业点评',
     suggestionsTitle: '改进建议',
     arbitrationTitle: '裁决说明',
+    sceneTypeRulingLabel: '场景判定',
+    decisionsLabel: '争议裁决',
+    finalRationaleLabel: '最终理由',
+    decisionAcceptLabel: '采纳',
+    decisionPartialLabel: '部分采纳',
+    decisionRejectLabel: '驳回',
+    decisionConsensusLabel: '共识',
   },
 )
+
+const decisionLabels = computed<Record<ArbitrationDecisionType, string>>(() => ({
+  accept: props.decisionAcceptLabel,
+  partial: props.decisionPartialLabel,
+  reject: props.decisionRejectLabel,
+  consensus: props.decisionConsensusLabel,
+}))
 </script>
 
 <template>
   <section class="editorial-report-body">
-    <!-- CRITIQUE 章：single.html L154 / group-joint.html L146；compare 页不渲染 -->
     <div v-if="props.showCritique && props.critique" class="report-chapter">
       <UiBaseSectionIndex>CRITIQUE</UiBaseSectionIndex>
       <h3 class="chapter-title">{{ props.critiqueTitle }}</h3>
@@ -63,20 +61,45 @@ const props = withDefaults(
         <UiBaseMarkdown :content="props.critique" final />
       </div>
     </div>
-    <!-- ACTION 章：single.html L155 / group-compare.html L158；style.css L939 左边线 -->
-    <div v-if="props.suggestions" class="report-chapter report-suggestions">
+
+    <div v-if="props.suggestions.length" class="report-chapter report-suggestions">
       <UiBaseSectionIndex>ACTION</UiBaseSectionIndex>
       <h3 class="chapter-title">{{ props.suggestionsTitle }}</h3>
-      <div class="critique-text">
-        <UiBaseMarkdown :content="props.suggestions" final />
-      </div>
+      <ol class="suggestion-list">
+        <li v-for="(suggestion, index) in props.suggestions" :key="index">
+          {{ suggestion }}
+        </li>
+      </ol>
     </div>
-    <!-- VERDICT 章：single.html L156 / group-compare.html L159；style.css L940 Display Serif -->
+
     <div v-if="props.arbitrationNotes" class="report-chapter report-arbitration">
       <UiBaseSectionIndex>VERDICT</UiBaseSectionIndex>
       <h3 class="chapter-title">{{ props.arbitrationTitle }}</h3>
-      <div class="critique-text">
-        <UiBaseMarkdown :content="props.arbitrationNotes" final />
+      <div class="arbitration-sections">
+        <section class="arbitration-block">
+          <h4>{{ props.sceneTypeRulingLabel }}</h4>
+          <p>{{ props.arbitrationNotes.sceneTypeRuling }}</p>
+        </section>
+
+        <section v-if="props.arbitrationNotes.decisions.length" class="arbitration-block">
+          <h4>{{ props.decisionsLabel }}</h4>
+          <ol class="decision-list">
+            <li v-for="(decision, index) in props.arbitrationNotes.decisions" :key="index">
+              <div class="decision-heading">
+                <span class="decision-target">{{ decision.target }}</span>
+                <span class="decision-status" :data-decision="decision.decision">
+                  {{ decisionLabels[decision.decision] }}
+                </span>
+              </div>
+              <p>{{ decision.reason }}</p>
+            </li>
+          </ol>
+        </section>
+
+        <section class="arbitration-block arbitration-final">
+          <h4>{{ props.finalRationaleLabel }}</h4>
+          <p>{{ props.arbitrationNotes.finalRationale }}</p>
+        </section>
       </div>
     </div>
   </section>
@@ -129,14 +152,127 @@ const props = withDefaults(
   padding-left: var(--space-5);
 }
 
+.suggestion-list,
+.arbitration-sections {
+  color: var(--ink-body);
+  font-size: 16px;
+  line-height: 1.78;
+  max-width: 42rem;
+}
+
 /* venus style.css L940：§9.12 仲裁说明 Display Serif 承载 */
-.report-arbitration .critique-text {
+.arbitration-sections {
   font-family: var(--font-display);
   font-size: 18px;
   line-height: 1.75;
 }
 
-/* venus style.css L1199：移动端左边线收窄 */
+.suggestion-list,
+.decision-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.suggestion-list {
+  counter-reset: suggestions;
+  display: grid;
+  gap: var(--space-4);
+}
+
+.suggestion-list li {
+  align-items: baseline;
+  counter-increment: suggestions;
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: 2rem 1fr;
+}
+
+.suggestion-list li::before {
+  color: var(--amber);
+  content: counter(suggestions, decimal-leading-zero);
+  font-family: var(--font-data);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.arbitration-sections {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.arbitration-block h4 {
+  color: var(--ink-muted);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  margin: 0 0 var(--space-2);
+  text-transform: uppercase;
+}
+
+.arbitration-block p {
+  margin: 0;
+}
+
+.decision-list {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.decision-list li {
+  border-top: 1px solid var(--hairline);
+  padding-top: var(--space-3);
+}
+
+.decision-heading {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.decision-target {
+  color: var(--ink);
+  font-family: var(--font-data);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.decision-status {
+  border: 1px solid var(--hairline-strong);
+  border-radius: 999px;
+  color: var(--ink-muted);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1;
+  padding: 4px 8px;
+}
+
+.decision-status[data-decision='accept'],
+.decision-status[data-decision='consensus'] {
+  border-color: var(--verdigris);
+  color: var(--verdigris);
+}
+
+.decision-status[data-decision='partial'] {
+  border-color: var(--amber);
+  color: var(--amber);
+}
+
+.decision-status[data-decision='reject'] {
+  border-color: var(--oxide);
+  color: var(--oxide);
+}
+
+.arbitration-final {
+  border-left: 2px solid var(--hairline-strong);
+  padding-left: var(--space-4);
+}
+
 @media (max-width: 767px) {
   .report-suggestions {
     padding-left: 16px;

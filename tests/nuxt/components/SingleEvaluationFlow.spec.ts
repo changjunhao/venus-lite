@@ -213,8 +213,8 @@ const RESULT_FIXTURE = {
   totalScore: 8.4,
   dimensions: { composition: 8.5, light: 8.2 },
   critique: '构图稳健……',
-  suggestions: '压暗高光……',
-  arbitrationNotes: '综合双方论证……',
+  suggestions: ['压暗高光……'],
+  arbitrationNotes: { sceneTypeRuling: '场景判定明确。', decisions: [], finalRationale: '综合双方论证……' },
   process: {
     proposal: {
       result: { total_score: 8.5, scene_type: 'mountain', critique: '初评内容' },
@@ -232,7 +232,7 @@ const RESULT_FIXTURE = {
       reasoning: '批判推理',
     },
     arbitration: {
-      result: { total_score: 8.4, arbitration_notes: '裁决内容' },
+      result: { total_score: 8.4, arbitration_notes: { scene_type_ruling: '场景判定明确。', decisions: [], final_rationale: '裁决内容' } },
       reasoning: '仲裁推理',
     },
   },
@@ -406,7 +406,7 @@ describe('mapProcessSteps', () => {
       reasoning: '修正推理',
     },
     arbitration: {
-      result: { total_score: 8.4, arbitration_notes: '裁决内容' },
+      result: { total_score: 8.4, arbitration_notes: { scene_type_ruling: '场景判定明确。', decisions: [], final_rationale: '裁决内容' } },
       reasoning: '仲裁推理',
     },
   }
@@ -465,14 +465,31 @@ describe('mapProcessSteps', () => {
     expect(steps[3]!.content).toBe('裁决内容')
   })
 
-  it('camelCase 分数字段兼容（totalScore / arbitrationNotes）', () => {
+  it('仲裁过程仅读取原始 snake_case 对象的 final_rationale', () => {
     const process = {
-      proposal: { result: { totalScore: 7.5, critique: '' } },
-      arbitration: { result: { totalScore: 7.8, arbitrationNotes: '裁决' } },
+      arbitration: {
+        result: {
+          total_score: 7.8,
+          arbitration_notes: {
+            scene_type_ruling: '场景判定明确。',
+            decisions: [
+              {
+                target: 'lighting_quality',
+                decision: 'partial',
+                reason: '高光问题成立，但不影响主体识别。',
+              },
+            ],
+            final_rationale: '裁决',
+          },
+        },
+      },
     }
     const steps = mapProcessSteps(process, LABELS)
-    expect(steps[0]!.badges[0]!.text).toBe('评分：7.5')
-    expect(steps[1]!.content).toBe('裁决')
+    expect(steps[0]!.badges[0]!.text).toBe('最终：7.8')
+    expect(steps[0]!.content).toBe('裁决')
+    // 时间线摘要仅取 final_rationale，不串联 scene_type_ruling / decisions
+    expect(steps[0]!.content).not.toContain('场景判定明确')
+    expect(steps[0]!.content).not.toContain('高光问题成立')
   })
 
   it('分数缺失时回退 "-"（app.js L684 || \'-\'）', () => {
@@ -488,7 +505,7 @@ describe('mapProcessSteps', () => {
   })
 
   it('无 wrapper 时回退对象本身（app.js L669-671 data?.result || data）', () => {
-    const steps = mapProcessSteps({ arbitration: { total_score: 9.0, arbitration_notes: '裸结果' } }, LABELS)
+    const steps = mapProcessSteps({ arbitration: { total_score: 9.0, arbitration_notes: { scene_type_ruling: '场景判定明确。', decisions: [], final_rationale: '裸结果' } } }, LABELS)
     expect(steps[0]!.badges[0]!.text).toBe('最终：9.0')
     expect(steps[0]!.content).toBe('裸结果')
   })
