@@ -217,8 +217,9 @@ pm2 startup && pm2 save     # 设置开机自启
 # 1. 本地构建
 pnpm build
 
-# 2. 打包产物
-COPYFILE_DISABLE=1 tar -czf venus-lite-deploy.tar.gz .output ecosystem.config.cjs .env.example
+# 2. 打包产物（--no-xattrs / --no-mac-metadata 防服务器 GNU tar 解包时
+# 告警“忽略未知的扩展头关键字 LIBARCHIVE.xattr.*”，COPYFILE_DISABLE 防 ._* 文件）
+COPYFILE_DISABLE=1 tar --no-xattrs --no-mac-metadata -czf venus-lite-deploy.tar.gz .output ecosystem.config.cjs .env.example
 
 # 3. 上传至服务器
 scp venus-lite-deploy.tar.gz user@server:/opt/venus-lite/

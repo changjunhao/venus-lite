@@ -217,8 +217,9 @@ The `.output/` directory is self-contained (no `node_modules` needed). The serve
 # 1. Build locally
 pnpm build
 
-# 2. Package artifacts
-COPYFILE_DISABLE=1 tar -czf venus-lite-deploy.tar.gz .output ecosystem.config.cjs .env.example
+# 2. Package artifacts (--no-xattrs / --no-mac-metadata prevent GNU tar on the server
+# from warning about unknown "LIBARCHIVE.xattr.*" extended headers; COPYFILE_DISABLE avoids ._* files)
+COPYFILE_DISABLE=1 tar --no-xattrs --no-mac-metadata -czf venus-lite-deploy.tar.gz .output ecosystem.config.cjs .env.example
 
 # 3. Upload to server
 scp venus-lite-deploy.tar.gz user@server:/opt/venus-lite/
