@@ -106,8 +106,11 @@ const decisionLabels = computed<Record<ArbitrationDecisionType, string>>(() => (
 </template>
 
 <style scoped>
-/* venus style.css L927-928 */
+/* venus style.css L927-928；LLM 正文统一继承 overflow-wrap: anywhere，
+ * 防不可断行串（文件名/长词）沿 grid/flex min-width auto 路径撑破正文与页宽
+ * （venus .step-content / .challenge-issue 同规则先例） */
 .editorial-report-body {
+  overflow-wrap: anywhere;
   padding-top: var(--space-6);
 }
 
@@ -180,12 +183,15 @@ const decisionLabels = computed<Record<ArbitrationDecisionType, string>>(() => (
   gap: var(--space-4);
 }
 
+/* min-width 归零 + 1fr 改 minmax(0, 1fr)：长不可断行内容不得撑宽 item
+ * （BaseCard L32-34 §13.2 先例） */
 .suggestion-list li {
   align-items: baseline;
   counter-increment: suggestions;
   display: grid;
   gap: var(--space-3);
-  grid-template-columns: 2rem 1fr;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  min-width: 0;
 }
 
 .suggestion-list li::before {
@@ -200,6 +206,11 @@ const decisionLabels = computed<Record<ArbitrationDecisionType, string>>(() => (
 .arbitration-sections {
   display: grid;
   gap: var(--space-5);
+}
+
+/* grid item min-width 归零（同 .suggestion-list li 先例） */
+.arbitration-block {
+  min-width: 0;
 }
 
 .arbitration-block h4 {
@@ -234,11 +245,13 @@ const decisionLabels = computed<Record<ArbitrationDecisionType, string>>(() => (
   margin-bottom: var(--space-2);
 }
 
+/* flex item min-width 归零：文件名长串不撑破 decision-heading */
 .decision-target {
   color: var(--ink);
   font-family: var(--font-data);
   font-size: 13px;
   font-weight: 600;
+  min-width: 0;
 }
 
 .decision-status {

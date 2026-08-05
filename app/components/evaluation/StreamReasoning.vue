@@ -114,16 +114,19 @@ onScopeDispose(() => {
 </template>
 
 <style scoped>
-/* venus style.css L842（grid-column 归父级 ReviewProgress 设置） */
+/* venus style.css L842（grid-column 归父级 ReviewProgress 设置）；
+ * min-width 归零：作为 grid item 子树不被内容 min-content 撑宽（§13.2 先例） */
 .stream-thinking {
   border-top: 1px solid var(--hairline);
   margin-top: var(--space-5);
+  min-width: 0;
   padding-top: var(--space-5);
 }
 
 /* venus style.css L843 */
 .stream-think-block {
   border-bottom: 1px solid var(--hairline);
+  min-width: 0;
   padding: 14px 0;
 }
 
@@ -137,13 +140,16 @@ onScopeDispose(() => {
   margin-bottom: 8px;
 }
 
-/* venus style.css L845（pre 专属属性 white-space/margin/padding 不适用，已移除） */
+/* venus style.css L845（pre 专属属性 white-space/margin/padding 不适用，已移除）；
+ * overflow-wrap: anywhere 继承至 markstream 输出文本，防推理流中不可断行长串
+ * （文件名/公式/长词）产生内部横向滚动乃至撑破卡片（venus .step-content 先例） */
 .stream-think-content {
   background: transparent;
   color: var(--ink-muted);
   font-size: 12px;
   line-height: 1.7;
   max-height: 180px;
+  overflow-wrap: anywhere;
   overflow: auto;
   transition:
     max-height var(--motion-standard) var(--ease-standard),

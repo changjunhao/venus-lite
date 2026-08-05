@@ -116,6 +116,14 @@ withDefaults(
   font-size: 13px;
 }
 
+/* grid item min-width 归零：内容 min-content 不得撑宽 1fr 轨道冲破卡片
+ * （BaseCard L32-34 §13.2 先例；子组件根节点经 class 合并承接本作用域） */
+.review-progress-copy,
+.review-progress-steps,
+.review-progress-reasoning {
+  min-width: 0;
+}
+
 /* style.css L842 的 grid-column 归此设置（StreamReasoning 自身不含列信息） */
 .review-progress-reasoning {
   grid-column: 1 / -1;
