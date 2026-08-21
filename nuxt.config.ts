@@ -76,6 +76,11 @@ export default defineNuxtConfig({
   // evaluate 直烧 LLM 配额最严；oss/sts 防凭证收割；metadata 宽松。
   routeRules: {
     '/': { ssr: true },
+    // i18n 语言包端点：SSR 时经 Nitro 进程内 localFetch 自取（node-mock-http 构造的
+    // 请求 IP 为空串，不命中 whiteList 的 127.0.0.1），会被全局默认限流（150 次/5min）
+    // 按全站共享一桶计数，桶耗尽即 429 导致每次渲染 Failed to load messages。此路径
+    // 是内容寻址的只读资源，直接豁免。
+    '/_i18n/**': { security: { rateLimiter: false } },
     '/api/evaluate/**': { security: { rateLimiter: { tokensPerInterval: 5, interval: 60000 } } },
     '/api/oss/sts': { security: { rateLimiter: { tokensPerInterval: 10, interval: 300000 } } },
     '/api/metadata': { security: { rateLimiter: { tokensPerInterval: 60, interval: 300000 } } },
