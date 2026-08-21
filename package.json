@@ -17,27 +17,27 @@
   "dependencies": {
     "@alicloud/openapi-core": "^1.0.8",
     "@alicloud/sts20150401": "^1.2.0",
-    "@nuxtjs/i18n": "^10.5.0",
-    "@theogony/venus-core": "^0.15.0",
+    "@nuxtjs/i18n": "^10.6.0",
+    "@theogony/venus-core": "^0.16.0",
     "ali-oss": "^6.23.0",
-    "exifreader": "^4.41.3",
-    "markstream-vue": "^1.0.7",
-    "nuxt": "^4.5.1",
+    "exifreader": "^4.43.0",
+    "markstream-vue": "^2.0.1",
+    "nuxt": "^4.5.2",
     "nuxt-security": "^2.6.0",
-    "openai": "^7.1.0",
-    "vue": "^3.5.40",
+    "openai": "^7.5.0",
+    "vue": "^3.5.41",
     "vue-router": "^5.2.0"
   },
   "devDependencies": {
     "@nuxt/a11y": "1.0.0-alpha.1",
-    "@nuxt/eslint": "1.16.0",
+    "@nuxt/eslint": "1.17.0",
     "@nuxt/fonts": "0.14.0",
     "@nuxt/test-utils": "4.1.0",
     "@types/ali-oss": "^6.23.3",
     "@vue/test-utils": "^2.4.11",
-    "eslint": "^10.8.0",
-    "happy-dom": "^20.11.1",
+    "eslint": "^10.9.0",
+    "happy-dom": "^20.11.6",
     "typescript": "^5.9.3",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.11"
   }
 }

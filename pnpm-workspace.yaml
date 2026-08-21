@@ -6,4 +6,8 @@ allowBuilds:
   protobufjs: false
   unrs-resolver: true
 minimumReleaseAgeExclude:
-  - '@theogony/venus-core@0.15.0'
+  - '@theogony/venus-core@0.15.0 || 0.16.0'
+  - eslint@10.9.0
+  - markstream-core@2.0.1
+  - markstream-vue@2.0.1
+  - stream-markdown-parser@1.2.9
