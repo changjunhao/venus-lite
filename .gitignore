@@ -26,3 +26,4 @@ logs
 /deploy
 
 venus-lite-deploy.tar.gz
+/deploy.sh
