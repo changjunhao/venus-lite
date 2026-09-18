@@ -75,7 +75,7 @@ function template(key: string): string {
 }
 
 const { upload } = useOssUpload()
-const { phase: streamPhase, steps: streamSteps, reasoningBlocks, startGroup } = useEvaluationStream()
+const { phase: streamPhase, steps: streamSteps, reasoningBlocks, startGroup, reset: resetStream } = useEvaluationStream()
 const { metadata: genreMetadata, fetch: fetchMetadata } = useEvalMetadata()
 
 // ── 状态 ──
@@ -257,6 +257,9 @@ async function onStart(payload: GroupStartPayload): Promise<void> {
   announced.value = '' // 新一轮清空播报（group.js L326）
   result.value = null
   detectedGenre.value = ''
+  // 清空上一轮流式残留：startGroup 的 reset 在上传循环完成后才调用，
+  // 不提前重置则上传期进度卡会渲染上一轮的 done 步骤与旧推理块
+  resetStream()
   // 快照：结果区 RankingList/FocusCompare/PerImageGrid 只读消费；失效链保证快照恒有效
   seriesEntries.value = payload.entries
 

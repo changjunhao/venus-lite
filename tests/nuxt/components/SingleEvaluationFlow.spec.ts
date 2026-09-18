@@ -49,6 +49,7 @@ interface StreamMock {
   steps: Ref<unknown[]>
   reasoningBlocks: Ref<unknown[]>
   startSingle: Mock
+  reset: Mock
 }
 interface MetadataMock {
   metadata: Ref<unknown>
@@ -128,7 +129,14 @@ vi.mock('~/composables/useEvaluationStream', async (importOriginal) => {
     steps: shallowRef([]),
     reasoningBlocks: shallowRef([]),
     startSingle: vi.fn(),
+    reset: vi.fn(),
   }
+  // reset 贴真实 composable 语义：清空 phase/steps/推理块（新一轮残留回归测试依赖）
+  handle.reset.mockImplementation(() => {
+    handle.phase.value = 'idle'
+    handle.steps.value = []
+    handle.reasoningBlocks.value = []
+  })
   mocks.stream = handle
   return {
     ...actual,
@@ -140,7 +148,7 @@ vi.mock('~/composables/useEvaluationStream', async (importOriginal) => {
       startSingle: handle.startSingle,
       startGroup: vi.fn(),
       abort: vi.fn(),
-      reset: vi.fn(),
+      reset: handle.reset,
     }),
   }
 })
@@ -754,6 +762,51 @@ describe('SingleEvaluationFlow 编排', () => {
     resolveUpload()
     await flushPromises()
     expect(wrapper.find('.loading-text').text()).toBe('正在开始评估…')
+    wrapper.unmount()
+  })
+
+  it('新一轮开始清空上一轮流式残留：上传期进度卡不渲染旧步骤/推理块', async () => {
+    mockSelectedEntry()
+    // 上一轮残留：complete 相位 + 全 done 步骤 + 推理块（评估完成后真实 composable 状态）
+    mocks.stream!.phase.value = 'complete'
+    mocks.stream!.steps.value = [
+      { agent: 'genreDetector', label: '门类识别', status: 'done' },
+      { agent: 'proposer', label: '提案者初评', status: 'done' },
+      { agent: 'critic', label: '批判者质疑', status: 'done' },
+      { agent: 'arbiter', label: '仲裁者裁决', status: 'done' },
+    ]
+    mocks.stream!.reasoningBlocks.value = [
+      { agent: 'proposer', label: '提案者初评', content: '上一轮推理', final: true },
+    ]
+    let resolveUpload: (value?: unknown) => void = () => {}
+    mocks.oss!.upload.mockImplementation(() => {
+      mocks.oss!.uploading.value = true
+      return new Promise((resolve) => {
+        resolveUpload = () => {
+          mocks.oss!.uploading.value = false
+          resolve({ url: 'https://oss.example/sunset.jpg', key: 'k', deduplicated: false, fallback: false })
+        }
+      })
+    })
+    mocks.stream!.startSingle.mockImplementation(() => {
+      mocks.stream!.phase.value = 'streaming'
+      return new Promise(() => {}) // 挂起
+    })
+    const wrapper = await mountSuspended(SingleEvaluationFlow)
+    await wrapper.find('.upload-zone').trigger('drop', { dataTransfer: { files: [TEST_FILE] } })
+    await flushPromises()
+
+    await wrapper.find('.btn-primary').trigger('click')
+    await flushPromises()
+
+    // 上传期：进度卡仅准备文案，旧步骤轨道与推理块已被 resetStream 清空
+    expect(wrapper.find('.review-progress').exists()).toBe(true)
+    expect(wrapper.find('.loading-text').text()).toBe('正在准备照片…')
+    expect(wrapper.findAll('.stream-step')).toHaveLength(0)
+    expect(wrapper.findAll('.stream-think-block')).toHaveLength(0)
+
+    resolveUpload()
+    await flushPromises()
     wrapper.unmount()
   })
 

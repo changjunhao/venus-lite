@@ -60,7 +60,7 @@ function template(key: string): string {
 const { entries, errors: selectionErrors, addFiles } = useImageSelection({ mode: 'single' })
 const { exif: exifData, extract: extractExif } = useExif()
 const { uploading: ossUploading, upload: uploadFile } = useOssUpload()
-const { phase: streamPhase, steps: streamSteps, reasoningBlocks, startSingle } = useEvaluationStream()
+const { phase: streamPhase, steps: streamSteps, reasoningBlocks, startSingle, reset: resetStream } = useEvaluationStream()
 const { metadata: genreMetadata, fetch: fetchMetadata } = useEvalMetadata()
 const {
   phase: sharePhase,
@@ -318,6 +318,9 @@ async function evaluate(): Promise<void> {
   result.value = null
   detectedGenre.value = ''
   resetShare()
+  // 清空上一轮流式残留（phase/steps/推理块）：startSingle 的 reset 在上传完成后
+  // 才调用，不提前重置则上传期进度卡会渲染上一轮的 done 步骤与旧推理块
+  resetStream()
 
   // ① 照片准备：OSS 直传（data URL 回退已在 composable 内处理，app.js L327-341）
   let imageUrl: string
