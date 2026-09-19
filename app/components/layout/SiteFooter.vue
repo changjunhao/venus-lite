@@ -10,20 +10,44 @@
  * - 品牌 aria-label 恒存在：移动端 brand-name 会 display:none
  *   （对应 venus 全局 .site-brand span 隐藏规则 L1114），
  *   无 aria-label 的链接将失去可访问名称（同 SiteNav 先例）。
+ * - 新增相关外链区：外链 URL 属基础设施，用静态常量；文案走 i18n（labelKey）双语；
+ *   采用原生 <a>（非 NuxtLink）附 rel="noopener noreferrer"，避免路由/prefetch 开销（同 SiteNav 数据驱动惯例）。
  */
 const { t } = useI18n()
+
+// 外链为基础设施，URL 用静态常量；文案走 i18n（labelKey），语言切换即时生效
+const FOOTER_LINKS = [
+  { href: 'https://www.ifable.cn/', labelKey: 'footer.linkAuthor' },
+  { href: 'https://github.com/changjunhao/venus-core', labelKey: 'footer.linkCore' },
+  { href: 'https://github.com/changjunhao/venus-lite', labelKey: 'footer.linkLite' },
+  { href: 'https://blog.ifable.cn/2026/06/13/venus-ai-photography-evaluation/', labelKey: 'footer.linkBlogEval' },
+  { href: 'https://blog.ifable.cn/2026/06/14/venus-ai-photography-engineering/', labelKey: 'footer.linkBlogEng' },
+] as const
 </script>
 
 <template>
   <!-- footer 标签自带 contentinfo landmark，无需额外 role -->
   <footer class="site-footer">
-    <NuxtLink to="/" class="footer-brand" :aria-label="t('footer.brandAria')">
-      <!-- 18px 为 venus 页脚实测值，亦是 §4.1 最小图标尺寸 -->
-      <UiStarMark :size="18" />
-      <span class="footer-brand-name">VENUS</span>
-    </NuxtLink>
+    <div class="footer-identity">
+      <NuxtLink to="/" class="footer-brand" :aria-label="t('footer.brandAria')">
+        <!-- 18px 为 venus 页脚实测值，亦是 §4.1 最小图标尺寸 -->
+        <UiStarMark :size="18" />
+        <span class="footer-brand-name">VENUS</span>
+      </NuxtLink>
 
-    <p class="footer-tagline">{{ t('footer.tagline') }}</p>
+      <p class="footer-tagline">{{ t('footer.tagline') }}</p>
+    </div>
+
+    <nav class="footer-links" :aria-label="t('footer.linksAria')">
+      <a
+        v-for="link in FOOTER_LINKS"
+        :key="link.href"
+        :href="link.href"
+        class="footer-link"
+        target="_blank"
+        rel="noopener noreferrer"
+      >{{ t(link.labelKey) }}</a>
+    </nav>
   </footer>
 </template>
 
@@ -61,6 +85,31 @@ const { t } = useI18n()
 /* 星芒 amber 由父级 color 控制（同 SiteNav 惯例） */
 .footer-brand svg {
   color: var(--amber);
+}
+
+/* 身份区：品牌 + 标语竖排成组，作为页脚左块（原标语独立右对齐收敛入此组） */
+.footer-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 相关外链区：横向排列、窄屏换行，色彩承接页脚 muted，hover 提亮至 ink */
+.footer-links {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+}
+
+.footer-link {
+  color: var(--ink-muted);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-link:hover {
+  color: var(--ink);
 }
 
 @media (max-width: 1279px) {

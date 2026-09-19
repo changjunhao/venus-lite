@@ -49,4 +49,33 @@ describe('SiteFooter', () => {
       .toBe('Photography aesthetic evaluation · Digital contact sheet')
     expect(wrapper.find('.footer-brand').attributes('aria-label')).toBe('Venus home')
   })
+
+  it('相关外链区：5 个外链按序渲染，均带 target=_blank + rel=noopener noreferrer', async () => {
+    const wrapper = await mountSuspended(makeHost())
+    const nav = wrapper.find('nav.footer-links')
+
+    expect(nav.attributes('aria-label')).toBe('相关链接')
+
+    const links = nav.findAll('a')
+    expect(links.map(link => link.attributes('href'))).toEqual([
+      'https://www.ifable.cn/',
+      'https://github.com/changjunhao/venus-core',
+      'https://github.com/changjunhao/venus-lite',
+      'https://blog.ifable.cn/2026/06/13/venus-ai-photography-evaluation/',
+      'https://blog.ifable.cn/2026/06/14/venus-ai-photography-engineering/',
+    ])
+    for (const link of links) {
+      expect(link.attributes('target')).toBe('_blank')
+      expect(link.attributes('rel')).toBe('noopener noreferrer')
+    }
+    expect(links[0]!.text()).toBe('作者主页')
+  })
+
+  it('en locale：外链文案与 nav aria-label 输出英文', async () => {
+    const wrapper = await mountSuspended(makeHost('en'))
+    const nav = wrapper.find('nav.footer-links')
+
+    expect(nav.attributes('aria-label')).toBe('Related links')
+    expect(nav.findAll('a')[0]!.text()).toBe('Author')
+  })
 })

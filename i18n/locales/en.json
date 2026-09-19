@@ -331,6 +331,12 @@
   },
   "footer": {
     "tagline": "Photography aesthetic evaluation · Digital contact sheet",
-    "brandAria": "Venus home"
+    "brandAria": "Venus home",
+    "linksAria": "Related links",
+    "linkAuthor": "Author",
+    "linkCore": "Venus Core",
+    "linkLite": "Venus Lite",
+    "linkBlogEval": "Evaluation notes",
+    "linkBlogEng": "Engineering notes"
   }
 }

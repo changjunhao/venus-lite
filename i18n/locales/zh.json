@@ -331,6 +331,12 @@
   },
   "footer": {
     "tagline": "摄影美学评估系统 · 数字接触印样",
-    "brandAria": "Venus 首页"
+    "brandAria": "Venus 首页",
+    "linksAria": "相关链接",
+    "linkAuthor": "作者主页",
+    "linkCore": "Venus Core 源码",
+    "linkLite": "Venus Lite 源码",
+    "linkBlogEval": "评测理念",
+    "linkBlogEng": "工程实现"
   }
 }
