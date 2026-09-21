@@ -1,4 +1,4 @@
-import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Mock } from 'vitest'
 import type { Ref } from 'vue'
 import { flushPromises } from '@vue/test-utils'
@@ -17,14 +17,11 @@ import {
 document.cookie = 'venus-locale=zh'
 
 // nuxt 测试环境文件间共享模块缓存（同 worker 内隔离关闭）：
-// 本文件的 vi.mock 工厂会泄漏给后续文件，须在文件结束时解除
-// （SingleEvaluationFlow.spec L22-29 先例）
-afterAll(() => {
-  vi.unmock('~/composables/useImageSelection')
-  vi.unmock('~/composables/useOssUpload')
-  vi.unmock('~/composables/useEvaluationStream')
-  vi.unmock('~/composables/useEvalMetadata')
-})
+// 本文件的 vi.mock 工厂会泄漏给后续文件，须解除（vitest 5 要求 vi.unmock 位于模块顶层）
+vi.unmock('~/composables/useImageSelection')
+vi.unmock('~/composables/useOssUpload')
+vi.unmock('~/composables/useEvaluationStream')
+vi.unmock('~/composables/useEvalMetadata')
 
 // ── composable mock 句柄（vi.hoisted 先于模块加载；工厂内赋值，测试内读写）──
 

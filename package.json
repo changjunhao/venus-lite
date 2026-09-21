@@ -20,24 +20,24 @@
     "@nuxtjs/i18n": "^10.6.0",
     "@theogony/venus-core": "^0.16.0",
     "ali-oss": "^6.23.0",
-    "exifreader": "^4.43.0",
-    "markstream-vue": "^2.0.1",
+    "exifreader": "^4.45.1",
+    "markstream-vue": "^2.0.11",
     "nuxt": "^4.5.2",
     "nuxt-security": "^2.6.0",
-    "openai": "^7.5.0",
-    "vue": "^3.5.41",
-    "vue-router": "^5.2.0"
+    "openai": "^7.20.0",
+    "vue": "^3.5.43",
+    "vue-router": "^5.3.1"
   },
   "devDependencies": {
     "@nuxt/a11y": "1.0.0-alpha.1",
     "@nuxt/eslint": "1.17.0",
     "@nuxt/fonts": "0.14.0",
-    "@nuxt/test-utils": "4.1.0",
+    "@nuxt/test-utils": "4.3.2",
     "@types/ali-oss": "^6.23.3",
-    "@vue/test-utils": "^2.4.11",
-    "eslint": "^10.9.0",
-    "happy-dom": "^20.11.6",
+    "@vue/test-utils": "^2.5.1",
+    "eslint": "^10.11.0",
+    "happy-dom": "^20.14.5",
     "typescript": "^5.9.3",
-    "vitest": "^4.1.11"
+    "vitest": "^5.0.1"
   }
 }

@@ -163,6 +163,8 @@ describe('useEvalMetadata', () => {
   })
 
   it('失败后 error 有值、metadata 仍 null、不 throw', async () => {
+    // 源码 catch 分支会 console.error（预期日志），静音并断言其确实上报
+    const errorLog = vi.spyOn(console, 'error').mockImplementation(() => {})
     mockFetch.mockRejectedValue(new Error('Network Error'))
     await mountSuspended(MetadataHost)
 
@@ -172,9 +174,12 @@ describe('useEvalMetadata', () => {
     expect(api.metadata.value).toBeNull()
     expect(api.error.value).toBe('Network Error')
     expect(api.loading.value).toBe(false)
+    expect(errorLog).toHaveBeenCalledWith('获取元数据失败:', expect.any(Error))
+    errorLog.mockRestore()
   })
 
   it('失败后可重试', async () => {
+    const errorLog = vi.spyOn(console, 'error').mockImplementation(() => {})
     mockFetch.mockRejectedValueOnce(new Error('timeout'))
     await mountSuspended(MetadataHost)
 
@@ -185,6 +190,9 @@ describe('useEvalMetadata', () => {
     const result = await api.fetch()
     expect(result).toEqual(FIXTURE)
     expect(api.error.value).toBeNull()
+    // 仅失败那次上报，重试成功不产生日志
+    expect(errorLog).toHaveBeenCalledTimes(1)
+    errorLog.mockRestore()
   })
 
   it('genreEntries 随 metadata 派生', async () => {

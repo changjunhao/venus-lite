@@ -1,4 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { effectScope } from 'vue'
 
 // ── 纯函数与 composable 导入 ──
 
@@ -204,12 +205,27 @@ describe('wrapTextLines', () => {
 // ── Composable 测试 ──
 
 describe('useShareImage', () => {
+  // useShareImage 内部用 onScopeDispose 释放 objectURL（真实调用点均在 setup 中），
+  // 裸调用会触发 Vue “no active effect scope” 警告，故统一在 effectScope 内实例化，
+  // afterEach 停止 scope 以顺带覆盖 dispose 清理路径
+  let scope: ReturnType<typeof effectScope> | undefined
+
+  function mountComposable() {
+    scope = effectScope()
+    return scope.run(() => useShareImage())!
+  }
+
   beforeEach(() => {
     vi.restoreAllMocks()
   })
 
+  afterEach(() => {
+    scope?.stop()
+    scope = undefined
+  })
+
   it('初始状态正确', () => {
-    const { phase, error, previewUrl, filename } = useShareImage()
+    const { phase, error, previewUrl, filename } = mountComposable()
     expect(phase.value).toBe('idle')
     expect(error.value).toBeNull()
     expect(previewUrl.value).toBeNull()
@@ -221,7 +237,7 @@ describe('useShareImage', () => {
     const originalServer = import.meta.server
     Object.defineProperty(import.meta, 'server', { value: true, configurable: true })
 
-    const { generate, phase } = useShareImage()
+    const { generate, phase } = mountComposable()
     const result = await generate({ totalScore: 7.5 })
 
     expect(result).toBeNull()
@@ -231,7 +247,7 @@ describe('useShareImage', () => {
   })
 
   it('reset 清除状态', () => {
-    const { error, filename, reset } = useShareImage()
+    const { error, filename, reset } = mountComposable()
     error.value = 'some error'
     filename.value = 'test.png'
 
@@ -249,7 +265,7 @@ describe('useShareImage', () => {
       createObjectURL: vi.fn(() => 'blob:mock'),
     })
 
-    const { previewUrl, revokePreview } = useShareImage()
+    const { previewUrl, revokePreview } = mountComposable()
     previewUrl.value = 'blob:mock-url'
 
     revokePreview()

@@ -17,13 +17,11 @@ vi.mock('@alicloud/sts20150401', () => ({
   default: class MockStsClient {
     assumeRole = mockAssumeRole
   },
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   AssumeRoleRequest: function (map: Record<string, unknown>) { return map },
 }))
 
 vi.mock('@alicloud/openapi-core', () => ({
   $OpenApiUtil: {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     Config: function (map: Record<string, unknown>) { return map },
   },
 }))
@@ -83,21 +81,28 @@ describe('fetchStsCredentials', () => {
   })
 
   it('throws 500 when assumeRole fails', async () => {
+    // 源码 catch 分支会 console.error（预期日志），静音并断言其确实上报
+    const errorLog = vi.spyOn(console, 'error').mockImplementation(() => {})
     mockAssumeRole.mockRejectedValue(new Error('network error'))
 
     const err = await fetchStsCredentials({ ...VALID_CONFIG }).catch(e => e)
 
     expect(err.statusCode).toBe(500)
     expect(err.data.code).toBe('STS_ERROR')
+    expect(errorLog).toHaveBeenCalledWith('[oss/sts] assume role failed:', 'network error')
+    errorLog.mockRestore()
   })
 
   it('throws 500 when credentials field is absent', async () => {
+    const errorLog = vi.spyOn(console, 'error').mockImplementation(() => {})
     mockAssumeRole.mockResolvedValue({ body: {} })
 
     const err = await fetchStsCredentials({ ...VALID_CONFIG }).catch(e => e)
 
     expect(err.statusCode).toBe(500)
     expect(err.data.code).toBe('STS_ERROR')
+    expect(errorLog).toHaveBeenCalledWith('[oss/sts] assume role failed:', expect.any(String))
+    errorLog.mockRestore()
   })
 
   it('falls back to empty string when credential fields are undefined', async () => {

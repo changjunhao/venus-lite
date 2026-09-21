@@ -1,3 +1,6 @@
+overrides:
+  # vitest-environment-nuxt@2.0.0 会把 @nuxt/test-utils 解析到 4.1.0（硬导入 vitest 5 已移除的 vitest/environments），强制对齐到顶层版本
+  '@nuxt/test-utils': '4.3.2'
 allowBuilds:
   '@alicloud/openapi-core': false
   '@google/genai': false
@@ -11,3 +14,4 @@ minimumReleaseAgeExclude:
   - markstream-core@2.0.1
   - markstream-vue@2.0.1
   - stream-markdown-parser@1.2.9
+  - openai@7.20.0

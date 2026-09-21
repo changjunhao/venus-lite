@@ -85,10 +85,11 @@ describe('HomeHero', () => {
   })
 
   it('primaryTo / secondaryTo 覆盖默认链接目标', async () => {
+    // 覆盖值用真实路由 /group-compare（区别于默认 /single），避免 vue-router 报未匹配路由
     const wrapper = await mountSuspended(HomeHero, {
-      props: { ...fullProps, primaryTo: '/single-review', secondaryTo: '#evaluation-modes' },
+      props: { ...fullProps, primaryTo: '/group-compare', secondaryTo: '#evaluation-modes' },
     })
-    expect(wrapper.find('.home-primary-link').attributes('href')).toBe('/single-review')
+    expect(wrapper.find('.home-primary-link').attributes('href')).toBe('/group-compare')
     expect(wrapper.find('.home-text-link').attributes('href')).toBe('#evaluation-modes')
   })
 
