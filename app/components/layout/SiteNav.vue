@@ -20,9 +20,9 @@ const { t } = useI18n()
 
 // 导航项数据驱动（i18n key 而非文案，语言切换即时生效）
 const HOME_LINKS = [
-  { href: '#modes', labelKey: 'nav.anchorModes' },
-  { href: '#process', labelKey: 'nav.anchorProcess' },
-  { href: '#sample', labelKey: 'nav.anchorSample' },
+  { to: { path: '/', hash: '#modes' }, labelKey: 'nav.anchorModes' },
+  { to: { path: '/', hash: '#process' }, labelKey: 'nav.anchorProcess' },
+  { to: { path: '/', hash: '#sample' }, labelKey: 'nav.anchorSample' },
 ] as const
 
 const EVALUATION_LINKS = [
@@ -46,11 +46,11 @@ const isHome = computed(() => props.variant === 'home')
     </NuxtLink>
 
     <div class="nav-links">
-      <!-- home：纯锚点不走路由；evaluation：NuxtLink，aria-current 自动 -->
+      <!-- home：跳转首页指定锚点；evaluation：模式路由，aria-current 自动 -->
       <template v-if="isHome">
-        <a v-for="link in HOME_LINKS" :key="link.href" :href="link.href">
+        <NuxtLink v-for="link in HOME_LINKS" :key="link.to.hash" :to="link.to">
           {{ t(link.labelKey) }}
-        </a>
+        </NuxtLink>
       </template>
       <template v-else>
         <NuxtLink v-for="link in EVALUATION_LINKS" :key="link.to" :to="link.to">
@@ -121,8 +121,7 @@ const isHome = computed(() => props.variant === 'home')
   white-space: nowrap;
 }
 
-/* 当前项下划线：1px amber 横向展开 180ms（§12.3）；
- * 当前页三重信号 = 文字色 + 下划线 + aria-current（§7.3，NuxtLink 自动写入） */
+/* 交互项下划线：仅在 hover / 键盘焦点时以 1px amber 横向展开 180ms（§12.3）。 */
 .nav-links a::after {
   background: var(--amber);
   bottom: -1px;
@@ -137,14 +136,12 @@ const isHome = computed(() => props.variant === 'home')
 }
 
 .nav-links a:hover,
-.nav-links a:focus-visible,
-.nav-links a[aria-current="page"] {
+.nav-links a:focus-visible {
   color: var(--ink);
 }
 
 .nav-links a:hover::after,
-.nav-links a:focus-visible::after,
-.nav-links a[aria-current="page"]::after {
+.nav-links a:focus-visible::after {
   transform: scaleX(1);
   transform-origin: left;
 }

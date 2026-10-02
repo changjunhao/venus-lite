@@ -9,6 +9,7 @@ import { createNitroAdapter } from '@theogony/venus-core/nitro'
 import type { VenusEngine, LLMProvider, AgentRole, ReasoningEffort, ReasoningConfig, AdapterHooks } from '@theogony/venus-core'
 import type { EventHandler, H3Event } from 'h3'
 import { isKimiProvider, createKimiHooks } from './kimi'
+import { completeAnalyticsEvaluationFromEvent, failAnalyticsEvaluationFromEvent, startAnalyticsEvaluation } from './analytics-service'
 
 // ── 类型 ──────────────────────────────────────────────────
 
@@ -260,13 +261,63 @@ function getVenusApiHandler(event: H3Event): EventHandler {
  * 故显式补成 404，使 /api/evaluate/<未知子路径> 的语义与其他 Nitro 路由一致。
  */
 export async function handleVenusApi(event: H3Event): Promise<unknown> {
+  const analyticsMode = event.path === '/api/evaluate/stream' ? 'single' : event.path === '/api/evaluate/group/stream' ? 'unknown' : null
+  let analyticsId: number | null = null
+  if (analyticsMode) {
+    try { analyticsId = await startAnalyticsEvaluation(event, analyticsMode) }
+    catch (error) { console.warn('[analytics] 无法创建评估记录', error) }
+  }
+
   const response = await getVenusApiHandler(event)(event)
   if (response === undefined) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: 'Not Found',
-      message: `Cannot find any route matching ${event.path}.`,
-    })
+    throw createError({ statusCode: 404, statusMessage: 'Not Found', message: `Cannot find any route matching ${event.path}.` })
+  }
+  if (analyticsId && response instanceof Response) {
+    if (!response.ok || !response.body || !response.headers.get('content-type')?.includes('text/event-stream')) {
+      try { failAnalyticsEvaluationFromEvent(event, analyticsId, `HTTP_${response.status}`) }
+      catch (error) { console.warn('[analytics] 无法更新失败记录', error) }
+      return response
+    }
+    return monitorAnalyticsStream(event, response, analyticsId, analyticsMode!)
   }
   return response
+}
+
+function monitorAnalyticsStream(event: H3Event, response: Response, analyticsId: number, fallbackMode: 'single' | 'unknown'): Response {
+  const decoder = new TextDecoder()
+  let buffer = ''
+  let finalized = false
+  const stream = response.body!.pipeThrough(new TransformStream<Uint8Array, Uint8Array>({
+    transform(chunk, controller) {
+      controller.enqueue(chunk)
+      buffer += decoder.decode(chunk, { stream: true })
+      const frames = buffer.split('\n\n')
+      buffer = frames.pop() || ''
+      for (const frame of frames) finalizeAnalyticsFrame(event, analyticsId, fallbackMode, frame, () => { finalized = true })
+    },
+    flush() {
+      if (buffer) finalizeAnalyticsFrame(event, analyticsId, fallbackMode, buffer, () => { finalized = true })
+      if (!finalized) {
+        try { failAnalyticsEvaluationFromEvent(event, analyticsId, 'STREAM_INCOMPLETE') }
+        catch (error) { console.warn('[analytics] 无法更新中断记录', error) }
+      }
+    },
+  }))
+  return new Response(stream, { status: response.status, statusText: response.statusText, headers: response.headers })
+}
+
+function finalizeAnalyticsFrame(event: H3Event, id: number, fallbackMode: 'single' | 'unknown', frame: string, markFinalized: () => void): void {
+  const data = frame.split('\n').find(line => line.startsWith('data:'))?.slice(5).trim()
+  if (!data) return
+  try {
+    const message = JSON.parse(data) as Record<string, unknown>
+    if (message.type === 'evaluation_complete' || message.type === 'group_evaluation_complete') {
+      completeAnalyticsEvaluationFromEvent(event, id, message.data as Record<string, unknown>, fallbackMode)
+      markFinalized()
+    } else if (message.type === 'error') {
+      const error = message.error as { code?: string } | undefined
+      failAnalyticsEvaluationFromEvent(event, id, error?.code || 'STREAM_ERROR')
+      markFinalized()
+    }
+  } catch (error) { console.warn('[analytics] 无法解析评估流事件', error) }
 }

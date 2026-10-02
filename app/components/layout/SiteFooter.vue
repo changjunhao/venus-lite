@@ -10,8 +10,8 @@
  * - 品牌 aria-label 恒存在：移动端 brand-name 会 display:none
  *   （对应 venus 全局 .site-brand span 隐藏规则 L1114），
  *   无 aria-label 的链接将失去可访问名称（同 SiteNav 先例）。
- * - 新增相关外链区：外链 URL 属基础设施，用静态常量；文案走 i18n（labelKey）双语；
- *   采用原生 <a>（非 NuxtLink）附 rel="noopener noreferrer"，避免路由/prefetch 开销（同 SiteNav 数据驱动惯例）。
+ * - 相关链接区：站内使用分析页采用 NuxtLink；外链 URL 属基础设施，用静态常量；文案走 i18n（labelKey）双语；
+ *   外链采用原生 <a> 并附 rel="noopener noreferrer"，避免路由/prefetch 开销（同 SiteNav 数据驱动惯例）。
  */
 const { t } = useI18n()
 
@@ -47,6 +47,7 @@ const FOOTER_LINKS = [
         target="_blank"
         rel="noopener noreferrer"
       >{{ t(link.labelKey) }}</a>
+      <NuxtLink to="/admin/analytics" class="footer-link">{{ t('footer.linkAnalytics') }}</NuxtLink>
     </nav>
   </footer>
 </template>

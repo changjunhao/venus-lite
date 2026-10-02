@@ -18,6 +18,12 @@ logs
 .fleet
 .idea
 
+# 使用分析运行数据（数据库、WAL/SHM 与 GeoLite2 均不得提交）
+data/analytics.sqlite
+data/analytics.sqlite-wal
+data/analytics.sqlite-shm
+*.mmdb
+
 # Local env files
 .env
 .env.*

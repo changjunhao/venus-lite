@@ -50,13 +50,17 @@ describe('SiteFooter', () => {
     expect(wrapper.find('.footer-brand').attributes('aria-label')).toBe('Venus home')
   })
 
-  it('相关外链区：5 个外链按序渲染，均带 target=_blank + rel=noopener noreferrer', async () => {
+  it('相关链接区：站内使用分析链接 + 5 个带安全属性的外链按序渲染', async () => {
     const wrapper = await mountSuspended(makeHost())
     const nav = wrapper.find('nav.footer-links')
 
     expect(nav.attributes('aria-label')).toBe('相关链接')
 
-    const links = nav.findAll('a')
+    const analyticsLink = nav.find('a[href="/admin/analytics"]')
+    expect(analyticsLink.text()).toBe('使用分析')
+    expect(analyticsLink.attributes('target')).toBeUndefined()
+
+    const links = nav.findAll('a').filter(link => link.attributes('href') !== '/admin/analytics')
     expect(links.map(link => link.attributes('href'))).toEqual([
       'https://www.ifable.cn/',
       'https://github.com/changjunhao/venus-core',
@@ -76,6 +80,7 @@ describe('SiteFooter', () => {
     const nav = wrapper.find('nav.footer-links')
 
     expect(nav.attributes('aria-label')).toBe('Related links')
-    expect(nav.findAll('a')[0]!.text()).toBe('Author')
+    expect(nav.find('a[href="/admin/analytics"]').text()).toBe('Analytics')
+    expect(nav.findAll('a').filter(link => link.attributes('href') !== '/admin/analytics')[0]!.text()).toBe('Author')
   })
 })

@@ -32,7 +32,7 @@ export default defineNuxtConfig({
   // （width:100% + 五档断点 max-width，最大 1536px），main.css 后声明的
   // .container{max-width:1280px}（§7.2）在同特异度下获胜，中和宽屏泄漏；
   // main.css 的通配 reset 特异度为 0，排在库 CSS 之后不会覆盖其 class 规则。
-  css: ['~/assets/css/tokens.css', 'markstream-vue/index.css', '~/assets/css/main.css'],
+  css: ['~/assets/css/tokens.css', 'ant-design-vue/dist/reset.css', 'markstream-vue/index.css', '~/assets/css/main.css'],
 
   // 字体：禁用 Google 提供源（fonts.google.com 网络不可达，启动时反复重试拖慢冷启动）
   // tokens.css 的字体栈均有本地回退（PingFang SC / Songti SC / system-ui 等），渲染不受影响
@@ -84,6 +84,7 @@ export default defineNuxtConfig({
     '/api/evaluate/**': { security: { rateLimiter: { tokensPerInterval: 5, interval: 60000 } } },
     '/api/oss/sts': { security: { rateLimiter: { tokensPerInterval: 10, interval: 300000 } } },
     '/api/metadata': { security: { rateLimiter: { tokensPerInterval: 60, interval: 300000 } } },
+    '/api/admin/**': { security: { rateLimiter: { tokensPerInterval: 30, interval: 60000 } } },
   },
 
   // 应用层安全防护（nuxt-security，OWASP/Helmet 风格）。
@@ -122,6 +123,11 @@ export default defineNuxtConfig({
     ossStsAccessKeyId: '',
     ossStsAccessKeySecret: '',
     ossStsSessionDurationSeconds: 900,
+    // ── 使用分析（NUXT_ANALYTICS_*，仅服务端可见）──
+    analyticsDbPath: '',
+    analyticsIpHashSalt: '',
+    analyticsGeoipDbPath: '',
+    analyticsRetentionDays: 180,
     // ── Venus Engine 全局配置（NUXT_VENUS_*，仅服务端可见）──
     venusProviderType: 'openai-chat', // openai-chat | openai-responses | anthropic | gemini
     venusProviderBaseUrl: '',

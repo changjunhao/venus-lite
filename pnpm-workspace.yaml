@@ -4,6 +4,8 @@ overrides:
 allowBuilds:
   '@alicloud/openapi-core': false
   '@google/genai': false
+  better-sqlite3: true
+  core-js: false
   esbuild: true
   exifreader: false
   protobufjs: false

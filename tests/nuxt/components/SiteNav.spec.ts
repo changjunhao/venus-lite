@@ -39,14 +39,14 @@ describe('SiteNav', () => {
     document.cookie = 'venus-locale=; Max-Age=0; path=/'
   })
 
-  it('home 变体：主导航语义 + 三个锚点链接', async () => {
+  it('home 变体：主导航语义 + 指向首页的三个锚点链接', async () => {
     const wrapper = await mountSuspended(makeHost('home'))
     const nav = wrapper.find('nav.site-nav')
 
     expect(nav.attributes('aria-label')).toBe('主导航')
 
     const links = nav.findAll('.nav-links a')
-    expect(links.map(link => link.attributes('href'))).toEqual(['#modes', '#process', '#sample'])
+    expect(links.map(link => link.attributes('href'))).toEqual(['/#modes', '/#process', '/#sample'])
     expect(links.map(link => link.text())).toEqual(['评估模式', '工作方式', '结果示例'])
   })
 
